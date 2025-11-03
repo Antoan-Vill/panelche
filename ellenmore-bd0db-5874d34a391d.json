@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "ellenmore-bd0db",
+  "private_key_id": "5874d34a391d1f27bf693141f4602362a4b9c905",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDx4mVr5P+qjBbl\nmqXtutstdnuLrg2Lbn/ffBwA2VP2fmYFPQSrmJr0eBRLZ2S0IEK/ClXq/D0LEOAq\nzs/PVJHB44Zkcc26VkTGmTxu3RgiNez4sUF8CfIf666GrXEOJxrthylxrtulzQj/\nCu/3m/RTJshsXGWnUyeTpYxPZzuBOGtFW/r1u7y/v9XEH4HfE7U6SQCtjlV3aY0u\nsPPriXq74raBXFvWfE4aGkI0iQX5+z0f1lt1l/Q3U/TQLjDp8MobEKHcbYsMpCd6\nLjAt9piokUYxah60dUb6P16uLdo6V8ut5MyS9gsWESod0i2P5DPJ9XwsOhKgCxRh\nl50pRXg9AgMBAAECggEATBUQHb3sBTMHSLU6F+q8YjJwbeETdZYONreM/19cn53m\nbSNiQq8/nkHe8FDXRikXlYuktsMcWEy4lf5zMx3AsyHj9dguA7x66ZTtg1mb67bW\nkOsAVAm01QGG5enMM81tFOV8zbtYb3Bssfw4usOdOEJsrFjryJPJURGzbo5kEyKV\nVzGCTUKYOgSffMETGfzSXKpWM0+wP/1eaIOwPtAbPzI2e67NS03RUwQAYI6rzJqA\nBzeWV/C44nA8gtlveCqsTBvX2wyQFkuDwD36WqhCyoeYONxhY2Af6f2NxdOUjAft\ntCQ4+LMQCnIn9WOTKtSTV7d3VQcLKFb+p3gIExqDaQKBgQD+HObXVV6IElZUMryq\n251KqXm2Y9z74XCVzYS38B6Rsi14uL7PLnbImjvseLCGp5w80koSWG/IHoyA4qnJ\nZ7IkMq7sty8u7xUikrjRSdgTa+b0qtPPiWFsry7XY8cUqobWqmirEOO6zzN+AV/j\nB9LTcXhuoNgN92bRMY2eo+MMzwKBgQDzrj8ft6aITDAJzyy+4hT5dkyouXAh1GTU\noiV+cOUCuoIHycqqwg/yB2pAg/983zIpYzxji/5Pkz0lWnSBHwRl/b17iUinPPuo\nYzPEd/G+zOqpvip8kwDvdA2TZOk9CPFZNQleLLRk0tKdVqV/xy7hkkzUj6Z30CGh\nN3T5ltAlMwKBgQDtYMhPnYL6L88PRnoyTYdI6Lo3JGCZt0X52ovBXADib4TEwigU\n2D3ENTgHNdMJZuevdW4WZyC827S67YJYD5M890+q95CPEm425sLZV1cPBXwxUKce\ntyIYaimisaWWa5ocTAIM03E44Dgk3FnbdkJ+nQA4r+5EVblpcBXwfP4rxwKBgC/I\nZEJg7bveTLEvudN4W6qLIv8W1cEcd+UmInoHwzBkyCikziPrx9qqz4/1Ej03OwvY\nlLfkdKq/8YaIlT3YijFBr00xH1kD4UkkorsM1g+W+RDt5EDnRpCtzhev+vhn74OR\nndOkqn72xCvsGKnUsgGzgXNQ89CctGt7h2mFxCz3AoGBAPOw9zGoSUP6tKIf1rnu\n5UK5sBpEGkFszmMFtGSWNUZ5Wz6+9QPJYe/C2BnBdu8wUX1DyYiFvox7306Yfsza\nOgHiIE1j69yvU9RJdXfuQAq8H2CXSUk2CvTwzW2cFdH4VHunpC/nA2zrTtrwnTp9\nhY6Ey0B+0/thSDZawgEDTdWY\n-----END PRIVATE KEY-----\n",
+  "client_email": "default-my@ellenmore-bd0db.iam.gserviceaccount.com",
+  "client_id": "100886938879871056119",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/default-my%40ellenmore-bd0db.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
