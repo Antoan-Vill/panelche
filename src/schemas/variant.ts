@@ -1,3 +1,4 @@
+// src/schemas/variant.ts
 import { z } from 'zod';
 
 export const VariantSchema = z.object({
@@ -12,8 +13,8 @@ export const VariantSchema = z.object({
     v2_id: z.number().nullable(),
     v3_id: z.number().nullable(),
     quantity: z.number(),
-    sku: z.string(),
-    barcode: z.string(),
+    sku: z.string().nullish().transform((v) => v ?? ''),
+    barcode: z.string().nullish().transform((v) => v ?? ''),
     price: z.number(),
     delivery_price: z.number().nullable(),
     weight: z.number().nullable(),

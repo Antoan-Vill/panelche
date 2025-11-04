@@ -1,8 +1,10 @@
+export const revalidate = 300;
+
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { ProductsResponseSchema } from '@/schemas/product';
 import { badRequest, notFound, serverError } from '@/lib/http/response';
-import fs from 'fs';
+import { REVALIDATE } from '@/lib/cache';
 
 export async function GET(
   request: Request,
@@ -36,7 +38,7 @@ export async function GET(
         'X-CloudCart-ApiKey': apiKey,
         'Content-Type': 'application/json',
       },
-      cache: 'no-store',
+      next: { revalidate: REVALIDATE.categories },
     });
 
     if (!categoriesResponse.ok) {
@@ -66,12 +68,11 @@ export async function GET(
         'X-CloudCart-ApiKey': apiKey,
         'Content-Type': 'application/json',
       },
-      cache: 'no-store',
+      next: { revalidate: REVALIDATE.products },
     });
 
-    // Read body once, save for debugging, then validate
+    // Read body once then validate
     const productsBody = await productsResponse.json();
-    fs.writeFileSync('productsResponse.json', JSON.stringify(productsBody, null, 2));
 
     if (!productsResponse.ok) {
       console.error('Failed to fetch products:', productsResponse.status, productsBody);

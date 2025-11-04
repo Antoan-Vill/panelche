@@ -1,7 +1,10 @@
+export const revalidate = 300;
+
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { CategorySchema } from '@/schemas/category';
 import { badRequest, notFound, serverError } from '@/lib/http/response';
+import { REVALIDATE } from '@/lib/cache';
 
 export async function GET(
   request: Request,
@@ -31,7 +34,8 @@ export async function GET(
         'X-CloudCart-ApiKey': apiKey,
         'Content-Type': 'application/json',
       },
-      cache: 'no-store',
+      // cache: 'no-store',
+      next: { revalidate: REVALIDATE.categories },
     });
 
     if (!response.ok) {
@@ -56,7 +60,7 @@ export async function GET(
             'X-CloudCart-ApiKey': apiKey,
             'Content-Type': 'application/json',
           },
-          cache: 'no-store',
+          next: { revalidate: REVALIDATE.categories },
         });
 
         if (imageResponse.ok) {

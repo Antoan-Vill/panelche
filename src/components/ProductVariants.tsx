@@ -5,29 +5,35 @@ import { Variant } from '@/lib/types/products';
 import VariantItem from './VariantItem';
 import { useVariantVisibility } from '@/lib/variant-visibility';
 import { useProductVariants } from '@/hooks';
+import { useVariantsPreload } from '@/lib/variants-preload';
 
 interface ProductVariantsProps {
   productId: string;
-  updateStockAction?: (variantId: string, quantity: number) => Promise<number | null>;
 }
 
-export default function ProductVariants({ productId, updateStockAction }: ProductVariantsProps) {
+export default function ProductVariants({ productId }: ProductVariantsProps) {
   const { showVariants: globalShowVariants, registerVariantVisibility, forceCloseAll } = useVariantVisibility();
   const [isOpen, setIsOpen] = useState(false);
   const [isIndividuallyHidden, setIsIndividuallyHidden] = useState(false);
-  const { data: variantsData, isLoading, error, reload } = useProductVariants(productId);
-  const variants = (variantsData ?? null) as Variant[] | null;
-  const hasFetched = variantsData !== undefined;
-
   // Use global state as primary, but allow individual override to hide
   const effectiveIsOpen = globalShowVariants ? !isIndividuallyHidden : isOpen;
+  // Check batch-preloaded cache first, only fetch if missing
+  const { getCachedVariants } = useVariantsPreload();
+  const cached = effectiveIsOpen ? getCachedVariants(productId) : undefined;
+  // Always enable the hook when panel is open; show cache immediately, fetch in background
+  const shouldFetch = effectiveIsOpen;
+  const { data: variantsData, isLoading, error, errorDetails, reload } = useProductVariants(shouldFetch ? productId : null, {
+    autoRetry: true,
+    untilHasData: true,
+    initialDelayMs: 800,
+    backoffFactor: 1.8,
+    maxDelayMs: 5000,
+    maxAttempts: 10,
+  });
+  // Prefer freshly fetched data over cached entries (cached [] could mask real data)
+  const variants = (variantsData ?? cached ?? null) as Variant[] | null;
+  const hasFetched = cached !== undefined || variantsData !== undefined;
 
-  // Load variants when global state is activated and we haven't fetched yet
-  useEffect(() => {
-    if (globalShowVariants && !hasFetched && !isLoading) {
-      reload();
-    }
-  }, [globalShowVariants, hasFetched, isLoading, reload]);
 
   // Register visibility state changes
   useEffect(() => {
@@ -57,15 +63,22 @@ export default function ProductVariants({ productId, updateStockAction }: Produc
       // When global show is inactive, normal individual toggle
       const nextOpen = !isOpen;
       setIsOpen(nextOpen);
-
-      if (nextOpen && !hasFetched && !isLoading) {
-        void loadVariants();
-      }
     }
   };
 
   const handleRetry = () => {
+    if (isLoading) return;
     reload();
+  };
+
+  const handleShowErrorDetails = () => {
+    if (!errorDetails) return;
+    try {
+      console.log(errorDetails);
+      alert(typeof errorDetails === 'string' ? errorDetails : JSON.stringify(errorDetails, null, 2));
+    } catch {
+      alert(String(errorDetails));
+    }
   };
 
   return (
@@ -86,7 +99,13 @@ export default function ProductVariants({ productId, updateStockAction }: Produc
 
           {error && !isLoading && (
             <div className="flex items-center justify-between text-xs text-red-600">
-              <span>{error}</span>
+              {errorDetails ? (
+                <button type="button" onClick={handleShowErrorDetails} className="underline">
+                  {error}
+                </button>
+              ) : (
+                <span>{error}</span>
+              )}
               <button
                 type="button"
                 onClick={handleRetry}
@@ -104,7 +123,7 @@ export default function ProductVariants({ productId, updateStockAction }: Produc
           {!isLoading && !error && hasFetched && (variants?.length ?? 0) > 0 && (
             <div className="space-y-1">
               {variants?.map((variant) => (
-                <VariantItem key={variant.id} variant={variant} updateStockAction={updateStockAction} />
+                <VariantItem key={variant.id} variant={variant} />
               ))}
             </div>
           )}

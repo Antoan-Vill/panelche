@@ -8,10 +8,9 @@ interface VariantStockManagerProps {
   variant: Variant;
   onStockChange?: (variantId: string, newQuantity: number) => void;
   onClose?: () => void;
-  updateStockAction?: (variantId: string, quantity: number) => Promise<number | null>;
 }
 
-export default function VariantStockManager({ variant, onStockChange, onClose, updateStockAction }: VariantStockManagerProps) {
+export default function VariantStockManager({ variant, onStockChange, onClose }: VariantStockManagerProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [displayQuantity, setDisplayQuantity] = useState(variant.attributes.quantity);
   const [inputQuantity, setInputQuantity] = useState(variant.attributes.quantity);
@@ -28,8 +27,10 @@ export default function VariantStockManager({ variant, onStockChange, onClose, u
 
   useEffect(() => {
     setDisplayQuantity(variant.attributes.quantity);
-    setInputQuantity(variant.attributes.quantity);
-  }, [variant.attributes.quantity]);
+    if (!isEditing) {
+      setInputQuantity(variant.attributes.quantity);
+    }
+  }, [variant.attributes.quantity, isEditing]);
 
   const handleClick = () => {
     if (!isLoading) {
@@ -53,25 +54,17 @@ export default function VariantStockManager({ variant, onStockChange, onClose, u
     if (newQuantity !== originalQuantity) {
       setIsLoading(true);
       try {
-        let updatedQuantity: number | null = null;
-        if (updateStockAction) {
-          updatedQuantity = await updateStockAction(variant.id, newQuantity);
-        } else {
-          const result = await update(newQuantity);
-          const maybeQty = Number((result as any)?.attributes?.quantity ?? (result as any)?.data?.attributes?.quantity ?? newQuantity);
-          if (Number.isFinite(maybeQty)) {
-            updatedQuantity = maybeQty;
-          }
+        const result = await update(newQuantity);
+        const serverQtyRaw = (result as any)?.data?.attributes?.quantity ?? (result as any)?.attributes?.quantity ?? newQuantity;
+        const numericServerQty = Number(serverQtyRaw);
+        const updatedQuantity = Number.isFinite(numericServerQty) ? numericServerQty : newQuantity;
+        if (!Number.isFinite(numericServerQty)) {
+          console.warn('Variant stock response missing quantity; using input value', { result });
         }
-
-        if (typeof updatedQuantity === 'number' && Number.isFinite(updatedQuantity)) {
-          setDisplayQuantity(updatedQuantity);
-          setInputQuantity(updatedQuantity);
-          if (onStockChange) {
-            onStockChange(variant.id, updatedQuantity);
-          }
-        } else {
-          setInputQuantity(originalQuantity);
+        setDisplayQuantity(updatedQuantity);
+        setInputQuantity(updatedQuantity);
+        if (onStockChange) {
+          onStockChange(variant.id, updatedQuantity);
         }
       } catch (error) {
         console.error('Failed to update stock:', error);

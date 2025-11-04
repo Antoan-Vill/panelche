@@ -1,7 +1,10 @@
+export const revalidate = 300;
+
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { CategorySchema } from '@/schemas/category';
 import { serverError } from '@/lib/http/response';
+import { REVALIDATE } from '@/lib/cache';
 
 export async function GET() {
   try {
@@ -21,7 +24,8 @@ export async function GET() {
         'X-CloudCart-ApiKey': apiKey,
         'Content-Type': 'application/json',
       },
-      cache: 'no-store',
+      // cache: 'no-store',
+      next: { revalidate: REVALIDATE.categories },
     });
 
     if (!response.ok) {
@@ -43,5 +47,6 @@ export async function GET() {
 export async function HEAD() {
   return new Response(null, { status: 200 });
 }
+
 
 

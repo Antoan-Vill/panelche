@@ -1,3 +1,5 @@
+export const revalidate = 300;
+
 import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
@@ -36,7 +38,7 @@ export async function GET(request: Request) {
         'X-CloudCart-ApiKey': apiKey,
         'Content-Type': 'application/json',
       },
-      cache: 'no-store',
+      next: { revalidate: 300 },
     });
 
     if (!response.ok) {

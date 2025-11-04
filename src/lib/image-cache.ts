@@ -16,7 +16,9 @@ export function setCachedImageUrl(imageId: string, url: string) {
 
 export function onCacheUpdate(listener: CacheListener) {
   listeners.add(listener);
-  return () => listeners.delete(listener);
+  return () => {
+    listeners.delete(listener);
+  };
 }
 
 async function fetchImageEndpoint(imageId: string, signal?: AbortSignal): Promise<any | null> {

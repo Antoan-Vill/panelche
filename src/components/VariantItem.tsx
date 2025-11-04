@@ -6,10 +6,9 @@ import VariantStockManager from './VariantStockManager';
 
 interface VariantItemProps {
   variant: Variant;
-  updateStockAction?: (variantId: string, quantity: number) => Promise<number | null>;
 }
 
-export default function VariantItem({ variant, updateStockAction }: VariantItemProps) {
+export default function VariantItem({ variant }: VariantItemProps) {
   const [copied, setCopied] = useState(false);
   const [showStockManager, setShowStockManager] = useState(variant.attributes.quantity > 0);
   const [currentQuantity, setCurrentQuantity] = useState(variant.attributes.quantity);
@@ -50,7 +49,7 @@ export default function VariantItem({ variant, updateStockAction }: VariantItemP
       key={variant.id}
       title={variant.id}
       onClick={handleCopyId}
-      className="text-xs text-muted-foreground bg-muted p-2 rounded cursor-pointer hover:bg-muted transition-colors"
+      className="relative text-xs text-muted-foreground bg-muted p-2 rounded cursor-pointer hover:bg-muted transition-colors"
     >
       <div className="flex justify-between items-center">
         <span className="font-medium">
@@ -61,22 +60,20 @@ export default function VariantItem({ variant, updateStockAction }: VariantItemP
         </span>
       </div>
       <div className="flex justify-between items-center mt-1">
-        {showStockManager ? (
+        {isOutOfStock && !showStockManager ? (
+          <span
+            onClick={handleBadgeClick}
+            className="absolute bottom-0 right-0 inline-block bg-red-500 text-white text-xs px-2 py-1 rounded font-medium cursor-pointer hover:bg-red-600 transition-colors"
+          >
+            Out of Stock
+          </span>
+        ) : (
           <VariantStockManager
-            variant={variant}
+            // ensure the child sees the current quantity so it shows the right label
+            variant={{ ...variant, attributes: { ...variant.attributes, quantity: currentQuantity } }}
             onStockChange={handleStockChange}
             onClose={handleStockManagerClose}
-            updateStockAction={updateStockAction}
           />
-        ) : (
-          isOutOfStock && (
-            <span
-              onClick={handleBadgeClick}
-              className="inline-block bg-red-500 text-white text-xs px-2 py-1 rounded font-medium cursor-pointer hover:bg-red-600 transition-colors"
-            >
-              Out of Stock
-            </span>
-          )
         )}
         <span className="text-muted-foreground">{variant.attributes.sku}</span>
       </div>

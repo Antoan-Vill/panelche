@@ -1,3 +1,5 @@
+export const revalidate = 300;
+
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getProductVariants } from '@/lib/services/cloudcart';
@@ -23,7 +25,8 @@ export async function GET(
     const variants = await getProductVariants(id);
     const isValid = Array.isArray(variants) && variants.every((v) => VariantSchema.safeParse(v).success);
     if (!isValid) {
-      return serverError('Invalid variants payload');
+      // Attach the raw payload as error details for debugging in the UI
+      return serverError('Invalid variants payload', variants);
     }
 
     return NextResponse.json({ data: variants });

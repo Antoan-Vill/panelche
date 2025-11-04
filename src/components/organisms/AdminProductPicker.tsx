@@ -128,20 +128,24 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
       return;
     }
 
+    const controller = new AbortController();
     const loadProducts = async () => {
       setLoading(true);
       try {
-        const response: ProductsResponse = await getProductsByCategory(selectedCategory.attributes.url_handle!);
+        const response: ProductsResponse = await getProductsByCategory(selectedCategory.attributes.url_handle!, 1, { signal: controller.signal });
         setProducts(response.data);
       } catch (error) {
-        console.error('Error loading products:', error);
-        setProducts([]);
+        if ((error as any)?.name !== 'AbortError') {
+          console.error('Error loading products:', error);
+          setProducts([]);
+        }
       } finally {
         setLoading(false);
       }
     };
 
     loadProducts();
+    return () => controller.abort();
   }, [selectedCategory]);
 
   const handleCategorySelect = (category: Category) => {

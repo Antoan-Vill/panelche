@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import Link from 'next/link';
 import type { Product } from '@/lib/types/products';
 import { getProductsByCategory, getCategoryBySlug } from '@/lib/services/cloudcart';
@@ -7,10 +6,18 @@ import { CategoryList, DashboardHeader, Pagination, ProductVariants, VariantsTog
 import LoadAllImagesButton from '@/components/admin/LoadAllImagesButton';
 import HoverImage from '@/components/admin/HoverImage';
 import { VariantVisibilityProvider } from '@/lib/variant-visibility';
+import { VariantsPreloadProvider } from '@/lib/variants-preload';
+import VariantsBatchPreloader from '@/components/VariantsBatchPreloader';
+import CopyEditUrlButton from '@/components/admin/CopyEditUrlButton';
 
 interface AdminProductsPageProps {
   searchParams: Promise<{ slug?: string; page?: string; showHidden?: string }>;
 }
+
+const handleCopyEditUrl = () => {
+  navigator.clipboard.writeText(`https://ellenmore.com/admin/products/edit/${product.id}`);
+  console.log('Edit URL copied to clipboard');
+};
 
 const productIdsToHide = [
   693,
@@ -222,9 +229,9 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
       <div className="flex">
         <CategoryList categories={categories} activeSlug={slug} />
 
-          <div className="flex-1 p-8">
+          <div className="flex-1">
           {/* Category Header */}
-            <div className="bg-card rounded-lg shadow mb-6">
+            <div className="bg-card mb-6">
               <div className="px-6 py-4 border-b border-border">
               <div className="relative">
                 <div className="pr-20">
@@ -244,10 +251,11 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
 
           {/* Products Grid */}
           <VariantVisibilityProvider>
-              <div className="bg-card rounded-lg shadow">
+            <VariantsPreloadProvider>
+              <div className="bg-card">
                 <div className="px-6 py-4 border-b border-border">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-medium text-foreground">Products</h2>
+                  {/* <h2 className="text-lg font-medium text-foreground">Products</h2> */}
                   <div className="flex items-center gap-2">
                     <VariantsToggleButton />
                     <LoadAllImagesButton products={products} />
@@ -260,18 +268,27 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                   </div>
                 </div>
               </div>
+              <VariantsBatchPreloader productIds={products.map((p) => p.id)} />
               <div className="p-6">
                 {products.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0">
                     {products.map((product, index) => (
-                        <div key={product.id} className="border border-border rounded-lg overflow-hidden hover:shadow-md transition-shadow">
-                        <HoverImage
-                          product={product}
-                          className=""
-                          imgClassName="w-full h-48 object-cover"
-                        />
+                      <div key={product.id} className="relative border border-border overflow-hidden">
+                        <div className="relative">
+                          <HoverImage
+                            product={product}
+                            className=""
+                            imgClassName="w-full h-48 object-cover"
+                          />
+                          <Link href={`https://ellenmore.com/product/${product.attributes.url_handle}`} className="absolute bottom-0 right-0 w-24 h-20 bg-white/10 hover:bg-white/70 transition-all duration-300" target="_blank">
+                            <span className="text-white text-sm">
+                              
+                            </span>
+                          </Link>
+                          <CopyEditUrlButton productId={Number(product.id)} />
+                        </div>
                         <div className="p-4">
-                            <h3 className="font-medium text-foreground mb-2">{product.attributes.name} - {index+1}</h3>
+                          <h3 className="font-medium text-foreground mb-2">{product.attributes.name}</h3>
                           {product.attributes.price ? (
                             <p className="text-lg font-bold text-green-600 mb-2">
                               {(product.attributes.price / 100).toFixed(2)} лв
@@ -321,6 +338,7 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                 baseUrl={paginationBaseUrl}
               />
             </div>
+            </VariantsPreloadProvider>
           </VariantVisibilityProvider>
         </div>
       </div>

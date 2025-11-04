@@ -11,3 +11,4 @@ export const notFound = (message = 'Not found') => error(404, message);
 export const serverError = (message = 'Internal error', details?: unknown) => error(500, message, details);
 
 
+

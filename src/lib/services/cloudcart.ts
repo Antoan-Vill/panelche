@@ -25,7 +25,7 @@ export async function getProductVariants(productId: string): Promise<Variant[]> 
       'X-CloudCart-ApiKey': env.CLOUDCART_API_KEY,
       'Content-Type': 'application/json',
     },
-    cache: 'no-store',
+    next: { revalidate: REVALIDATE.products },
   });
 
   if (!res.ok) {
@@ -48,7 +48,7 @@ export async function getImageDetails(imageId: string): Promise<ImageData | null
       'X-CloudCart-ApiKey': env.CLOUDCART_API_KEY,
       'Content-Type': 'application/json',
     },
-    cache: 'no-store',
+    next: { revalidate: REVALIDATE.products },
   });
 
   if (!res.ok) {
@@ -105,7 +105,7 @@ export async function getProductById(productId: string) {
       'X-CloudCart-ApiKey': env.CLOUDCART_API_KEY,
       'Content-Type': 'application/json',
     },
-    cache: 'no-store',
+    next: { revalidate: REVALIDATE.products },
   });
 
   if (!res.ok) {
