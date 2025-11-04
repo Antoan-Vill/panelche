@@ -11,6 +11,7 @@ interface ProductVariantsProps {
   productId: string;
 }
 
+
 export default function ProductVariants({ productId }: ProductVariantsProps) {
   const { showVariants: globalShowVariants, registerVariantVisibility, forceCloseAll } = useVariantVisibility();
   const [isOpen, setIsOpen] = useState(false);
