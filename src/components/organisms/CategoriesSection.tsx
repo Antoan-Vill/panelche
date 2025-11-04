@@ -43,7 +43,7 @@ export function CategoriesSection({
             description="No categories are available at the moment. Please check your SITE_URL configuration or try again later."
             action={{
               label: "Refresh",
-              onClick: () => window.location.reload()
+              href: "/"
             }}
           />
         )}
