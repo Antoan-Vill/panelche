@@ -14,11 +14,6 @@ interface AdminProductsPageProps {
   searchParams: Promise<{ slug?: string; page?: string; showHidden?: string }>;
 }
 
-const handleCopyEditUrl = () => {
-  navigator.clipboard.writeText(`https://ellenmore.com/admin/products/edit/${product.id}`);
-  console.log('Edit URL copied to clipboard');
-};
-
 const productIdsToHide = [
   693,
   349,

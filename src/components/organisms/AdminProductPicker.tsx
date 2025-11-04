@@ -132,7 +132,7 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
     const loadProducts = async () => {
       setLoading(true);
       try {
-        const response: ProductsResponse = await getProductsByCategory(selectedCategory.attributes.url_handle!, 1, { signal: controller.signal });
+        const response: ProductsResponse = await getProductsByCategory(selectedCategory.attributes.url_handle!, 1);
         setProducts(response.data);
       } catch (error) {
         if ((error as any)?.name !== 'AbortError') {
