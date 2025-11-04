@@ -1,10 +1,10 @@
 export const revalidate = 300;
 
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = request.nextUrl;
     const query = searchParams.get('q');
     const page = searchParams.get('page') || '1';
     const perPage = searchParams.get('per_page') || '20';

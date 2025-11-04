@@ -1,18 +1,18 @@
 export const revalidate = 300;
 
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { z } from 'zod';
 import { ProductsResponseSchema } from '@/schemas/product';
 import { badRequest, notFound, serverError } from '@/lib/http/response';
 import { REVALIDATE } from '@/lib/cache';
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     const { slug } = await params;
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = request.nextUrl;
     const page = searchParams.get('page') || '1';
 
     const ParamsSchema = z.object({ slug: z.string().min(1), page: z.string().regex(/^\d+$/) });
