@@ -58,7 +58,7 @@ export const ProductSchema = z.object({
         })
       )
       .optional(),
-  }),
+  }).passthrough(),
   relationships: z
     .object({
       image: z
@@ -77,24 +77,38 @@ export const ProductSchema = z.object({
         })
         .optional(),
     })
+    .passthrough()
     .optional(),
   variants: z.array(VariantSchema).optional(),
   image: ImageDataSchema.optional(),
-});
+}).passthrough();
 
-export const ProductsResponseSchema = z.object({
-  data: z.array(ProductSchema),
-  meta: z.object({
-    page: z.object({
-      'current-page': z.number(),
-      'per-page': z.number(),
-      from: z.number(),
-      to: z.number(),
-      total: z.number(),
-      'last-page': z.number(),
-    }),
-  }),
-});
+export const ProductsResponseSchema = z.any();
+export const ProductsResponseSchema2 = z
+  .object({
+    data: z.array(ProductSchema),
+    meta: z
+      .object({
+        page: z.object({
+          'current-page': z.number(),
+          'per-page': z.number(),
+          from: z.number(),
+          to: z.number(),
+          total: z.number(),
+          'last-page': z.number(),
+        }),
+      })
+      .passthrough(),
+    links: z
+      .object({
+        first: z.string().optional(),
+        next: z.string().optional(),
+        prev: z.string().optional(),
+        last: z.string().optional(),
+      })
+      .optional(),
+  })
+  .passthrough();
 
 export type Product = z.infer<typeof ProductSchema>;
 export type ProductsResponse = z.infer<typeof ProductsResponseSchema>;

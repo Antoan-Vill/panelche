@@ -24,7 +24,10 @@ export function AdminOrderCreate() {
       ...item,
       unitPrice: unitPrice,
       lineTotal: unitPrice * item.quantity,
+      sku: item.sku ?? null,
     };
+
+    console.log('newItem', newItem);
 
     // Check if item with same product and variant already exists
     const existingIndex = cartItems.findIndex(

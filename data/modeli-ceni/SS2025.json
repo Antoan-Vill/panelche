@@ -1,0 +1,1082 @@
+[
+  {
+    "SKU": "EM G0494",
+    "angro-offseason": 22,
+    "angro-inseason": 30,
+    "end-price-offseason": 43,
+    "end-price": 72,
+    "end-price-inseason": 54
+  },
+  {
+    "SKU": "EM G0186",
+    "angro-offseason": 26,
+    "angro-inseason": 37,
+    "end-price-offseason": 52,
+    "end-price": 87,
+    "end-price-inseason": 65
+  },
+  {
+    "SKU": "EM G0183-1",
+    "angro-offseason": 20,
+    "angro-inseason": 27,
+    "end-price-offseason": 39,
+    "end-price": 65,
+    "end-price-inseason": 49
+  },
+  {
+    "SKU": "EM G0183-2",
+    "angro-offseason": 20,
+    "angro-inseason": 27,
+    "end-price-offseason": 39,
+    "end-price": 65,
+    "end-price-inseason": 49
+  },
+  {
+    "SKU": "EM G0158-6",
+    "angro-offseason": 26,
+    "angro-inseason": 36,
+    "end-price-offseason": 51,
+    "end-price": 85,
+    "end-price-inseason": 64
+  },
+  {
+    "SKU": "EM G0158-4",
+    "angro-offseason": 26,
+    "angro-inseason": 36,
+    "end-price-offseason": 51,
+    "end-price": 85,
+    "end-price-inseason": 64
+  },
+  {
+    "SKU": "EM G0191-1",
+    "angro-offseason": 26,
+    "angro-inseason": 36,
+    "end-price-offseason": 51,
+    "end-price": 85,
+    "end-price-inseason": 64
+  },
+  {
+    "SKU": "EM G0191-2",
+    "angro-offseason": 26,
+    "angro-inseason": 36,
+    "end-price-offseason": 51,
+    "end-price": 85,
+    "end-price-inseason": 64
+  },
+  {
+    "SKU": "EM G0191-3",
+    "angro-offseason": 26,
+    "angro-inseason": 36,
+    "end-price-offseason": 51,
+    "end-price": 85,
+    "end-price-inseason": 64
+  },
+  {
+    "SKU": "EM G0191-4",
+    "angro-offseason": 26,
+    "angro-inseason": 36,
+    "end-price-offseason": 51,
+    "end-price": 85,
+    "end-price-inseason": 64
+  },
+  {
+    "SKU": "EM G0191-5",
+    "angro-offseason": 26,
+    "angro-inseason": 36,
+    "end-price-offseason": 51,
+    "end-price": 85,
+    "end-price-inseason": 64
+  },
+  {
+    "SKU": "EM G0191-6",
+    "angro-offseason": 26,
+    "angro-inseason": 36,
+    "end-price-offseason": 51,
+    "end-price": 85,
+    "end-price-inseason": 64
+  },
+  {
+    "SKU": "EM G0354-1",
+    "angro-offseason": 27,
+    "angro-inseason": 37,
+    "end-price-offseason": 53,
+    "end-price": 89,
+    "end-price-inseason": 67
+  },
+  {
+    "SKU": "EM G0354-2",
+    "angro-offseason": 27,
+    "angro-inseason": 37,
+    "end-price-offseason": 53,
+    "end-price": 89,
+    "end-price-inseason": 67
+  },
+  {
+    "SKU": "EM G0354-3",
+    "angro-offseason": 27,
+    "angro-inseason": 37,
+    "end-price-offseason": 53,
+    "end-price": 89,
+    "end-price-inseason": 67
+  },
+  {
+    "SKU": "EM G0331-2",
+    "angro-offseason": 29,
+    "angro-inseason": 40,
+    "end-price-offseason": 58,
+    "end-price": 96,
+    "end-price-inseason": 72
+  },
+  {
+    "SKU": "EM G0331-3",
+    "angro-offseason": 29,
+    "angro-inseason": 40,
+    "end-price-offseason": 58,
+    "end-price": 96,
+    "end-price-inseason": 72
+  },
+  {
+    "SKU": "EM G0331-4",
+    "angro-offseason": 29,
+    "angro-inseason": 40,
+    "end-price-offseason": 58,
+    "end-price": 96,
+    "end-price-inseason": 72
+  },
+  {
+    "SKU": "EM G0432-1-1",
+    "angro-offseason": 20,
+    "angro-inseason": 28,
+    "end-price-offseason": 40,
+    "end-price": 67,
+    "end-price-inseason": 50
+  },
+  {
+    "SKU": "EM G0432-1-2",
+    "angro-offseason": 20,
+    "angro-inseason": 28,
+    "end-price-offseason": 40,
+    "end-price": 67,
+    "end-price-inseason": 50
+  },
+  {
+    "SKU": "EM G0432-1-3",
+    "angro-offseason": 20,
+    "angro-inseason": 28,
+    "end-price-offseason": 40,
+    "end-price": 67,
+    "end-price-inseason": 50
+  },
+  {
+    "SKU": "EM G0432-1-4",
+    "angro-offseason": 20,
+    "angro-inseason": 28,
+    "end-price-offseason": 40,
+    "end-price": 67,
+    "end-price-inseason": 50
+  },
+  {
+    "SKU": "EM G0766",
+    "angro-offseason": 41,
+    "angro-inseason": 57,
+    "end-price-offseason": 81,
+    "end-price": 135,
+    "end-price-inseason": 101
+  },
+  {
+    "SKU": "EM G0766-1",
+    "angro-offseason": 41,
+    "angro-inseason": 57,
+    "end-price-offseason": 81,
+    "end-price": 135,
+    "end-price-inseason": 101
+  },
+  {
+    "SKU": "EM G0233",
+    "angro-offseason": 35,
+    "angro-inseason": 48,
+    "end-price-offseason": 69,
+    "end-price": 115,
+    "end-price-inseason": 86
+  },
+  {
+    "SKU": "EM G0233-1",
+    "angro-offseason": 35,
+    "angro-inseason": 48,
+    "end-price-offseason": 69,
+    "end-price": 115,
+    "end-price-inseason": 86
+  },
+  {
+    "SKU": "EM G0725-1",
+    "angro-offseason": 40,
+    "angro-inseason": 56,
+    "end-price-offseason": 80,
+    "end-price": 133,
+    "end-price-inseason": 100
+  },
+  {
+    "SKU": "EM G0725-2",
+    "angro-offseason": 39,
+    "angro-inseason": 54,
+    "end-price-offseason": 77,
+    "end-price": 129,
+    "end-price-inseason": 97
+  },
+  {
+    "SKU": "EM G0772",
+    "angro-offseason": 44,
+    "angro-inseason": 61,
+    "end-price-offseason": 87,
+    "end-price": 145,
+    "end-price-inseason": 109
+  },
+  {
+    "SKU": "EM G04120-1",
+    "angro-offseason": 29,
+    "angro-inseason": 41,
+    "end-price-offseason": 58,
+    "end-price": 97,
+    "end-price-inseason": 73
+  },
+  {
+    "SKU": "EM G04120-2",
+    "angro-offseason": 29,
+    "angro-inseason": 41,
+    "end-price-offseason": 58,
+    "end-price": 97,
+    "end-price-inseason": 73
+  },
+  {
+    "SKU": "EM G04120-3",
+    "angro-offseason": 29,
+    "angro-inseason": 41,
+    "end-price-offseason": 58,
+    "end-price": 97,
+    "end-price-inseason": 73
+  },
+  {
+    "SKU": "EM G04120-4",
+    "angro-offseason": 29,
+    "angro-inseason": 41,
+    "end-price-offseason": 58,
+    "end-price": 97,
+    "end-price-inseason": 73
+  },
+  {
+    "SKU": "EM G04120-5",
+    "angro-offseason": 29,
+    "angro-inseason": 41,
+    "end-price-offseason": 58,
+    "end-price": 97,
+    "end-price-inseason": 73
+  },
+  {
+    "SKU": "EM G0192-1",
+    "angro-offseason": 28,
+    "angro-inseason": 39,
+    "end-price-offseason": 56,
+    "end-price": 94,
+    "end-price-inseason": 71
+  },
+  {
+    "SKU": "EM G0192-2",
+    "angro-offseason": 28,
+    "angro-inseason": 39,
+    "end-price-offseason": 56,
+    "end-price": 94,
+    "end-price-inseason": 71
+  },
+  {
+    "SKU": "EM G0192-3",
+    "angro-offseason": 28,
+    "angro-inseason": 39,
+    "end-price-offseason": 56,
+    "end-price": 94,
+    "end-price-inseason": 71
+  },
+  {
+    "SKU": "EM G0192-4",
+    "angro-offseason": 28,
+    "angro-inseason": 39,
+    "end-price-offseason": 56,
+    "end-price": 94,
+    "end-price-inseason": 71
+  },
+  {
+    "SKU": "EM G0192-5",
+    "angro-offseason": 28,
+    "angro-inseason": 39,
+    "end-price-offseason": 56,
+    "end-price": 94,
+    "end-price-inseason": 71
+  },
+  {
+    "SKU": "EM G04123-1",
+    "angro-offseason": 10,
+    "angro-inseason": 19,
+    "end-price-offseason": 19,
+    "end-price": 32,
+    "end-price-inseason": 24
+  },
+  {
+    "SKU": "EM G04123-2",
+    "angro-offseason": 10,
+    "angro-inseason": 19,
+    "end-price-offseason": 19,
+    "end-price": 32,
+    "end-price-inseason": 24
+  },
+  {
+    "SKU": "EM G04123-3",
+    "angro-offseason": 10,
+    "angro-inseason": 19,
+    "end-price-offseason": 19,
+    "end-price": 32,
+    "end-price-inseason": 24
+  },
+  {
+    "SKU": "EM G04123-4",
+    "angro-offseason": 10,
+    "angro-inseason": 19,
+    "end-price-offseason": 19,
+    "end-price": 32,
+    "end-price-inseason": 24
+  },
+  {
+    "SKU": "EM G04123-5",
+    "angro-offseason": 10,
+    "angro-inseason": 19,
+    "end-price-offseason": 19,
+    "end-price": 32,
+    "end-price-inseason": 24
+  },
+  {
+    "SKU": "EM G04123-6",
+    "angro-offseason": 10,
+    "angro-inseason": 19,
+    "end-price-offseason": 19,
+    "end-price": 32,
+    "end-price-inseason": 24
+  },
+  {
+    "SKU": "EM G04123-7",
+    "angro-offseason": 10,
+    "angro-inseason": 19,
+    "end-price-offseason": 19,
+    "end-price": 32,
+    "end-price-inseason": 24
+  },
+  {
+    "SKU": "EM G0124-1",
+    "angro-offseason": 21,
+    "angro-inseason": 33,
+    "end-price-offseason": 42,
+    "end-price": 70,
+    "end-price-inseason": 53
+  },
+  {
+    "SKU": "EM G0124-2",
+    "angro-offseason": 21,
+    "angro-inseason": 33,
+    "end-price-offseason": 42,
+    "end-price": 70,
+    "end-price-inseason": 53
+  },
+  {
+    "SKU": "EM G0124-3",
+    "angro-offseason": 21,
+    "angro-inseason": 33,
+    "end-price-offseason": 42,
+    "end-price": 70,
+    "end-price-inseason": 53
+  },
+  {
+    "SKU": "EM G0101-1",
+    "angro-offseason": 15,
+    "angro-inseason": 32,
+    "end-price-offseason": 30,
+    "end-price": 50,
+    "end-price-inseason": 38
+  },
+  {
+    "SKU": "EM G0101-2",
+    "angro-offseason": 15,
+    "angro-inseason": 32,
+    "end-price-offseason": 30,
+    "end-price": 50,
+    "end-price-inseason": 38
+  },
+  {
+    "SKU": "EM G0101-3",
+    "angro-offseason": 15,
+    "angro-inseason": 32,
+    "end-price-offseason": 30,
+    "end-price": 50,
+    "end-price-inseason": 38
+  },
+  {
+    "SKU": "EM G0827-1",
+    "angro-offseason": 21,
+    "angro-inseason": 33,
+    "end-price-offseason": 42,
+    "end-price": 70,
+    "end-price-inseason": 53
+  },
+  {
+    "SKU": "EM G0102-1",
+    "angro-offseason": 15,
+    "angro-inseason": 32,
+    "end-price-offseason": 30,
+    "end-price": 50,
+    "end-price-inseason": 38
+  },
+  {
+    "SKU": "EM G0827-2",
+    "angro-offseason": 21,
+    "angro-inseason": 33,
+    "end-price-offseason": 42,
+    "end-price": 70,
+    "end-price-inseason": 53
+  },
+  {
+    "SKU": "EM G0102-2",
+    "angro-offseason": 15,
+    "angro-inseason": 32,
+    "end-price-offseason": 30,
+    "end-price": 50,
+    "end-price-inseason": 38
+  },
+  {
+    "SKU": "EM G05219-4",
+    "angro-offseason": 48,
+    "angro-inseason": 67,
+    "end-price-offseason": 95,
+    "end-price": 159,
+    "end-price-inseason": 119
+  },
+  {
+    "SKU": "EM G05219-5",
+    "angro-offseason": 48,
+    "angro-inseason": 67,
+    "end-price-offseason": 95,
+    "end-price": 159,
+    "end-price-inseason": 119
+  },
+  {
+    "SKU": "EM G05219-6",
+    "angro-offseason": 48,
+    "angro-inseason": 67,
+    "end-price-offseason": 95,
+    "end-price": 159,
+    "end-price-inseason": 119
+  },
+  {
+    "SKU": "EM G05201",
+    "angro-offseason": 42,
+    "angro-inseason": 58,
+    "end-price-offseason": 83,
+    "end-price": 139,
+    "end-price-inseason": 104
+  },
+  {
+    "SKU": "EM G05232",
+    "angro-offseason": 42,
+    "angro-inseason": 58,
+    "end-price-offseason": 83,
+    "end-price": 139,
+    "end-price-inseason": 104
+  },
+  {
+    "SKU": "EM G05204-1",
+    "angro-offseason": 39,
+    "angro-inseason": 54,
+    "end-price-offseason": 77,
+    "end-price": 129,
+    "end-price-inseason": 97
+  },
+  {
+    "SKU": "EM G05204-2",
+    "angro-offseason": 39,
+    "angro-inseason": 54,
+    "end-price-offseason": 77,
+    "end-price": 129,
+    "end-price-inseason": 97
+  },
+  {
+    "SKU": "EM G05204-3",
+    "angro-offseason": 39,
+    "angro-inseason": 54,
+    "end-price-offseason": 77,
+    "end-price": 129,
+    "end-price-inseason": 97
+  },
+  {
+    "SKU": "EM G05230-1",
+    "angro-offseason": 48,
+    "angro-inseason": 67,
+    "end-price-offseason": 95,
+    "end-price": 159,
+    "end-price-inseason": 119
+  },
+  {
+    "SKU": "EM G05230-2",
+    "angro-offseason": 48,
+    "angro-inseason": 67,
+    "end-price-offseason": 95,
+    "end-price": 159,
+    "end-price-inseason": 119
+  },
+  {
+    "SKU": "EM G05230-3",
+    "angro-offseason": 48,
+    "angro-inseason": 67,
+    "end-price-offseason": 95,
+    "end-price": 159,
+    "end-price-inseason": 119
+  },
+  {
+    "SKU": "EM G05230-4",
+    "angro-offseason": 48,
+    "angro-inseason": 67,
+    "end-price-offseason": 95,
+    "end-price": 159,
+    "end-price-inseason": 119
+  },
+  {
+    "SKU": "EM G05223",
+    "angro-offseason": 41,
+    "angro-inseason": 57,
+    "end-price-offseason": 81,
+    "end-price": 135,
+    "end-price-inseason": 101
+  },
+  {
+    "SKU": "EM G05219",
+    "angro-offseason": 45,
+    "angro-inseason": 63,
+    "end-price-offseason": 89,
+    "end-price": 149,
+    "end-price-inseason": 112
+  },
+  {
+    "SKU": "EM G05233-1",
+    "angro-offseason": 42,
+    "angro-inseason": 58,
+    "end-price-offseason": 83,
+    "end-price": 139,
+    "end-price-inseason": 104
+  },
+  {
+    "SKU": "EM G05233-2",
+    "angro-offseason": 42,
+    "angro-inseason": 58,
+    "end-price-offseason": 83,
+    "end-price": 139,
+    "end-price-inseason": 104
+  },
+  {
+    "SKU": "EM G05233-3",
+    "angro-offseason": 42,
+    "angro-inseason": 58,
+    "end-price-offseason": 83,
+    "end-price": 139,
+    "end-price-inseason": 104
+  },
+  {
+    "SKU": "EM G05233-4",
+    "angro-offseason": 42,
+    "angro-inseason": 58,
+    "end-price-offseason": 83,
+    "end-price": 139,
+    "end-price-inseason": 104
+  },
+  {
+    "SKU": "EM G05233-5",
+    "angro-offseason": 42,
+    "angro-inseason": 58,
+    "end-price-offseason": 83,
+    "end-price": 139,
+    "end-price-inseason": 104
+  },
+  {
+    "SKU": "EM G05233-6",
+    "angro-offseason": 42,
+    "angro-inseason": 58,
+    "end-price-offseason": 83,
+    "end-price": 139,
+    "end-price-inseason": 104
+  },
+  {
+    "SKU": "EM G05233-7",
+    "angro-offseason": 42,
+    "angro-inseason": 58,
+    "end-price-offseason": 83,
+    "end-price": 139,
+    "end-price-inseason": 104
+  },
+  {
+    "SKU": "EM G05233-8",
+    "angro-offseason": 42,
+    "angro-inseason": 58,
+    "end-price-offseason": 83,
+    "end-price": 139,
+    "end-price-inseason": 104
+  },
+  {
+    "SKU": "EM G05170-6",
+    "angro-offseason": 45,
+    "angro-inseason": 63,
+    "end-price-offseason": 89,
+    "end-price": 149,
+    "end-price-inseason": 112
+  },
+  {
+    "SKU": "EM G05170-7",
+    "angro-offseason": 45,
+    "angro-inseason": 63,
+    "end-price-offseason": 89,
+    "end-price": 149,
+    "end-price-inseason": 112
+  },
+  {
+    "SKU": "EM G05241",
+    "angro-offseason": 48,
+    "angro-inseason": 67,
+    "end-price-offseason": 95,
+    "end-price": 159,
+    "end-price-inseason": 119
+  },
+  {
+    "SKU": "EM G05239-1",
+    "angro-offseason": 48,
+    "angro-inseason": 67,
+    "end-price-offseason": 95,
+    "end-price": 159,
+    "end-price-inseason": 119
+  },
+  {
+    "SKU": "EM G05239-2",
+    "angro-offseason": 48,
+    "angro-inseason": 67,
+    "end-price-offseason": 95,
+    "end-price": 159,
+    "end-price-inseason": 119
+  },
+  {
+    "SKU": "EM G05227-1",
+    "angro-offseason": 45,
+    "angro-inseason": 63,
+    "end-price-offseason": 89,
+    "end-price": 149,
+    "end-price-inseason": 112
+  },
+  {
+    "SKU": "EM G05227-2",
+    "angro-offseason": 45,
+    "angro-inseason": 63,
+    "end-price-offseason": 89,
+    "end-price": 149,
+    "end-price-inseason": 112
+  },
+  {
+    "SKU": "EM G05227-3",
+    "angro-offseason": 45,
+    "angro-inseason": 63,
+    "end-price-offseason": 89,
+    "end-price": 149,
+    "end-price-inseason": 112
+  },
+  {
+    "SKU": "EM G05227-4",
+    "angro-offseason": 45,
+    "angro-inseason": 63,
+    "end-price-offseason": 89,
+    "end-price": 149,
+    "end-price-inseason": 112
+  },
+  {
+    "SKU": "EM G05227-5",
+    "angro-offseason": 45,
+    "angro-inseason": 63,
+    "end-price-offseason": 89,
+    "end-price": 149,
+    "end-price-inseason": 112
+  },
+  {
+    "SKU": "EM G05227-6",
+    "angro-offseason": 45,
+    "angro-inseason": 63,
+    "end-price-offseason": 89,
+    "end-price": 149,
+    "end-price-inseason": 112
+  },
+  {
+    "SKU": "EM G05228-1",
+    "angro-offseason": 45,
+    "angro-inseason": 63,
+    "end-price-offseason": 89,
+    "end-price": 149,
+    "end-price-inseason": 112
+  },
+  {
+    "SKU": "EM G05228-2",
+    "angro-offseason": 45,
+    "angro-inseason": 63,
+    "end-price-offseason": 89,
+    "end-price": 149,
+    "end-price-inseason": 112
+  },
+  {
+    "SKU": "EM G05228-3",
+    "angro-offseason": 45,
+    "angro-inseason": 63,
+    "end-price-offseason": 89,
+    "end-price": 149,
+    "end-price-inseason": 112
+  },
+  {
+    "SKU": "EM G05228-4",
+    "angro-offseason": 45,
+    "angro-inseason": 63,
+    "end-price-offseason": 89,
+    "end-price": 149,
+    "end-price-inseason": 112
+  },
+  {
+    "SKU": "EM G05228-5",
+    "angro-offseason": 45,
+    "angro-inseason": 63,
+    "end-price-offseason": 89,
+    "end-price": 149,
+    "end-price-inseason": 112
+  },
+  {
+    "SKU": "EM G05228-6",
+    "angro-offseason": 45,
+    "angro-inseason": 63,
+    "end-price-offseason": 89,
+    "end-price": 149,
+    "end-price-inseason": 112
+  },
+  {
+    "SKU": "EM G04117-1",
+    "angro-offseason": 21,
+    "angro-inseason": 29,
+    "end-price-offseason": 41,
+    "end-price": 69,
+    "end-price-inseason": 52
+  },
+  {
+    "SKU": "EM G04117-2",
+    "angro-offseason": 21,
+    "angro-inseason": 29,
+    "end-price-offseason": 41,
+    "end-price": 69,
+    "end-price-inseason": 52
+  },
+  {
+    "SKU": "EM G04117-3",
+    "angro-offseason": 21,
+    "angro-inseason": 29,
+    "end-price-offseason": 41,
+    "end-price": 69,
+    "end-price-inseason": 52
+  },
+  {
+    "SKU": "EM G04118-1",
+    "angro-offseason": 24,
+    "angro-inseason": 33,
+    "end-price-offseason": 47,
+    "end-price": 79,
+    "end-price-inseason": 59
+  },
+  {
+    "SKU": "EM G04118-2",
+    "angro-offseason": 24,
+    "angro-inseason": 33,
+    "end-price-offseason": 47,
+    "end-price": 79,
+    "end-price-inseason": 59
+  },
+  {
+    "SKU": "EM G04118-3",
+    "angro-offseason": 24,
+    "angro-inseason": 33,
+    "end-price-offseason": 47,
+    "end-price": 79,
+    "end-price-inseason": 59
+  },
+  {
+    "SKU": "EM G0198-1",
+    "angro-offseason": 51,
+    "angro-inseason": 71,
+    "end-price-offseason": 101,
+    "end-price": 169,
+    "end-price-inseason": 127
+  },
+  {
+    "SKU": "EM G0198-2",
+    "angro-offseason": 51,
+    "angro-inseason": 71,
+    "end-price-offseason": 101,
+    "end-price": 169,
+    "end-price-inseason": 127
+  },
+  {
+    "SKU": "EM G0198-3",
+    "angro-offseason": 51,
+    "angro-inseason": 71,
+    "end-price-offseason": 101,
+    "end-price": 169,
+    "end-price-inseason": 127
+  },
+  {
+    "SKU": "EM G01109-1",
+    "angro-offseason": 33,
+    "angro-inseason": 43,
+    "end-price-offseason": 83,
+    "end-price": 139,
+    "end-price-inseason": 104
+  },
+  {
+    "SKU": "EM G01109-2",
+    "angro-offseason": 33,
+    "angro-inseason": 43,
+    "end-price-offseason": 83,
+    "end-price": 139,
+    "end-price-inseason": 104
+  },
+  {
+    "SKU": "EM G01109-3",
+    "angro-offseason": 33,
+    "angro-inseason": 43,
+    "end-price-offseason": 83,
+    "end-price": 139,
+    "end-price-inseason": 104
+  },
+  {
+    "SKU": "EM G01109-4",
+    "angro-offseason": 33,
+    "angro-inseason": 43,
+    "end-price-offseason": 83,
+    "end-price": 139,
+    "end-price-inseason": 104
+  },
+  {
+    "SKU": "EM G01109-5",
+    "angro-offseason": 33,
+    "angro-inseason": 43,
+    "end-price-offseason": 83,
+    "end-price": 139,
+    "end-price-inseason": 104
+  },
+  {
+    "SKU": "EM G0828-1",
+    "angro-offseason": 33,
+    "angro-inseason": 46,
+    "end-price-offseason": 65,
+    "end-price": 109,
+    "end-price-inseason": 82
+  },
+  {
+    "SKU": "EM G0828-2",
+    "angro-offseason": 33,
+    "angro-inseason": 46,
+    "end-price-offseason": 65,
+    "end-price": 109,
+    "end-price-inseason": 82
+  },
+  {
+    "SKU": "EM G0828-3",
+    "angro-offseason": 33,
+    "angro-inseason": 46,
+    "end-price-offseason": 65,
+    "end-price": 109,
+    "end-price-inseason": 82
+  },
+  {
+    "SKU": "EM G0828-4",
+    "angro-offseason": 33,
+    "angro-inseason": 46,
+    "end-price-offseason": 65,
+    "end-price": 109,
+    "end-price-inseason": 82
+  },
+  {
+    "SKU": "EM G0828-5",
+    "angro-offseason": 33,
+    "angro-inseason": 46,
+    "end-price-offseason": 65,
+    "end-price": 109,
+    "end-price-inseason": 82
+  },
+  {
+    "SKU": "EM G0347",
+    "angro-offseason": 28,
+    "angro-inseason": 36,
+    "end-price-offseason": 56,
+    "end-price": 93,
+    "end-price-inseason": 70
+  },
+  {
+    "SKU": "EM G0477-1",
+    "angro-offseason": 32,
+    "angro-inseason": 45,
+    "end-price-offseason": 64,
+    "end-price": 107,
+    "end-price-inseason": 80
+  },
+  {
+    "SKU": "EM G05248",
+    "angro-offseason": 42,
+    "angro-inseason": 58,
+    "end-price-offseason": 83,
+    "end-price": 139,
+    "end-price-inseason": 104
+  },
+  {
+    "SKU": "EM G0770",
+    "angro-offseason": 44,
+    "angro-inseason": 67,
+    "end-price-offseason": 87,
+    "end-price": 145,
+    "end-price-inseason": 109
+  },
+  {
+    "SKU": "EM G04114",
+    "angro-offseason": 24,
+    "angro-inseason": 33,
+    "end-price-offseason": 47,
+    "end-price": 79,
+    "end-price-inseason": 59
+  },
+  {
+    "SKU": "EM G04114-2",
+    "angro-offseason": 24,
+    "angro-inseason": 33,
+    "end-price-offseason": 47,
+    "end-price": 79,
+    "end-price-inseason": 59
+  },
+  {
+    "SKU": "EM G04114-3",
+    "angro-offseason": 24,
+    "angro-inseason": 33,
+    "end-price-offseason": 47,
+    "end-price": 79,
+    "end-price-inseason": 59
+  },
+  {
+    "SKU": "EM G04114-4",
+    "angro-offseason": 24,
+    "angro-inseason": 33,
+    "end-price-offseason": 47,
+    "end-price": 79,
+    "end-price-inseason": 59
+  },
+  {
+    "SKU": "EM G04114-5",
+    "angro-offseason": 24,
+    "angro-inseason": 33,
+    "end-price-offseason": 47,
+    "end-price": 79,
+    "end-price-inseason": 59
+  },
+  {
+    "SKU": "EM G04114-6",
+    "angro-offseason": 24,
+    "angro-inseason": 33,
+    "end-price-offseason": 47,
+    "end-price": 79,
+    "end-price-inseason": 59
+  },
+  {
+    "SKU": "EM G04114-7",
+    "angro-offseason": 24,
+    "angro-inseason": 33,
+    "end-price-offseason": 47,
+    "end-price": 79,
+    "end-price-inseason": 59
+  },
+  {
+    "SKU": "EM G05171",
+    "angro-offseason": 36,
+    "angro-inseason": 50,
+    "end-price-offseason": 71,
+    "end-price": 119,
+    "end-price-inseason": 89
+  },
+  {
+    "SKU": "EM G0426",
+    "angro-offseason": 19,
+    "angro-inseason": 25,
+    "end-price-offseason": 38,
+    "end-price": 64,
+    "end-price-inseason": 48
+  },
+  {
+    "SKU": "EM G04119",
+    "angro-offseason": 29,
+    "angro-inseason": 41,
+    "end-price-offseason": 58,
+    "end-price": 97,
+    "end-price-inseason": 73
+  },
+  {
+    "SKU": "EM G05238-1",
+    "angro-offseason": 39,
+    "angro-inseason": 54,
+    "end-price-offseason": 77,
+    "end-price": 129,
+    "end-price-inseason": 97
+  },
+  {
+    "SKU": "EM G05238-2",
+    "angro-offseason": 39,
+    "angro-inseason": 54,
+    "end-price-offseason": 77,
+    "end-price": 129,
+    "end-price-inseason": 97
+  },
+  {
+    "SKU": "EM G0",
+    "angro-offseason": 0,
+    "angro-inseason": 0,
+    "end-price-offseason": 0,
+    "end-price": 0,
+    "end-price-inseason": 0
+  },
+  {
+    "SKU": "EM G0",
+    "angro-offseason": 0,
+    "angro-inseason": 0,
+    "end-price-offseason": 0,
+    "end-price": 0,
+    "end-price-inseason": 0
+  },
+  {
+    "SKU": "EM G0",
+    "angro-offseason": 0,
+    "angro-inseason": 0,
+    "end-price-offseason": 0,
+    "end-price": 0,
+    "end-price-inseason": 0
+  },
+  {
+    "SKU": "EM G0",
+    "angro-offseason": 0,
+    "angro-inseason": 0,
+    "end-price-offseason": 0,
+    "end-price": 0,
+    "end-price-inseason": 0
+  },
+  {
+    "SKU": "EM G1",
+    "angro-offseason": 0,
+    "angro-inseason": 0,
+    "end-price-offseason": 1,
+    "end-price": 1,
+    "end-price-inseason": 1
+  }
+]

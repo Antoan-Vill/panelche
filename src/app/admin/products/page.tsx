@@ -122,7 +122,6 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
   if (!slug) {
     return (
       <div className="min-h-screen bg-background">
-        <DashboardHeader title="Products" />
 
         <div className="flex">
           <CategoryList categories={categories} />
@@ -231,7 +230,7 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
               <div className="relative">
                 <div className="pr-20">
                   <div className="flex flex-wrap items-center gap-3">
-                      <h1 className="text-2xl font-bold text-foreground">{category.attributes.name} / {category.attributes.id}</h1>
+                      <h1 className="text-lg font-bold text-foreground">{category.attributes.name} / {category.attributes.id}</h1>
                       {/* {category.attributes.description && (
                         <p className="text-muted-foreground mt-1" dangerouslySetInnerHTML={{ __html: category.attributes.description }}></p>
                     )} */}
@@ -304,11 +303,6 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                           {product.attributes.stock_quantity !== undefined && (
                             <p className="text-sm text-muted-foreground">
                               Stock: {product.attributes.stock_quantity}
-                            </p>
-                          )}
-                          {product.attributes.sku && (
-                            <p className="text-xs text-muted-foreground mt-1">
-                              SKU: {product.attributes.sku}
                             </p>
                           )}
                           <ProductVariants productId={product.id} />

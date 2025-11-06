@@ -56,17 +56,21 @@ export function DashboardHeader({
   };
 
   return (
-    <header className="bg-card shadow-sm border-b border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
+    <header className="bg-card bg-gray-50 -shadow-sm border-b border-border">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex justify-between items-center">
           {/* back */}
-          <div>
-            <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">&#60;&#60; Back to Dashboard</Link>
-            <Heading level={1}>{title}</Heading>
-            <Link href="/admin" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Orders</Link>
-            <Link href="/admin/products" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Products</Link>
-            <Link href="/admin/customers" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Customers</Link>
-            <Link href="/admin/settings" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Settings</Link>
+          <div className="flex items-center justify-between w-full me-4 py-2 pe-4 border-border border-r ">
+            <div className="flex flex-col space-x-2">
+              <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">&#60;&#60; Back to Dashboard</Link>
+              <Heading level={1}>{title}</Heading>
+            </div>
+            <div>
+              <Link href="/admin/products" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Products</Link>
+              <Link href="/admin" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Orders</Link>
+              <Link href="/admin/customers" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Customers</Link>
+              <Link href="/admin/settings" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Settings</Link>
+            </div>
           </div>
           <div className="flex items-center space-x-4 relative">
             {/* Optional external actions if provided (no default New Item) */}

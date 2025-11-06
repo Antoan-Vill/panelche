@@ -6,6 +6,7 @@ export type OrderItem = {
   quantity: number;
   unitPrice: number; // currency units (e.g., 9.99)
   totalPrice: number; // quantity * unitPrice
+  angroPrice: number; // quantity * angroPrice
   imageUrl: string | null;
 };
 

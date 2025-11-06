@@ -1,0 +1,77 @@
+<rows>
+  <row>
+    <SKU>EM G0144</SKU>
+    <angro-offseason>22</angro-offseason>
+    <angro-inseason>24.78</angro-inseason>
+    <end-price-offseason>35</end-price-offseason>
+    <end-price>59</end-price>
+    <end-price-inseason>44</end-price-inseason>
+  </row>
+  <row><SKU>EM G0311</SKU><angro-offseason>22</angro-offseason><angro-inseason>24.78</angro-inseason><end-price-offseason>35</end-price-offseason><end-price>59</end-price><end-price-inseason>44</end-price-inseason></row>
+  <row><SKU>EM G0142</SKU><angro-offseason>33</angro-offseason><angro-inseason>37.38</angro-inseason><end-price-offseason>53</end-price-offseason><end-price>89</end-price><end-price-inseason>67</end-price-inseason></row>
+  <row><SKU>EM G0317</SKU><angro-offseason>26</angro-offseason><angro-inseason>28.98</angro-inseason><end-price-offseason>41</end-price-offseason><end-price>69</end-price><end-price-inseason>52</end-price-inseason></row>
+  <row><SKU>EM G0317</SKU><angro-offseason>26</angro-offseason><angro-inseason>28.98</angro-inseason><end-price-offseason>41</end-price-offseason><end-price>69</end-price><end-price-inseason>52</end-price-inseason></row>
+  <row><SKU>EM G0314</SKU><angro-offseason>30</angro-offseason><angro-inseason>33.18</angro-inseason><end-price-offseason>47</end-price-offseason><end-price>79</end-price><end-price-inseason>59</end-price-inseason></row>
+  <row><SKU>EM G0315</SKU><angro-offseason>26</angro-offseason><angro-inseason>28.98</angro-inseason><end-price-offseason>41</end-price-offseason><end-price>69</end-price><end-price-inseason>52</end-price-inseason></row>
+  <row><SKU>EM G05116</SKU><angro-offseason>52</angro-offseason><angro-inseason>58.38</angro-inseason><end-price-offseason>83</end-price-offseason><end-price>139</end-price><end-price-inseason>104</end-price-inseason></row>
+  <row><SKU>EM G05121</SKU><angro-offseason>48</angro-offseason><angro-inseason>54.18</angro-inseason><end-price-offseason>77</end-price-offseason><end-price>129</end-price><end-price-inseason>97</end-price-inseason></row>
+  <row><SKU>EM G05113</SKU><angro-offseason>48</angro-offseason><angro-inseason>54.18</angro-inseason><end-price-offseason>77</end-price-offseason><end-price>129</end-price><end-price-inseason>97</end-price-inseason></row>
+  <row><SKU>EM G0141</SKU><angro-offseason>33</angro-offseason><angro-inseason>37.38</angro-inseason><end-price-offseason>53</end-price-offseason><end-price>89</end-price><end-price-inseason>67</end-price-inseason></row>
+  <row><SKU>EM G0143</SKU><angro-offseason>33</angro-offseason><angro-inseason>37.38</angro-inseason><end-price-offseason>53</end-price-offseason><end-price>89</end-price><end-price-inseason>67</end-price-inseason></row>
+  <row><SKU>EM G05115</SKU><angro-offseason>48</angro-offseason><angro-inseason>54.18</angro-inseason><end-price-offseason>77</end-price-offseason><end-price>129</end-price><end-price-inseason>97</end-price-inseason></row>
+  <row><SKU>EM G0209</SKU><angro-offseason>33</angro-offseason><angro-inseason>37.38</angro-inseason><end-price-offseason>53</end-price-offseason><end-price>89</end-price><end-price-inseason>67</end-price-inseason></row>
+  <row><SKU>EM G0723</SKU><angro-offseason>52</angro-offseason><angro-inseason>58.38</angro-inseason><end-price-offseason>83</end-price-offseason><end-price>139</end-price><end-price-inseason>104</end-price-inseason></row>
+  <row><SKU>EM G0723</SKU><angro-offseason>52</angro-offseason><angro-inseason>58.38</angro-inseason><end-price-offseason>83</end-price-offseason><end-price>139</end-price><end-price-inseason>104</end-price-inseason></row>
+  <row><SKU>G0207</SKU><angro-offseason>33</angro-offseason><angro-inseason>37.38</angro-inseason><end-price-offseason>53</end-price-offseason><end-price>89</end-price><end-price-inseason>67</end-price-inseason></row>
+  <row><SKU>EM G0210</SKU><angro-offseason>33</angro-offseason><angro-inseason>37.38</angro-inseason><end-price-offseason>53</end-price-offseason><end-price>89</end-price><end-price-inseason>67</end-price-inseason></row>
+  <row><SKU>EM G0725</SKU><angro-offseason>48</angro-offseason><angro-inseason>54.18</angro-inseason><end-price-offseason>77</end-price-offseason><end-price>129</end-price><end-price-inseason>97</end-price-inseason></row>
+  <row><SKU>EM G0724</SKU><angro-offseason>52</angro-offseason><angro-inseason>58.38</angro-inseason><end-price-offseason>83</end-price-offseason><end-price>139</end-price><end-price-inseason>104</end-price-inseason></row>
+  <row><SKU>EM G0319</SKU><angro-offseason>30</angro-offseason><angro-inseason>33.18</angro-inseason><end-price-offseason>47</end-price-offseason><end-price>79</end-price><end-price-inseason>59</end-price-inseason></row>
+  <row><SKU>EM G0450</SKU><angro-offseason>26</angro-offseason><angro-inseason>28.98</angro-inseason><end-price-offseason>41</end-price-offseason><end-price>69</end-price><end-price-inseason>52</end-price-inseason></row>
+  <row><SKU>EM G0449</SKU><angro-offseason>26</angro-offseason><angro-inseason>28.98</angro-inseason><end-price-offseason>41</end-price-offseason><end-price>69</end-price><end-price-inseason>52</end-price-inseason></row>
+  <row><SKU>EM G0617</SKU><angro-offseason>78</angro-offseason><angro-inseason>87.78</angro-inseason><end-price-offseason>125</end-price-offseason><end-price>209</end-price><end-price-inseason>157</end-price-inseason></row>
+  <row><SKU>EM G0619</SKU><angro-offseason>93</angro-offseason><angro-inseason>104.58</angro-inseason><end-price-offseason>149</end-price-offseason><end-price>249</end-price><end-price-inseason>187</end-price-inseason></row>
+  <row><SKU>EM G0616</SKU><angro-offseason>71</angro-offseason><angro-inseason>79.38</angro-inseason><end-price-offseason>113</end-price-offseason><end-price>189</end-price><end-price-inseason>142</end-price-inseason></row>
+  <row><SKU>EM G0621</SKU><angro-offseason>41</angro-offseason><angro-inseason>45.78</angro-inseason><end-price-offseason>65</end-price-offseason><end-price>109</end-price><end-price-inseason>82</end-price-inseason></row>
+  <row><SKU>EM G0612</SKU><angro-offseason>71</angro-offseason><angro-inseason>79.38</angro-inseason><end-price-offseason>113</end-price-offseason><end-price>189</end-price><end-price-inseason>142</end-price-inseason></row>
+  <row><SKU>EM G0321</SKU><angro-offseason>33</angro-offseason><angro-inseason>37.38</angro-inseason><end-price-offseason>53</end-price-offseason><end-price>89</end-price><end-price-inseason>67</end-price-inseason></row>
+  <row><SKU>EM G0321</SKU><angro-offseason>33</angro-offseason><angro-inseason>37.38</angro-inseason><end-price-offseason>53</end-price-offseason><end-price>89</end-price><end-price-inseason>67</end-price-inseason></row>
+  <row><SKU>EM G0723</SKU><angro-offseason>52</angro-offseason><angro-inseason>58.38</angro-inseason><end-price-offseason>83</end-price-offseason><end-price>139</end-price><end-price-inseason>104</end-price-inseason></row>
+  <row><SKU>EM G0723</SKU><angro-offseason>52</angro-offseason><angro-inseason>58.38</angro-inseason><end-price-offseason>83</end-price-offseason><end-price>139</end-price><end-price-inseason>104</end-price-inseason></row>
+  <row><SKU>EM G0723</SKU><angro-offseason>52</angro-offseason><angro-inseason>58.38</angro-inseason><end-price-offseason>83</end-price-offseason><end-price>139</end-price><end-price-inseason>104</end-price-inseason></row>
+  <row><SKU>EM G0723</SKU><angro-offseason>52</angro-offseason><angro-inseason>58.38</angro-inseason><end-price-offseason>83</end-price-offseason><end-price>139</end-price><end-price-inseason>104</end-price-inseason></row>
+  <row><SKU>EM G0320</SKU><angro-offseason>30</angro-offseason><angro-inseason>33.18</angro-inseason><end-price-offseason>47</end-price-offseason><end-price>79</end-price><end-price-inseason>59</end-price-inseason></row>
+  <row><SKU>EM G0320</SKU><angro-offseason>30</angro-offseason><angro-inseason>33.18</angro-inseason><end-price-offseason>47</end-price-offseason><end-price>79</end-price><end-price-inseason>59</end-price-inseason></row>
+  <row><SKU>EM G0320</SKU><angro-offseason>30</angro-offseason><angro-inseason>33.18</angro-inseason><end-price-offseason>47</end-price-offseason><end-price>79</end-price><end-price-inseason>59</end-price-inseason></row>
+  <row><SKU>EM G0320</SKU><angro-offseason>30</angro-offseason><angro-inseason>33.18</angro-inseason><end-price-offseason>47</end-price-offseason><end-price>79</end-price><end-price-inseason>59</end-price-inseason></row>
+  <row><SKU>EM G0320</SKU><angro-offseason>30</angro-offseason><angro-inseason>33.18</angro-inseason><end-price-offseason>47</end-price-offseason><end-price>79</end-price><end-price-inseason>59</end-price-inseason></row>
+  <row><SKU>EM G0620</SKU><angro-offseason>30</angro-offseason><angro-inseason>33.18</angro-inseason><end-price-offseason>47</end-price-offseason><end-price>79</end-price><end-price-inseason>59</end-price-inseason></row>
+  <row><SKU>EM G0148</SKU><angro-offseason>22</angro-offseason><angro-inseason>24.78</angro-inseason><end-price-offseason>35</end-price-offseason><end-price>59</end-price><end-price-inseason>44</end-price-inseason></row>
+  <row><SKU>EM G0451</SKU><angro-offseason>15</angro-offseason><angro-inseason>16.38</angro-inseason><end-price-offseason>23</end-price-offseason><end-price>39</end-price><end-price-inseason>29</end-price-inseason></row>
+  <row><SKU>EM G0447</SKU><angro-offseason>30</angro-offseason><angro-inseason>33.18</angro-inseason><end-price-offseason>47</end-price-offseason><end-price>79</end-price><end-price-inseason>59</end-price-inseason></row>
+  <row><SKU>EM G0146</SKU><angro-offseason>22</angro-offseason><angro-inseason>24.78</angro-inseason><end-price-offseason>35</end-price-offseason><end-price>59</end-price><end-price-inseason>44</end-price-inseason></row>
+  <row><SKU>EM G0150</SKU><angro-offseason>22</angro-offseason><angro-inseason>24.78</angro-inseason><end-price-offseason>35</end-price-offseason><end-price>59</end-price><end-price-inseason>44</end-price-inseason></row>
+  <row><SKU>EM G0453</SKU><angro-offseason>22</angro-offseason><angro-inseason>24.78</angro-inseason><end-price-offseason>35</end-price-offseason><end-price>59</end-price><end-price-inseason>44</end-price-inseason></row>
+  <row><SKU>EM G0455</SKU><angro-offseason>15</angro-offseason><angro-inseason>16.38</angro-inseason><end-price-offseason>23</end-price-offseason><end-price>39</end-price><end-price-inseason>29</end-price-inseason></row>
+  <row><SKU>EM G0456</SKU><angro-offseason>33</angro-offseason><angro-inseason>37.38</angro-inseason><end-price-offseason>53</end-price-offseason><end-price>89</end-price><end-price-inseason>67</end-price-inseason></row>
+  <row><SKU>EM G0457</SKU><angro-offseason>33</angro-offseason><angro-inseason>37.38</angro-inseason><end-price-offseason>53</end-price-offseason><end-price>89</end-price><end-price-inseason>67</end-price-inseason></row>
+  <row><SKU>EM G0457</SKU><angro-offseason>33</angro-offseason><angro-inseason>37.38</angro-inseason><end-price-offseason>53</end-price-offseason><end-price>89</end-price><end-price-inseason>67</end-price-inseason></row>
+  <row><SKU>EM G0457</SKU><angro-offseason>33</angro-offseason><angro-inseason>37.38</angro-inseason><end-price-offseason>53</end-price-offseason><end-price>89</end-price><end-price-inseason>67</end-price-inseason></row>
+  <row><SKU>EM G0321</SKU><angro-offseason>33</angro-offseason><angro-inseason>37.38</angro-inseason><end-price-offseason>53</end-price-offseason><end-price>89</end-price><end-price-inseason>67</end-price-inseason></row>
+  <row><SKU>EM G0157</SKU><angro-offseason>37</angro-offseason><angro-inseason>41.58</angro-inseason><end-price-offseason>59</end-price-offseason><end-price>99</end-price><end-price-inseason>74</end-price-inseason></row>
+  <row><SKU>EM G0157</SKU><angro-offseason>37</angro-offseason><angro-inseason>41.58</angro-inseason><end-price-offseason>59</end-price-offseason><end-price>99</end-price><end-price-inseason>74</end-price-inseason></row>
+  <row><SKU>EM G0000</SKU><angro-offseason>18</angro-offseason><angro-inseason>20.58</angro-inseason><end-price-offseason>29</end-price-offseason><end-price>49</end-price><end-price-inseason>37</end-price-inseason></row>
+  <row><SKU>EM G0000</SKU><angro-offseason>18</angro-offseason><angro-inseason>20.58</angro-inseason><end-price-offseason>29</end-price-offseason><end-price>49</end-price><end-price-inseason>37</end-price-inseason></row>
+  <row><SKU>EM G0000</SKU><angro-offseason>18</angro-offseason><angro-inseason>20.58</angro-inseason><end-price-offseason>29</end-price-offseason><end-price>49</end-price><end-price-inseason>37</end-price-inseason></row>
+  <row><SKU>EM G0000</SKU><angro-offseason>18</angro-offseason><angro-inseason>20.58</angro-inseason><end-price-offseason>29</end-price-offseason><end-price>49</end-price><end-price-inseason>37</end-price-inseason></row>
+  <row><SKU>EM G0000</SKU><angro-offseason>18</angro-offseason><angro-inseason>20.58</angro-inseason><end-price-offseason>29</end-price-offseason><end-price>49</end-price><end-price-inseason>37</end-price-inseason></row>
+  <row><SKU>EM G0000</SKU><angro-offseason>18</angro-offseason><angro-inseason>20.58</angro-inseason><end-price-offseason>29</end-price-offseason><end-price>49</end-price><end-price-inseason>37</end-price-inseason></row>
+  <row><SKU>EM G0427</SKU><angro-offseason>15</angro-offseason><angro-inseason>16.38</angro-inseason><end-price-offseason>23</end-price-offseason><end-price>39</end-price><end-price-inseason>29</end-price-inseason></row>
+  <row><SKU>EM G0427</SKU><angro-offseason>15</angro-offseason><angro-inseason>16.38</angro-inseason><end-price-offseason>23</end-price-offseason><end-price>39</end-price><end-price-inseason>29</end-price-inseason></row>
+  <row><SKU>EM G0427</SKU><angro-offseason>15</angro-offseason><angro-inseason>16.38</angro-inseason><end-price-offseason>23</end-price-offseason><end-price>39</end-price><end-price-inseason>29</end-price-inseason></row>
+  <row><SKU>EM G0427</SKU><angro-offseason>15</angro-offseason><angro-inseason>16.38</angro-inseason><end-price-offseason>23</end-price-offseason><end-price>39</end-price><end-price-inseason>29</end-price-inseason></row>
+  <row><SKU>EM G0427</SKU><angro-offseason>15</angro-offseason><angro-inseason>16.38</angro-inseason><end-price-offseason>23</end-price-offseason><end-price>39</end-price><end-price-inseason>29</end-price-inseason></row>
+  <row><SKU>EM G0427</SKU><angro-offseason>15</angro-offseason><angro-inseason>16.38</angro-inseason><end-price-offseason>23</end-price-offseason><end-price>39</end-price><end-price-inseason>29</end-price-inseason></row>
+  <row><SKU>EM G0427</SKU><angro-offseason>15</angro-offseason><angro-inseason>16.38</angro-inseason><end-price-offseason>23</end-price-offseason><end-price>39</end-price><end-price-inseason>29</end-price-inseason></row>
+  <row><SKU>EM G0312</SKU><angro-offseason>26</angro-offseason><angro-inseason>28.98</angro-inseason><end-price-offseason>41</end-price-offseason><end-price>69</end-price><end-price-inseason>52</end-price-inseason></row>
+</rows>

@@ -5,6 +5,8 @@ import { collectionGroup, getDocs, query, doc, updateDoc, getDoc } from 'firebas
 import { db } from '@/lib/firebase/client';
 import type { OrderItem } from '@/lib/types/orders';
 import { deleteOrderForUser } from '@/lib/firebase/repositories/orders';
+import { faPen } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type OrderListItem = {
   id: string;
@@ -186,7 +188,10 @@ export default function AdminOrdersPage() {
 
                 return (
                   <tr key={o.id} className="hover:bg-muted">
-                    <td onClick={() => startEdit(o)} className="px-3 py-2 border-b font-mono">{o.id}</td>
+                    <td onClick={() => startEdit(o)} className="px-3 py-2 border-b font-mono">
+                      <FontAwesomeIcon icon={faPen} className="me-2" /> 
+                      {o.id}
+                    </td>
                     <td className="px-3 py-2 border-b font-mono">{o.userId}</td>
                     <td className="px-3 py-2 border-b">
                       {isEditing ? (

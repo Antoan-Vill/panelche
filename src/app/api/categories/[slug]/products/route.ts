@@ -63,7 +63,10 @@ export async function GET(
     productsUrl.searchParams.append('include', 'images');
     productsUrl.searchParams.append('page[size]', '100');
     productsUrl.searchParams.append('page[number]', page);
+    productsUrl.searchParams.append('sort', 'sort_order');
+    productsUrl.searchParams.append('direction', 'asc');
 
+    // console.error('productsUrl', productsUrl.toString());
     const productsResponse = await fetch(productsUrl.toString(), {
       headers: {
         'X-CloudCart-ApiKey': apiKey,
@@ -79,6 +82,8 @@ export async function GET(
       console.error('Failed to fetch products:', productsResponse.status, productsBody);
       return serverError('Failed to fetch products from CloudCart API');
     }
+
+    // console.error('productsBodyyyyy', productsBody);
 
     const parsed = ProductsResponseSchema.safeParse(productsBody);
     if (!parsed.success) {

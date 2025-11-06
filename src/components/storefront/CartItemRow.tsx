@@ -1,6 +1,7 @@
 'use client';
 
 import { useCart } from '@/lib/cart/cart-context';
+import { lookupSku, priceIndex } from '@/lib/sku-index';
 
 type Props = {
   productId: string;
@@ -31,6 +32,7 @@ export default function CartItemRow({ productId, variantId, name, sku, imageUrl,
         <div className="text-xs text-muted-foreground">{sku ?? ''}</div>
       </div>
       <div className="w-24 text-sm">{unitPrice.toFixed(2)}</div>
+      <div className="w-24 text-sm">{lookupSku(sku ?? '', priceIndex)?.['angro-inseason']}</div>
       <div className="w-24">
         <input
           type="number"

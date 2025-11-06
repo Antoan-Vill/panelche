@@ -36,11 +36,11 @@ export default function CategoryList({ categories, activeSlug }: CategoryListPro
       className={`${collapsed ? 'w-12' : 'w-72'} bg-card border-r border-border transition-all duration-300 overflow-hidden`}
     >
       <div className="p-4 border-b border-border relative">
-        {!collapsed && (
-          <>
-            <h2 className="text-lg font-semibold text-foreground">Categories</h2>
-          </>
-        )}
+        
+        <>
+          <h2 className="text-lg font-semibold text-foreground">{!collapsed ? ('Categories') : <span className="opacity-0">|</span>}</h2>
+        </>
+        
         <div className="absolute top-2 right-2">
           <Button
             variant="ghost"
@@ -71,6 +71,16 @@ export default function CategoryList({ categories, activeSlug }: CategoryListPro
                   return (
                     <div key={category.id} className="space-y-1">
                       <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => handleCategoryClick(category.attributes.url_handle || '')}
+                          className={`flex-1 text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                            isActive
+                              ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                          }`}
+                        >
+                          <div className="font-medium">{category.attributes.name} <sup className="opacity-10">({category.id?.toString() || 'something went wrong'})</sup></div>
+                        </button>
                         {children.length > 0 && (
                           <Button
                             variant="ghost"
@@ -82,16 +92,6 @@ export default function CategoryList({ categories, activeSlug }: CategoryListPro
                             <span className="text-xs">{isExpanded ? '▾' : '▸'}</span>
                           </Button>
                         )}
-                        <button
-                          onClick={() => handleCategoryClick(category.attributes.url_handle || '')}
-                          className={`flex-1 text-left px-3 py-2 rounded-md text-sm transition-colors ${
-                            isActive
-                              ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                          }`}
-                        >
-                          <div className="font-medium">{category.attributes.name}</div>
-                        </button>
                       </div>
                       {isExpanded && children.length > 0 && (
                         <div className="ml-6 space-y-1">
@@ -107,7 +107,7 @@ export default function CategoryList({ categories, activeSlug }: CategoryListPro
                                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                                 }`}
                               >
-                                <div>{child.attributes.name}</div>
+                                <div>{child.attributes.name} <sup className="opacity-10">({child.id?.toString() || 'something went wrong'})</sup></div>
                               </button>
                             );
                           })}

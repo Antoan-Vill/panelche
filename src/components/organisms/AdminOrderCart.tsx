@@ -1,5 +1,6 @@
 'use client';
 
+import { lookupSku, priceIndex } from '@/lib/sku-index';
 import { AdminCartItem } from '@/lib/types/customers';
 
 interface AdminOrderCartProps {
@@ -50,7 +51,8 @@ export function AdminOrderCart({ items, onUpdateQuantity, onRemoveItem }: AdminO
                   {item.variantLabel && (
                     <div className="text-xs text-muted-foreground">{item.variantLabel}</div>
                   )}
-                  <div className="text-sm text-foreground">${(item.unitPrice || 0).toFixed(2)}</div>
+                  <div className="text-sm text-foreground">{(item.unitPrice || 0).toFixed(2)} лв</div>
+                  <div className="text-sm text-foreground">{lookupSku(item.sku, priceIndex)?.['angro-inseason']} лв</div>
                 </div>
 
                 {/* Quantity Controls */}

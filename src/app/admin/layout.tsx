@@ -8,7 +8,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <AuthGate>
       <div className="min-h-screen bg-background">
         <DashboardHeader title="Admin" />
-        <main className="max-w-6xl mx-auto px-4 py-6">{children}</main>
+        <main className="max-w-7xl mx-auto p-4">{children}</main>
       </div>
     </AuthGate>
   );

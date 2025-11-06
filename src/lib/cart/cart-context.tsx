@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import type { OrderItem } from '@/lib/types/orders';
+import { lookupSku, priceIndex } from '../sku-index';
 
 type CartState = {
   items: OrderItem[];
@@ -78,6 +79,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const toInsert: OrderItem = {
         ...item,
         totalPrice: Number((item.quantity * item.unitPrice).toFixed(2)),
+        angroPrice: Number((item.quantity * (lookupSku(item.sku ?? '', priceIndex)?.['angro-inseason'] ?? 0)).toFixed(2)),
       };
       return [...prev, toInsert];
     });

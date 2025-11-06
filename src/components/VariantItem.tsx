@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { Variant } from '@/lib/types/products';
 import VariantStockManager from './VariantStockManager';
 
+import { priceIndex, lookupSku, type PriceRow } from '@/lib/sku-index';
+
+
 interface VariantItemProps {
   variant: Variant;
 }
@@ -55,9 +58,16 @@ export default function VariantItem({ variant }: VariantItemProps) {
         <span className="font-medium">
           {variant.attributes.v1 && `Size: ${variant.attributes.v1}`}
         </span>
-        <span className="text-green-600 font-medium">
-          {(variant.attributes.price / 100).toFixed(2)} лв
-        </span>
+        <div>
+          <span className="me-1 text-green-600 font-medium">
+            {(variant.attributes.price / 100).toFixed(2)} лв
+          </span>
+          <span className="text-muted-foreground">{lookupSku(variant.attributes.sku, priceIndex)?.['angro-offseason']}</span>
+          <span className="text-muted-foreground">/</span>
+          <span className="text-muted-foreground">{lookupSku(variant.attributes.sku, priceIndex)?.['angro-inseason']}</span>
+          {/* <span className="text-muted-foreground"> / </span> */}
+          {/* <span className="text-muted-foreground">{lookupSku(variant.attributes.sku, priceIndex)?.['end-price-inseason']}</span> */}
+        </div>
       </div>
       <div className="flex justify-between items-center mt-1">
         {isOutOfStock && !showStockManager ? (

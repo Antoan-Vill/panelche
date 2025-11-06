@@ -22,9 +22,9 @@ export default async function StoreCategoryPage({ params, searchParams }: PagePr
   return (
     <div>
       <h1 className="text-2xl font-semibold mb-1">{category.attributes.name}</h1>
-      {category.attributes.description && (
+      {/* {category.attributes.description && (
         <div className="text-sm text-muted-foreground mb-4">{category.attributes.description}</div>
-      )}
+      )} */}
 
       {products.length === 0 ? (
         <div className="text-muted-foreground">No products in this category.</div>

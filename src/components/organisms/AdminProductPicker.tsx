@@ -47,9 +47,9 @@ function ProductWithVariants({
       {/* Product Header */}
       <div className="flex items-center justify-between p-3 hover:bg-muted">
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          {product.attributes.image_url && (
+          {product.attributes.image_id && (
             <img
-              src={product.attributes.image_url}
+              src={product.attributes.image_id}
               alt=""
               className="w-10 h-10 object-cover rounded flex-shrink-0"
             />
@@ -83,8 +83,8 @@ function ProductWithVariants({
                   productId: product.id,
                   productName: product.attributes.name,
                   variantId: selectedVariantId ?? null,
-                  variantLabel: chosen ? variantLabel(chosen) : (sku ? `SKU: ${sku}` : null),
                   imageUrl: product.attributes.image_url || null,
+                  sku: sku ?? null,
                   unitPrice,
                   quantity,
                 });
