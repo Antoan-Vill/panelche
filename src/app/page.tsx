@@ -1,7 +1,9 @@
+'use client';
+
 import { DashboardTemplate } from '@/components/templates';
 import { StatsSection, CategoriesSection, ActionsPanel, ActivityFeed } from '@/components/organisms';
-import { getCategories } from '@/lib/categories';
-import { getDashboardStats } from '@/lib/stats';
+import { useCategories } from '@/hooks/useCategories';
+import { useDashboardStats } from '@/hooks/useDashboardStats';
 import AuthGate from '@/components/AuthGate';
 
 const actions = [
@@ -17,8 +19,8 @@ const actions = [
   },
   {
     icon: '📦',
-    label: 'Manage Products',
-    href: '/admin/products',
+    label: 'Manage Catalog',
+    href: '/admin/catalog',
     variant: 'blue' as const,
   },
   {
@@ -46,24 +48,22 @@ const activities = [
   },
 ];
 
-export default async function Dashboard() {
-  const [categories, stats] = await Promise.all([
-    getCategories(),
-    getDashboardStats(),
-  ]);
+export default function Dashboard() {
+  const { categories, isLoading: categoriesLoading, error: categoriesError } = useCategories();
+  const { stats, isLoading: statsLoading, error: statsError } = useDashboardStats();
 
   return (
     <AuthGate>
       <DashboardTemplate>
         <StatsSection
           stats={stats}
-          isLoading={false}
-          error={null}
+          isLoading={statsLoading}
+          error={statsError}
         />
         <CategoriesSection
           categories={categories}
-          isLoading={false}
-          error={null}
+          isLoading={categoriesLoading}
+          error={categoriesError}
         />
 
         {/* Main Content Grid */}

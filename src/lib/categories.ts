@@ -1,18 +1,9 @@
-export interface Category {
-  id: string;
-  type: string;
-  attributes: {
-    name: string;
-    description?: string;
-    url_handle?: string;
-    image_url?: string;
-    order?: number;
-    parent_id?: number | null;
-  };
-}
-
 import { env } from '@/lib/env';
+import type { Category } from '@/lib/types/categories';
 import { REVALIDATE } from '@/lib/cache';
+
+// Re-export the Category type for convenience
+export type { Category };
 
 export async function getCategories(): Promise<Category[]> {
   try {
@@ -26,6 +17,7 @@ export async function getCategories(): Promise<Category[]> {
     }
 
     const responseData = await response.json();
+    console.log('responseData', responseData);
     return Array.isArray(responseData.data) ? responseData.data : [];
   } catch (error) {
     console.error('Error fetching categories:', error);

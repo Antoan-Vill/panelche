@@ -1,13 +1,5 @@
-export interface DashboardStats {
-  totalProducts: number;
-  totalCategories: number;
-  inStockProducts: number;
-  activeProducts: number; // percentage
-  averagePrice: number;
-  totalInventoryValue: number;
-}
-
 import { env } from '@/lib/env';
+import type { DashboardStats } from '@/lib/types/stats';
 import { REVALIDATE } from '@/lib/cache';
 
 export async function getDashboardStats(): Promise<DashboardStats | null> {

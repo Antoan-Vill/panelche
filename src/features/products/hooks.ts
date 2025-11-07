@@ -55,7 +55,7 @@ export function useProductVariants(
     setIsLoading(true);
     setError(null);
     setErrorDetails(null);
-    fetch(`/api/products/${productId}/variants`, { cache: 'no-store', signal: controller.signal })
+    fetch(`/api/catalog/${productId}/variants`, { cache: 'no-store', signal: controller.signal })
       .then(async (res) => {
         const json = await res.json().catch(() => ({}));
         if (!res.ok) {

@@ -16,7 +16,7 @@ export default function CategoryList({ categories, activeSlug }: CategoryListPro
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   const handleCategoryClick = (slug: string) => {
-    router.push(`/admin/products?slug=${slug}`);
+    router.push(`/admin/catalog?slug=${slug}`);
   };
   
   // make a two dimensional list with the main categories and the subcategories

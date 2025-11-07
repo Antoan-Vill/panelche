@@ -66,7 +66,7 @@ export function DashboardHeader({
               <Heading level={1}>{title}</Heading>
             </div>
             <div>
-              <Link href="/admin/products" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Products</Link>
+              <Link href="/admin/catalog" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Catalog</Link>
               <Link href="/admin" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Orders</Link>
               <Link href="/admin/customers" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Customers</Link>
               <Link href="/admin/settings" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Settings</Link>

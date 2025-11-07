@@ -96,7 +96,7 @@ export function Pagination({
           <p className="text-sm text-muted-foreground">
             Showing <span className="font-medium">{startItem}</span> to{' '}
             <span className="font-medium">{endItem}</span> of{' '}
-            <span className="font-medium">{totalItems}</span> products
+            <span className="font-medium">{totalItems}</span> catalog items
           </p>
         </div>
 

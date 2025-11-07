@@ -7,6 +7,8 @@ import { config } from '@fortawesome/fontawesome-svg-core';
 config.autoAddCss = false;
 import { AuthProvider } from "@/lib/firebase/auth-context";
 import { SwrProvider } from "@/lib/swr/provider";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { LoadingProvider } from "@/lib/contexts/loading-context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,11 +35,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>
-          <SwrProvider>
-            {children}
-          </SwrProvider>
-        </AuthProvider>
+        <ErrorBoundary>
+          <LoadingProvider>
+            <AuthProvider>
+              <SwrProvider>
+                {children}
+              </SwrProvider>
+            </AuthProvider>
+          </LoadingProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );

@@ -13,8 +13,8 @@ export async function getProductVariantsClient(productId: string): Promise<Varia
   try {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || '';
     const url = baseUrl
-      ? `${baseUrl}/api/products/${productId}/variants`
-      : `/api/products/${productId}/variants`;
+      ? `${baseUrl}/api/catalog/${productId}/variants`
+      : `/api/catalog/${productId}/variants`;
     const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) {
       return [];

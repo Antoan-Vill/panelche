@@ -7,7 +7,7 @@ interface CategoryCardProps {
 
 export function CategoryCard({ category }: CategoryCardProps) {
   return (
-    <Link href={`/admin/products?slug=${category.attributes.url_handle}`} className="block">
+    <Link href={`/admin/catalog?slug=${category.attributes.url_handle}`} className="block">
       <div className="border border-border rounded-lg p-4 hover:bg-muted hover:border-blue-300 transition-all cursor-pointer">
         {category.attributes.image_url && (
           <img

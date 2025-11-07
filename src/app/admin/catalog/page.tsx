@@ -150,7 +150,6 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
   if (!category) {
     return (
       <div className="min-h-screen bg-background">
-        <DashboardHeader title="Catalog" />
 
         <div className="flex">
           <CategoryList categories={categories} activeSlug={slug} />
@@ -263,11 +262,11 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                 </div>
               </div>
               <VariantsBatchPreloader productIds={products.map((p) => p.id)} />
-              <div className="p-6">
+              <div className="border border-red-100 border-0 rounded-md">
                 {products.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0">
                     {products.map((product, index) => (
-                      <div key={product.id} className="relative border border-border overflow-hidden">
+                      <div key={product.id} className="relative border border-border border-l-0 border-t-0 overflow-hidden">
                         <div className="relative">
                           <HoverImage
                             product={product}
