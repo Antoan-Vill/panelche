@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { getCategories } from '@/lib/categories';
 import { getProductsByCategory, getProductVariantsClient } from '@/lib/products';
 import { VariantSelector } from '@/components/molecules/VariantSelector';
+import { VariantMultiSelectModal, type VariantMultiSelectModalItem } from '@/components/organisms/VariantMultiSelectModal';
 import { variantLabel } from '@/lib/variants';
 import { useProductSearch } from '@/hooks/useProductSearch';
 import type { Category } from '@/lib/categories';
@@ -35,6 +36,8 @@ function saveProductsCache(cache: ProductsCache) {
     localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(cache));
   } catch {}
 }
+
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 function getCachedCategoryProducts(slug: string, maxAgeMs = PRODUCTS_CACHE_TTL_MS): Product[] | null {
   const cache = loadProductsCache();
@@ -69,6 +72,8 @@ function ProductWithVariants({
   const [variants, setVariants] = useState<Variant[]>([]);
   const [loadingVariants, setLoadingVariants] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [showVariantModal, setShowVariantModal] = useState(false);
+  const [initialSelectedVariantIds, setInitialSelectedVariantIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (!expanded) return;
@@ -131,6 +136,11 @@ function ProductWithVariants({
               variants={variants}
               priceCents={product.attributes.price ?? null}
               baseSku={product.attributes.sku ?? null}
+              enablePivotToMulti
+              onRequestMultiSelect={({ initialSelectedIds }) => {
+                setInitialSelectedVariantIds(initialSelectedIds);
+                setShowVariantModal(true);
+              }}
               onAdd={({ selectedVariantId, quantity, unitPrice, sku }) => {
                 const chosen = variants.find((v) => v.id === selectedVariantId) || null;
                 onAddToCart({
@@ -147,6 +157,39 @@ function ProductWithVariants({
             />
           )}
         </div>
+      )}
+
+      {showVariantModal && (
+        <VariantMultiSelectModal
+          productId={product.id}
+          productName={product.attributes.name}
+          imageUrl={product.attributes.image_url || null}
+          baseSku={product.attributes.sku || null}
+          priceCents={product.attributes.price ?? null}
+          variants={variants}
+          initialSelectedIds={initialSelectedVariantIds}
+          onCancel={() => {
+            setShowVariantModal(false);
+            setInitialSelectedVariantIds([]);
+          }}
+          onConfirm={(items: VariantMultiSelectModalItem[]) => {
+            console.log('items', items);
+            items.forEach(({ variantId, quantity, unitPrice, sku }) => {
+              onAddToCart({
+                productId: product.id,
+                productName: product.attributes.name,
+                variantId,
+                imageUrl: product.attributes.image_url || null,
+                sku: sku ?? null,
+                unitPrice,
+                quantity,
+              });
+            });
+            // setShowVariantModal(false);
+            // setInitialSelectedVariantIds([]);
+            // setExpanded(false);
+          }}
+        />
       )}
     </div>
   );

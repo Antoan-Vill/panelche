@@ -2,6 +2,8 @@
 
 import { lookupSku, priceIndex } from '@/lib/sku-index';
 import { AdminCartItem } from '@/lib/types/customers';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface AdminOrderCartProps {
   items: AdminCartItem[];
@@ -52,7 +54,7 @@ export function AdminOrderCart({ items, onUpdateQuantity, onRemoveItem }: AdminO
                     <div className="text-xs text-muted-foreground">{item.variantLabel}</div>
                   )}
                   <div className="text-sm text-foreground">{(item.unitPrice || 0).toFixed(2)} лв</div>
-                  <div className="text-sm text-foreground">{lookupSku(item.sku, priceIndex)?.['angro-inseason']} лв</div>
+                  {item.sku && <div className="text-sm text-foreground">{lookupSku(item.sku, priceIndex)?.['angro-inseason']} лв</div>}
                 </div>
 
                 {/* Quantity Controls */}
@@ -86,9 +88,10 @@ export function AdminOrderCart({ items, onUpdateQuantity, onRemoveItem }: AdminO
                 {/* Remove Button */}
                 <button
                   onClick={() => onRemoveItem(generateItemId(item))}
-                  className="text-red-600 hover:text-red-800 text-sm"
+                  className="bg-red-100 rounded-md px-2 py-1 text-red-600 hover:text-red-800 text-sm"
                 >
-                  Remove
+                  <FontAwesomeIcon icon={faXmark}  />
+                  <span className="ml-2">Remove</span>
                 </button>
               </div>
             ))}

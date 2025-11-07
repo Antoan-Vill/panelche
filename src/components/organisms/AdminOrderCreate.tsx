@@ -29,23 +29,28 @@ export function AdminOrderCreate() {
 
     console.log('newItem', newItem);
 
-    // Check if item with same product and variant already exists
-    const existingIndex = cartItems.findIndex(
-      (existing) =>
-        existing.productId === newItem.productId &&
-        existing.variantId === newItem.variantId
-    );
+    setCartItems((prev) => {
+      const existingIndex = prev.findIndex(
+        (existing) =>
+          existing.productId === newItem.productId &&
+          existing.variantId === newItem.variantId
+      );
 
-    if (existingIndex >= 0) {
-      // Update quantity of existing item
-      const updatedItems = [...cartItems];
-      updatedItems[existingIndex].quantity += newItem.quantity;
-      updatedItems[existingIndex].lineTotal = updatedItems[existingIndex].unitPrice * updatedItems[existingIndex].quantity;
-      setCartItems(updatedItems);
-    } else {
-      // Add new item
-      setCartItems([...cartItems, newItem]);
-    }
+      if (existingIndex >= 0) {
+        const updated = [...prev];
+        const existing = updated[existingIndex];
+        const quantity = existing.quantity + newItem.quantity;
+        updated[existingIndex] = {
+          ...existing,
+          quantity,
+          lineTotal: existing.unitPrice * quantity,
+        };
+        return updated;
+      }
+
+      return [...prev, newItem];
+    });
+    
   };
 
   const handleUpdateQuantity = (itemId: string, quantity: number) => {
@@ -85,6 +90,7 @@ export function AdminOrderCreate() {
         quantity: item.quantity,
         unitPrice: Number(item.unitPrice || 0),
         totalPrice: Number(((item.unitPrice || 0) * item.quantity).toFixed(2)),
+        angroPrice: 0,
         imageUrl: item.imageUrl ?? null,
       }));
 

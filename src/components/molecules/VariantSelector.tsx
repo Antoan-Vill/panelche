@@ -8,6 +8,8 @@ type VariantSelectorProps = {
   variants?: Variant[];
   priceCents?: number | null; // fallback if no variants
   baseSku?: string | null; // fallback if no variants
+  enablePivotToMulti?: boolean;
+  onRequestMultiSelect?: (context: { initialSelectedIds: string[] }) => void;
   onAdd: (payload: {
     selectedVariantId: string | null;
     quantity: number;
@@ -16,7 +18,14 @@ type VariantSelectorProps = {
   }) => void;
 };
 
-export function VariantSelector({ variants = [], priceCents = null, baseSku = null, onAdd }: VariantSelectorProps) {
+export function VariantSelector({
+  variants = [],
+  priceCents = null,
+  baseSku = null,
+  enablePivotToMulti = false,
+  onRequestMultiSelect,
+  onAdd,
+}: VariantSelectorProps) {
   const [quantity, setQuantity] = useState<number>(1);
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(variants?.[0]?.id ?? null);
 
@@ -52,12 +61,35 @@ export function VariantSelector({ variants = [], priceCents = null, baseSku = nu
           className=""
           data-value={selectedVariantId ?? ''}
         >
-          {variants.map((v) => (
-            <span onClick={(e) => setSelectedVariantId(v.id)} key={v.id} data-value={v.id} className={`border rounded mr-3 px-3 py-2 text-sm bg-white cursor-pointer ${selectedVariantId === v.id ? 'border-green-500' : ''}`}>
+          {variants.map((v) => {
+            const handleClick = () => {
+              if (
+                enablePivotToMulti &&
+                !!onRequestMultiSelect &&
+                selectedVariantId &&
+                selectedVariantId !== v.id
+              ) {
+                const initialSelectedIds = Array.from(
+                  new Set([selectedVariantId, v.id])
+                );
+                onRequestMultiSelect({ initialSelectedIds });
+                return;
+              }
+              setSelectedVariantId(v.id);
+            };
+
+            return (
+              <span
+                onClick={handleClick}
+                key={v.id}
+                data-value={v.id}
+                className={`border rounded mr-3 px-3 py-2 text-sm bg-white cursor-pointer ${selectedVariantId === v.id ? 'border-green-500' : ''}`}
+              >
               {/* {variantLabel(v)} {selectedVariantId === v.id ? 'selected '+selectedVariantId+ '/' + v.id : ''} */}
               {v.attributes.v1}
-            </span>
-          ))}
+              </span>
+            );
+          })}
         </span>
       )}
 

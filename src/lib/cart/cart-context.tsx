@@ -11,7 +11,7 @@ type CartState = {
 };
 
 type CartContextValue = CartState & {
-  addItem: (item: Omit<OrderItem, 'totalPrice'>) => void;
+  addItem: (item: Omit<OrderItem, 'totalPrice' | 'angroPrice'>) => void;
   updateQuantity: (productId: string, variantId: string | null, quantity: number) => void;
   removeItem: (productId: string, variantId: string | null) => void;
   clear: () => void;
@@ -47,6 +47,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
               quantity: Math.max(1, Math.floor(Number(it.quantity) || 1)),
               unitPrice: Number(it.unitPrice) || 0,
               totalPrice: Number(it.totalPrice) || ((Number(it.unitPrice) || 0) * Math.max(1, Math.floor(Number(it.quantity) || 1))),
+              angroPrice: Number(it.angroPrice) || 0,
               imageUrl: it.imageUrl ?? null,
             }))
           );
@@ -62,7 +63,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   }, [items]);
 
-  const addItem = useCallback((item: Omit<OrderItem, 'totalPrice'>) => {
+  const addItem = useCallback((item: Omit<OrderItem, 'totalPrice' | 'angroPrice'>) => {
     setItems((prev) => {
       const keyMatch = (it: OrderItem) => it.productId === item.productId && it.variantId === item.variantId;
       const existing = prev.findIndex(keyMatch);
@@ -76,10 +77,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         };
         return newItems;
       }
+      const angroUnitPrice = item.sku ? lookupSku(item.sku, priceIndex)?.['angro-inseason'] ?? 0 : 0;
       const toInsert: OrderItem = {
         ...item,
         totalPrice: Number((item.quantity * item.unitPrice).toFixed(2)),
-        angroPrice: Number((item.quantity * (lookupSku(item.sku ?? '', priceIndex)?.['angro-inseason'] ?? 0)).toFixed(2)),
+        angroPrice: Number((item.quantity * angroUnitPrice).toFixed(2)),
       };
       return [...prev, toInsert];
     });
