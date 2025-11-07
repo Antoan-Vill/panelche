@@ -3,13 +3,29 @@ import { fetchJson } from '@/lib/http/fetcher';
 import { REVALIDATE } from '@/lib/cache';
 import type { ProductsResponse, Variant, ImageData } from '@/lib/types/products';
 
+// Helper function to get the base URL for internal API calls
+function getBaseUrl(): string {
+  const isServer = typeof window === 'undefined';
+  
+  if (isServer) {
+    // Server-side: use VERCEL_URL if available, otherwise NEXT_PUBLIC_APP_URL
+    if (process.env.VERCEL_URL) {
+      return `https://${process.env.VERCEL_URL}`;
+    }
+    return process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  }
+  
+  // Client-side: use NEXT_PUBLIC_APP_URL
+  return env.NEXT_PUBLIC_APP_URL;
+}
+
 export async function getProductsByCategory(categorySlug: string, page: number = 1) {
-  const url = `${env.NEXT_PUBLIC_APP_URL}/api/categories/${categorySlug}/products?page=${page}`;
+  const url = `${getBaseUrl()}/api/categories/${categorySlug}/products?page=${page}`;
   return fetchJson<ProductsResponse>(url, { next: { revalidate: REVALIDATE.products } });
 }
 
 export async function getCategoryBySlug(slug: string) {
-  const url = `${env.NEXT_PUBLIC_APP_URL}/api/categories/${slug}`;
+  const url = `${getBaseUrl()}/api/categories/${slug}`;
   return fetchJson<any>(url, { next: { revalidate: REVALIDATE.categories } });
 }
 

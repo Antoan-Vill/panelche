@@ -7,7 +7,24 @@ export type { Category };
 
 export async function getCategories(): Promise<Category[]> {
   try {
-    const response = await fetch(`${env.NEXT_PUBLIC_APP_URL}/api/categories`, {
+    // Construct the base URL for API calls
+    // Priority: VERCEL_URL > NEXT_PUBLIC_APP_URL > localhost fallback
+    const isServer = typeof window === 'undefined';
+    let baseUrl: string;
+    
+    if (isServer) {
+      // Server-side: use VERCEL_URL if available, otherwise NEXT_PUBLIC_APP_URL
+      if (process.env.VERCEL_URL) {
+        baseUrl = `https://${process.env.VERCEL_URL}`;
+      } else {
+        baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+      }
+    } else {
+      // Client-side: use NEXT_PUBLIC_APP_URL
+      baseUrl = env.NEXT_PUBLIC_APP_URL;
+    }
+    
+    const response = await fetch(`${baseUrl}/api/categories`, {
       next: { revalidate: REVALIDATE.categories },
     });
 
