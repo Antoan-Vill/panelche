@@ -156,7 +156,7 @@ export function OwnerSelector({ selectedOwner, onOwnerChange }: OwnerSelectorPro
 
   return (
     <div className="bg-card rounded-lg border border-border p-6">
-      <h3 className="text-lg font-medium mb-4">Order Owner</h3>
+      <h3 className="uppercase text-xs opacity-50 mb-2 font-bold">Order Owner</h3>
 
       {/* Mode Selection */}
       <div className="flex gap-4 mb-6">

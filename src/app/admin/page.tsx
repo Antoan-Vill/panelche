@@ -81,6 +81,10 @@ export default function AdminOrdersPage() {
         if (!targetOrder) return;
         deleteOrderForUser(targetOrder.userId, deletingId);
         setOrders(orders.filter(o => o.id !== deletingId));
+        if (editingId === deletingId) {
+          setEditingId(null);
+          setEditForm(null);
+        }
         setDeletingId(null);
       }
     }
@@ -194,56 +198,15 @@ export default function AdminOrdersPage() {
                     </td>
                     <td className="px-3 py-2 border-b font-mono">{o.userId}</td>
                     <td className="px-3 py-2 border-b">
-                      {isEditing ? (
-                        <select
-                          value={editForm?.status ?? o.status}
-                          onChange={(e) => setEditForm(editForm ? { ...editForm, status: e.target.value } : null)}
-                          className="border rounded px-2 py-1 text-xs"
-                        >
-                          <option value="pending">pending</option>
-                          <option value="processing">processing</option>
-                          <option value="completed">completed</option>
-                          <option value="cancelled">cancelled</option>
-                        </select>
-                      ) : (
-                        o.status
-                      )}
+                      {o.status}
                     </td>
                     <td className="px-3 py-2 border-b">
-                      {isEditing ? (
-                        <div className="space-y-1">
-                          {currentItems.map((item, index) => (
-                            <div key={index} className="flex items-center gap-2 text-xs">
-                              <span className="truncate max-w-32" title={item.productName}>{item.productName}</span>
-                              <input
-                                type="number"
-                                min={1}
-                                value={item.quantity}
-                                onChange={(e) => updateItemQuantity(index, Number(e.target.value) || 1)}
-                                className="border rounded px-1 py-0.5 text-xs w-12"
-                              />
-                              <span>× {item.unitPrice.toFixed(2)}</span>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        `${o.items.length} item${o.items.length !== 1 ? 's' : ''}`
-                      )}
+                      {`${o.items.length} item${o.items.length !== 1 ? 's' : ''}`}
                     </td>
                     <td className="px-3 py-2 border-b">{subtotal.toFixed(2)}</td>
                     <td className="px-3 py-2 border-b font-semibold">{total.toFixed(2)}</td>
                     <td className="px-3 py-2 border-b">
-                      {isEditing ? (
-                        <div className="flex gap-1">
-                          <button onClick={() => saveEdit(o.id)} className="px-2 py-1 bg-green-600 text-white text-xs rounded">Save</button>
-                          <button onClick={cancelEdit} className="px-2 py-1 bg-gray-600 text-white text-xs rounded">Cancel</button>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col gap-1">
-                          <button onClick={() => startDelete(o.id)} className="px-2 py-1 bg-red-600 text-white text-xs rounded">Delete</button>
-                          <span className="text-xs text-muted-foreground">{o.createdAt ? o.createdAt.toLocaleString() : '-'}</span>
-                        </div>
-                      )}
+                      <span className="text-xs text-muted-foreground">{o.createdAt ? o.createdAt.toLocaleString() : '-'}</span>
                     </td>
                   </tr>
                 );
@@ -253,6 +216,86 @@ export default function AdminOrdersPage() {
           {orders.length === 0 && (
             <div className="p-4 text-muted-foreground">No orders found.</div>
           )}
+        </div>
+      )}
+      {/* Edit Modal */}
+      {editingId && editForm && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center" onClick={cancelEdit}>
+          <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-xl w-full max-w-2xl mx-4" onClick={(e) => e.stopPropagation()}>
+            <div className="p-4 border-b flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Edit Order <span className="font-mono">{editingId}</span></h3>
+              <button onClick={cancelEdit} className="px-2 py-1 text-sm rounded hover:bg-muted">✕</button>
+            </div>
+            <div className="p-4 space-y-4">
+              <div className="flex items-center gap-3">
+                <label className="text-sm w-24">Status</label>
+                <select
+                  value={editForm.status}
+                  onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
+                  className="border rounded px-2 py-1 text-sm"
+                >
+                  <option value="pending">pending</option>
+                  <option value="processing">processing</option>
+                  <option value="completed">completed</option>
+                  <option value="cancelled">cancelled</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <div className="text-sm font-medium">Items</div>
+                <div className="divide-y">
+                  {editForm.items.map((item, index) => (
+                    <div key={index} className="py-2 flex items-center justify-between gap-3 text-sm">
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate" title={item.productName}>{item.productName}</div>
+                        {item.sku && <div className="text-xs text-muted-foreground">SKU: {item.sku}</div>}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          min={1}
+                          value={item.quantity}
+                          onChange={(e) => updateItemQuantity(index, Number(e.target.value) || 1)}
+                          className="border rounded px-2 py-1 text-sm w-20 text-right"
+                        />
+                        <div className="w-28 text-right tabular-nums text-xs">
+                          {item.unitPrice.toFixed(2)}
+                        </div>
+                        <div className="w-28 text-right font-medium tabular-nums">
+                          {item.totalPrice.toFixed(2)}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-8 text-sm">
+                {(() => {
+                  const totals = calculateTotals(editForm.items);
+                  return (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground">Subtotal</span>
+                        <span className="font-medium tabular-nums">{totals.subtotal.toFixed(2)}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground">Total</span>
+                        <span className="font-semibold tabular-nums">{totals.total.toFixed(2)}</span>
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
+            </div>
+            <div className="p-4 border-t flex items-center justify-between">
+              <button onClick={() => editingId && startDelete(editingId)} className="px-3 py-2 bg-red-600 text-white text-sm rounded">Delete</button>
+              <div className="flex gap-2">
+                <button onClick={cancelEdit} className="px-3 py-2 bg-muted text-foreground text-sm rounded">Cancel</button>
+                <button onClick={() => saveEdit(editingId)} className="px-3 py-2 bg-green-600 text-white text-sm rounded">Save changes</button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

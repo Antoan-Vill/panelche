@@ -24,7 +24,7 @@ export function AdminOrderCart({ items, onUpdateQuantity, onRemoveItem }: AdminO
 
   return (
     <div className="bg-card rounded-lg border border-border p-6">
-      <h3 className="text-lg font-medium mb-4">Order Cart</h3>
+      <h3 className="uppercase text-xs opacity-50 mb-2 font-bold">Order Cart</h3>
 
       {items.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">

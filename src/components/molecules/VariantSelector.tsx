@@ -48,17 +48,17 @@ export function VariantSelector({ variants = [], priceCents = null, baseSku = nu
   return (
     <div className="flex items-center gap-2">
       {variants.length > 0 && (
-        <select
-          className="border rounded px-2 py-1 text-sm"
-          value={selectedVariantId ?? ''}
-          onChange={(e) => setSelectedVariantId(e.target.value)}
+        <span
+          className=""
+          data-value={selectedVariantId ?? ''}
         >
           {variants.map((v) => (
-            <option key={v.id} value={v.id}>
-              {variantLabel(v)}
-            </option>
+            <span onClick={(e) => setSelectedVariantId(v.id)} key={v.id} data-value={v.id} className={`border rounded mr-3 px-3 py-2 text-sm bg-white cursor-pointer ${selectedVariantId === v.id ? 'border-green-500' : ''}`}>
+              {/* {variantLabel(v)} {selectedVariantId === v.id ? 'selected '+selectedVariantId+ '/' + v.id : ''} */}
+              {v.attributes.v1}
+            </span>
           ))}
-        </select>
+        </span>
       )}
 
       <input
@@ -66,12 +66,12 @@ export function VariantSelector({ variants = [], priceCents = null, baseSku = nu
         min={1}
         value={quantity}
         onChange={(e) => setQuantity(Number(e.target.value) || 1)}
-        className="w-16 border rounded px-2 py-1 text-sm"
+        className="w-16 bg-white border rounded px-2 py-1 text-sm"
       />
 
       <button
         onClick={handleAdd}
-        className="px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700 text-sm"
+        className="py-1 px-2 rounded bg-green-600 text-white hover:bg-green-700 text-sm"
       >
         Add
       </button>
