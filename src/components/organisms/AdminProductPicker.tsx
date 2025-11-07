@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { getCategories } from '@/lib/categories';
 import { getProductsByCategory, getProductVariantsClient } from '@/lib/products';
 import { VariantSelector } from '@/components/molecules/VariantSelector';
@@ -204,6 +204,8 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
+  const [otherCategoriesProducts, setOtherCategoriesProducts] = useState<Product[]>([]);
+  const [searchingOtherCategories, setSearchingOtherCategories] = useState(false);
 
   // Load categories on mount
   useEffect(() => {
@@ -337,7 +339,114 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
     setSelectedCategory(category);
   };
 
-  const { search, handleSearch, handleClearSearch, filteredProducts } = useProductSearch(products);
+  const { search, handleSearch, handleClearSearch, filteredProducts: filteredProductsFromCategory } = useProductSearch(products);
+
+  // Async search in other categories when no results in selected category
+  useEffect(() => {
+    // Reset other categories products when search changes
+    setOtherCategoriesProducts([]);
+    setSearchingOtherCategories(false);
+
+    // If no search term or results found in selected category, don't search other categories
+    if (!search.trim() || filteredProductsFromCategory.length > 0 || !selectedCategory) {
+      return;
+    }
+
+    const term = search.trim().toLowerCase();
+    if (term.length <= 2) {
+      return;
+    }
+
+    // Search in other categories asynchronously to avoid blocking UI
+    let cancelled = false;
+    setSearchingOtherCategories(true);
+
+    const searchOtherCategories = async () => {
+      try {
+        // Use requestIdleCallback or setTimeout to avoid blocking
+        await new Promise<void>((resolve) => {
+          if ('requestIdleCallback' in window) {
+            (window as any).requestIdleCallback(() => resolve(), { timeout: 100 });
+          } else {
+            setTimeout(() => resolve(), 0);
+          }
+        });
+
+        if (cancelled) return;
+
+        const allCachedProducts = getAllCachedProducts();
+        const selectedCategorySlug = selectedCategory.attributes?.url_handle;
+        const selectedCategoryProducts = getCachedCategoryProducts(selectedCategorySlug || '') || [];
+        const selectedCategoryProductIds = new Set(selectedCategoryProducts.map(p => p.id));
+
+        // Filter out products from the selected category
+        const otherCategoryProducts = allCachedProducts.filter(
+          (product) => !selectedCategoryProductIds.has(product.id)
+        );
+
+        if (cancelled) return;
+
+        // Process in chunks to avoid blocking UI
+        const chunkSize = 100;
+        const results: Product[] = [];
+        
+        for (let i = 0; i < otherCategoryProducts.length; i += chunkSize) {
+          if (cancelled) return;
+          
+          const chunk = otherCategoryProducts.slice(i, i + chunkSize);
+          const chunkResults = chunk.filter((product) =>
+            product.attributes.name.toLowerCase().includes(term)
+          );
+          results.push(...chunkResults);
+
+          // Yield to browser between chunks
+          if (i + chunkSize < otherCategoryProducts.length) {
+            await new Promise<void>((resolve) => {
+              if ('requestIdleCallback' in window) {
+                (window as any).requestIdleCallback(() => resolve(), { timeout: 50 });
+              } else {
+                setTimeout(() => resolve(), 0);
+              }
+            });
+          }
+        }
+
+        if (!cancelled) {
+          setOtherCategoriesProducts(results);
+          setSearchingOtherCategories(false);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error('Error searching other categories:', error);
+          setSearchingOtherCategories(false);
+        }
+      }
+    };
+
+    searchOtherCategories();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [search, filteredProductsFromCategory, selectedCategory]);
+
+  // Determine which products to show
+  const { filteredProducts, showingOtherCategories } = useMemo(() => {
+    // If no search term or results found in selected category, return normal filtered products
+    if (!search.trim() || filteredProductsFromCategory.length > 0) {
+      return { filteredProducts: filteredProductsFromCategory, showingOtherCategories: false };
+    }
+
+    // If we have results from other categories, show those
+    if (otherCategoriesProducts.length > 0) {
+      return { 
+        filteredProducts: otherCategoriesProducts, 
+        showingOtherCategories: true 
+      };
+    }
+
+    return { filteredProducts: filteredProductsFromCategory, showingOtherCategories: false };
+  }, [search, filteredProductsFromCategory, otherCategoriesProducts]);
 
   return (
     <div className="bg-card rounded-lg border border-border p-6">
@@ -383,7 +492,20 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
           </div>
           <div className="max-h-96 overflow-y-auto border border-border rounded">
             {loading && <div className="p-4 text-center text-muted-foreground">Loading...</div>}
-            {!loading && filteredProducts.length === 0 && selectedCategory && (
+            {!loading && searchingOtherCategories && (
+              <div className="p-4 text-center text-muted-foreground">
+                <div className="flex items-center justify-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-muted-foreground border-t-transparent"></div>
+                  <span>Searching other categories...</span>
+                </div>
+              </div>
+            )}
+            {!loading && !searchingOtherCategories && showingOtherCategories && (
+              <div className="p-2 text-xs text-muted-foreground bg-yellow-50 border-b border-border text-center">
+                No results in selected category. Showing results from other categories.
+              </div>
+            )}
+            {!loading && !searchingOtherCategories && filteredProducts.length === 0 && selectedCategory && !showingOtherCategories && (
               <div className="p-4 text-center text-muted-foreground">No products found</div>
             )}
             {!loading && !selectedCategory && filteredProducts.length === 0 && (
