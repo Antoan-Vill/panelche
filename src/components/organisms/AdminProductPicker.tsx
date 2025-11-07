@@ -481,14 +481,14 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
 
         {/* Products with inline variant selection */}
         <div>
-          <div className="flex items-center justify-between">
-            <h4 className="uppercase text-xs opacity-50 mb-2 mr-2 font-bold">Products</h4>
-            <div className="searchProducts w-full">
-              <input type="text" placeholder="Search" className="w-full mb-2 border border-border rounded px-2 py-1 text-sm" onChange={(e: any) => handleSearch(e.target.value)} />
+          <div className="">
+            <div className="searchProducts w-full flex items-center mb-2">
+              <input type="text" placeholder="Search" className="w-full border border-border rounded me-2 px-2 py-1 text-sm" onChange={(e: any) => handleSearch(e.target.value)} />
               {search && (
                 <button onClick={() => handleClearSearch()} className="text-sm text-muted-foreground hover:text-foreground transition-colors">Clear</button>
               )}
             </div>
+              <h4 className="uppercase text-xs opacity-50 mb-2 mr-2 font-bold">Products</h4>
           </div>
           <div className="max-h-96 overflow-y-auto border border-border rounded">
             {loading && <div className="p-4 text-center text-muted-foreground">Loading...</div>}

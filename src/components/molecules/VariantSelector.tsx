@@ -83,7 +83,11 @@ export function VariantSelector({
                 onClick={handleClick}
                 key={v.id}
                 data-value={v.id}
-                className={`border rounded mr-3 px-3 py-2 text-sm bg-white cursor-pointer ${selectedVariantId === v.id ? 'border-green-500' : ''}`}
+                className={`border rounded mr-3 px-3 py-2 text-sm cursor-pointer ${
+                  v.attributes.quantity === 0
+                    ? 'bg-red-100 border-red-500 text-red-700'
+                    : 'bg-white'
+                } ${selectedVariantId === v.id && v.attributes.quantity !== 0 ? 'border-green-500' : ''}`}
               >
               {/* {variantLabel(v)} {selectedVariantId === v.id ? 'selected '+selectedVariantId+ '/' + v.id : ''} */}
               {v.attributes.v1}

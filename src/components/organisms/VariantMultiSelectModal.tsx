@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { MouseEvent } from 'react';
 import type { Variant } from '@/lib/types/products';
 import { variantLabel } from '@/lib/variants';
+import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type VariantSelection = Record<string, number>;
 
@@ -44,13 +46,35 @@ export function VariantMultiSelectModal({
   onConfirm,
 }: VariantMultiSelectModalProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const clickTimersRef = useRef<Record<string, number[]>>({});
   const [selection, setSelection] = useState<VariantSelection>(() =>
     buildInitialSelection(initialSelectedIds)
   );
+  const [tripleClickEnabled, setTripleClickEnabled] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     setSelection(buildInitialSelection(initialSelectedIds));
   }, [initialSelectedIds]);
+
+  // Automatically uncheck disabled variants
+  useEffect(() => {
+    setSelection((prev) => {
+      const updated = { ...prev };
+      let hasChanges = false;
+
+      variants.forEach((variant) => {
+        const id = variant.id;
+        const isDisabled = variant.attributes.quantity === 0 && !tripleClickEnabled.has(id);
+        
+        if (isDisabled && updated[id]) {
+          delete updated[id];
+          hasChanges = true;
+        }
+      });
+
+      return hasChanges ? updated : prev;
+    });
+  }, [variants, tripleClickEnabled]);
 
   useEffect(() => {
     const previouslyFocused = document.activeElement as HTMLElement | null;
@@ -106,6 +130,60 @@ export function VariantMultiSelectModal({
       ...prev,
       [variantId]: Math.max(1, Math.floor(Number.isFinite(value) ? value : 1)),
     }));
+  };
+
+  const decreaseQuantity = (variantId: string) => {
+    setSelection((prev) => {
+      const currentQty = prev[variantId] ?? 1;
+      return {
+        ...prev,
+        [variantId]: Math.max(1, currentQty - 1),
+      };
+    });
+  };
+
+  const increaseQuantity = (variantId: string) => {
+    setSelection((prev) => {
+      const currentQty = prev[variantId] ?? 1;
+      return {
+        ...prev,
+        [variantId]: currentQty + 1,
+      };
+    });
+  };
+
+  const handleClick = (variantId: string, hasZeroQuantity: boolean, event: MouseEvent) => {
+    // Only handle triple-click for variants with zero quantity
+    if (!hasZeroQuantity) return;
+
+    const now = Date.now();
+    const clicks = clickTimersRef.current[variantId] || [];
+    
+    // Filter out clicks older than 500ms
+    const recentClicks = clicks.filter((time) => now - time < 500);
+    recentClicks.push(now);
+    clickTimersRef.current[variantId] = recentClicks;
+
+    // If we have 3 clicks within 500ms, it's a triple click
+    if (recentClicks.length >= 3) {
+      event.preventDefault();
+      event.stopPropagation();
+      setTripleClickEnabled((prev) => {
+        const next = new Set(prev);
+        const wasEnabled = next.has(variantId);
+        
+        if (wasEnabled) {
+          // Disabling: remove from triple-click enabled
+          next.delete(variantId);
+        } else {
+          // Enabling: add to triple-click enabled
+          next.add(variantId);
+        }
+        return next;
+      });
+      // Clear the click history after handling
+      clickTimersRef.current[variantId] = [];
+    }
   };
 
   const handleConfirm = () => {
@@ -192,41 +270,75 @@ export function VariantMultiSelectModal({
                 const stockCount = typeof variant.attributes.quantity === 'number'
                   ? variant.attributes.quantity
                   : null;
+                const isDisabled = variant.attributes.quantity === 0 && !tripleClickEnabled.has(id);
+                const isTripleClickEnabled = tripleClickEnabled.has(id);
 
                 return (
                   <li
                     key={id}
-                    className={`rounded border px-4 py-3 transition ${isChecked ? 'border-green-500 bg-green-50' : 'border-border bg-white'}`}
+                    className={`
+                      rounded border transition
+                      ${variant.attributes.quantity === 0
+                        ? 'border-red-500 bg-red-50'
+                        : isChecked
+                          ? 'border-green-500 bg-green-50'
+                          : 'border-border bg-white'
+                      }
+                    `}
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      <label className="flex flex-1 cursor-pointer items-start gap-3">
+                    <div className="flex">
+                      <label 
+                        className="flex  px-4 py-3 flex-1 cursor-pointer items-start gap-3"
+                        onClick={(e) => handleClick(id, variant.attributes.quantity === 0, e)}
+                      >
                         <input
                           type="checkbox"
                           className="mt-1 h-4 w-4"
                           checked={isChecked}
                           onChange={() => toggleVariant(id)}
+                          // Disable the checkbox if the variant is out of stock (quantity === 0) and not triple-click enabled
+                          disabled={isDisabled}
                         />
                         <div className="flex-1">
                           <div className="text-sm font-medium text-foreground">{label}</div>
                           <div className="mt-1 text-xs text-muted-foreground">
-                            {sku ? <span className="mr-3">SKU: {sku}</span> : null}
-                            {Number.isFinite(price) ? <span className="mr-3">${price.toFixed(2)}</span> : null}
+                            {/* {sku ? <span className="mr-3">SKU: {sku}</span> : null} */}
+                            {/* {Number.isFinite(price) ? <span className="mr-3">${price.toFixed(2)}</span> : null} */}
                             {stockCount !== null ? <span>Stock: {stockCount}</span> : null}
                           </div>
                         </div>
                       </label>
                       {isChecked ? (
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 px-4 py-3">
                           <span className="text-xs text-muted-foreground">Qty</span>
-                          <input
-                            type="number"
-                            min={1}
-                            value={qty}
-                            onChange={(event) =>
-                              setQuantityForVariant(id, Number(event.target.value) || 1)
-                            }
-                            className="w-16 rounded border border-border px-2 py-1 text-sm"
-                          />
+                          <div className="flex items-center gap-1">
+                            <button
+                              type="button"
+                              onClick={() => decreaseQuantity(id)}
+                              disabled={qty <= 1}
+                              className="flex h-7 w-7 items-center justify-center rounded border border-border bg-white text-sm hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+                              aria-label="Decrease quantity"
+                            >
+                              <FontAwesomeIcon icon={faMinus} className="h-3 w-3" />
+                            </button>
+                            <input
+                              type="number"
+                              min={1}
+                              value={qty}
+                              onChange={(event) =>
+                                setQuantityForVariant(id, Number(event.target.value) || 1)
+                              }
+                              className="w-16 bg-white rounded border border-border px-2 py-1 text-center text-sm"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => increaseQuantity(id)}
+                              className="flex h-7 w-7 items-center justify-center rounded border border-border bg-white text-sm hover:bg-muted"
+                              aria-label="Increase quantity"
+                            >
+                              <FontAwesomeIcon icon={faPlus} className="h-3 w-3" />
+                            </button>
+                          </div>
                         </div>
                       ) : null}
                     </div>
