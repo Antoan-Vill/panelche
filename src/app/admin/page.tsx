@@ -5,7 +5,7 @@ import { collectionGroup, getDocs, query, doc, updateDoc, getDoc } from 'firebas
 import { db } from '@/lib/firebase/client';
 import type { OrderItem } from '@/lib/types/orders';
 import { deleteOrderForUser } from '@/lib/firebase/repositories/orders';
-import { faPen } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type OrderListItem = {
@@ -115,6 +115,13 @@ export default function AdminOrdersPage() {
       quantity: Math.max(1, quantity),
       totalPrice: Number((newItems[index].unitPrice * Math.max(1, quantity)).toFixed(2)),
     };
+    setEditForm({ ...editForm, items: newItems });
+  }
+
+  function deleteItem(index: number) {
+    if (!editForm) return;
+    const newItems = [...editForm.items];
+    newItems.splice(index, 1);
     setEditForm({ ...editForm, items: newItems });
   }
 
@@ -264,6 +271,9 @@ export default function AdminOrdersPage() {
                         <div className="w-28 text-right font-medium tabular-nums">
                           {item.totalPrice.toFixed(2)}
                         </div>
+                        <div onClick={() => deleteItem(index)} className="w-28 text-right font-medium tabular-nums">
+                          <FontAwesomeIcon icon={faTrash} className="me-2" />
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -289,7 +299,10 @@ export default function AdminOrdersPage() {
               </div>
             </div>
             <div className="p-4 border-t flex items-center justify-between">
-              <button onClick={() => editingId && startDelete(editingId)} className="px-3 py-2 bg-red-600 text-white text-sm rounded">Delete</button>
+              <button onClick={() => editingId && startDelete(editingId)} className="px-3 py-2 bg-red-600 text-white text-sm rounded">
+                <FontAwesomeIcon icon={faTrash} className="me-1" />
+                Delete
+              </button>
               <div className="flex gap-2">
                 <button onClick={cancelEdit} className="px-3 py-2 bg-muted text-foreground text-sm rounded">Cancel</button>
                 <button onClick={() => saveEdit(editingId)} className="px-3 py-2 bg-green-600 text-white text-sm rounded">Save changes</button>
