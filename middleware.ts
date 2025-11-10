@@ -25,6 +25,12 @@ export async function middleware(request: NextRequest) {
   response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
 
   // Content Security Policy (adjust as needed)
+  // Allow localhost in development for local API calls
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  const connectSrc = isDevelopment
+    ? "'self' http://localhost:* https:"
+    : "'self' https:";
+
   response.headers.set(
     'Content-Security-Policy',
     [
@@ -33,7 +39,7 @@ export async function middleware(request: NextRequest) {
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https:",
       "font-src 'self'",
-      "connect-src 'self' https:",
+      `connect-src ${connectSrc}`,
       "frame-ancestors 'none'",
     ].join('; ')
   );
