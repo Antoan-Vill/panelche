@@ -16,9 +16,8 @@ export async function getCategories(): Promise<Category[]> {
       const categories = await cloudCartCategories.getAll();
       return categories;
     } else {
-      // Client-side: make HTTP request using NEXT_PUBLIC_APP_URL
-      const baseUrl = env.NEXT_PUBLIC_APP_URL;
-      const response = await fetch(`${baseUrl}/api/categories`);
+      // Client-side: use relative URL (works better on Vercel and avoids env var issues)
+      const response = await fetch('/api/categories');
 
       if (!response.ok) {
         console.error('Failed to fetch categories:', response.status);
