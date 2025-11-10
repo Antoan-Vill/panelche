@@ -7,9 +7,9 @@ export async function proxy(request: NextRequest) {
   console.log('Middleware running for:', pathname);
 
   // Redirect home page to admin catalog
-  if (pathname === '/') {
-    return NextResponse.redirect(new URL('/admin/catalog', request.url), 307);
-  }
+  // if (pathname === '/') {
+  //   return NextResponse.redirect(new URL('/admin/catalog', request.url), 307);
+  // }
   if (pathname === '/admin') {
     return NextResponse.redirect(new URL('/admin/orders', request.url), 307);
   }
@@ -45,11 +45,12 @@ export async function proxy(request: NextRequest) {
     'Content-Security-Policy',
     [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-      "style-src 'self' 'unsafe-inline'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://*.googleapis.com https://*.gstatic.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "img-src 'self' data: https:",
-      "font-src 'self'",
-      `connect-src ${connectSrc}`,
+      "font-src 'self' https://fonts.gstatic.com",
+      `connect-src ${connectSrc} https://identitytoolkit.googleapis.com https://securetoken.googleapis.com`,
+      "frame-src 'self' https://ellenmore-bd0db.firebaseapp.com https://accounts.google.com",
       "frame-ancestors 'none'",
     ].join('; ')
   );
