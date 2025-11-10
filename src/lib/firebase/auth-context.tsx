@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { GoogleAuthProvider, User, onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
+import { GoogleAuthProvider, User, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
 import { auth } from './client';
 
 type AuthContextValue = {
@@ -9,6 +9,8 @@ type AuthContextValue = {
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
+  signUpWithEmail: (email: string, password: string, displayName?: string) => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -33,6 +35,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     },
     async logout() {
       await signOut(auth);
+    },
+    async signUpWithEmail(email: string, password: string, displayName?: string) {
+      await createUserWithEmailAndPassword(auth, email, password);
+    },
+    async signInWithEmail(email: string, password: string) {
+      await signInWithEmailAndPassword(auth, email, password);
     },
   }), [user, loading]);
 
