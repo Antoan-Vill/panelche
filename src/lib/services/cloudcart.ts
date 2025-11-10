@@ -35,13 +35,31 @@ function getBaseUrl(): string {
 }
 
 export async function getProductsByCategory(categorySlug: string, page: number = 1) {
-  const url = `${getBaseUrl()}/api/categories/${categorySlug}/products?page=${page}`;
-  return fetchJson<ProductsResponse>(url, { next: { revalidate: REVALIDATE.products } });
+  const isServer = typeof window === 'undefined';
+  
+  if (isServer) {
+    // Server-side: use the service layer directly
+    const { cloudCartProducts } = await import('@/lib/services/cloudcart/index');
+    return cloudCartProducts.getByCategory(categorySlug, page);
+  } else {
+    // Client-side: make HTTP request using relative URL
+    const url = `/api/categories/${categorySlug}/products?page=${page}`;
+    return fetchJson<ProductsResponse>(url, { next: { revalidate: REVALIDATE.products } });
+  }
 }
 
 export async function getCategoryBySlug(slug: string) {
-  const url = `${getBaseUrl()}/api/categories/${slug}`;
-  return fetchJson<any>(url, { next: { revalidate: REVALIDATE.categories } });
+  const isServer = typeof window === 'undefined';
+  
+  if (isServer) {
+    // Server-side: use the service layer directly
+    const { cloudCartCategories } = await import('@/lib/services/cloudcart/index');
+    return cloudCartCategories.getBySlug(slug);
+  } else {
+    // Client-side: make HTTP request using relative URL
+    const url = `/api/categories/${slug}`;
+    return fetchJson<any>(url, { next: { revalidate: REVALIDATE.categories } });
+  }
 }
 
 export async function getProductVariants(productId: string): Promise<Variant[]> {
