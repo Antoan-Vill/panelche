@@ -3,6 +3,7 @@
  * Re-export types from subdirectories for convenient access
  */
 
+export * from './api';
 export * from './categories';
 export * from './products';
 export * from './orders';

@@ -1,8 +1,10 @@
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 import { ok, serverError } from '@/lib/http/response';
+import type { ApiRouteResponse } from '@/lib/types/api';
+import type { DashboardStats } from '@/lib/types/stats';
 
-export async function GET() {
+export async function GET(): ApiRouteResponse<DashboardStats> {
   try {
     // Return mock data for testing
     const stats = {

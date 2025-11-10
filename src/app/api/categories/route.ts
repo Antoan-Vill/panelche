@@ -3,8 +3,10 @@ export const dynamic = 'force-dynamic';
 import { badRequest, serverError, ok } from '@/lib/http/response';
 import { CategoriesQuerySchema } from '@/lib/validators/query-params';
 import { cloudCartCategories } from '@/lib/services/cloudcart';
+import type { ApiRouteResponse } from '@/lib/types/api';
+import type { Category } from '@/lib/types/categories';
 
-export async function GET(request: Request) {
+export async function GET(request: Request): ApiRouteResponse<Category[]> {
   try {
     const { searchParams } = new URL(request.url);
 

@@ -3,11 +3,13 @@ export const revalidate = 300;
 import { z } from 'zod';
 import { badRequest, notFound, serverError, ok } from '@/lib/http/response';
 import { cloudCartCategories } from '@/lib/services/cloudcart';
+import type { ApiRouteResponse } from '@/lib/types/api';
+import type { Category } from '@/lib/types/categories';
 
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ slug: string }> }
-) {
+): ApiRouteResponse<Category> {
   try {
     const { slug } = await params;
     const ParamsSchema = z.object({ slug: z.string().min(1) });

@@ -5,11 +5,13 @@ import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { badRequest, notFound, serverError, ok } from '@/lib/http/response';
 import { cloudCartProducts } from '@/lib/services/cloudcart';
+import type { ApiRouteResponse } from '@/lib/types/api';
+import type { ProductsResponse } from '@/lib/types/products';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
-) {
+): ApiRouteResponse<ProductsResponse> {
   try {
     const { slug } = await params;
     const { searchParams } = request.nextUrl;

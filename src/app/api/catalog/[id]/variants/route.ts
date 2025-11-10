@@ -4,11 +4,13 @@ import { z } from 'zod';
 import { serverError, badRequest, ok } from '@/lib/http/response';
 import { cloudCartVariants } from '@/lib/services/cloudcart';
 import { VariantSchema } from '@/schemas/variant';
+import type { ApiRouteResponse } from '@/lib/types/api';
+import type { Variant } from '@/lib/types/products';
 
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+): ApiRouteResponse<Variant[]> {
   try {
     const { id } = await params;
     const ParamsSchema = z.object({ id: z.string().min(1) });

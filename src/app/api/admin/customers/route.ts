@@ -5,18 +5,21 @@ import { getAuth } from 'firebase-admin/auth';
 import { adminDb } from '@/lib/firebase/admin';
 import { FieldValue } from 'firebase-admin/firestore';
 import { z } from 'zod';
+import { error, badRequest, serverError, ok } from '@/lib/http/response';
+import type { ApiRouteResponse, DecodedIdToken, CustomerDoc } from '@/lib/types/api';
+import type { Customer } from '@/lib/types/customers';
 
 const CreateCustomerSchema = z.object({
   email: z.string().email(),
   name: z.string().trim().min(1).optional(),
 });
 
-export async function POST(req: Request) {
+export async function POST(req: Request): ApiRouteResponse<Customer> {
   try {
     const authHeader = req.headers.get('authorization') || '';
     const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
     if (!token) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return error(401, 'Unauthorized');
     }
 
     const decoded = await getAuth().verifyIdToken(token);
@@ -25,10 +28,11 @@ export async function POST(req: Request) {
       .map((e) => e.trim().toLowerCase())
       .filter(Boolean);
     const emailFromToken = (decoded.email || '').toLowerCase();
-    const isAdminClaim = (decoded as any).admin === true || (decoded as any).role === 'admin';
+    const decodedWithClaims = decoded as DecodedIdToken;
+    const isAdminClaim = decodedWithClaims.admin === true || decodedWithClaims.role === 'admin';
     const isAllowlisted = adminEmails.length > 0 && adminEmails.includes(emailFromToken);
     if (!isAdminClaim && !isAllowlisted) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return error(403, 'Forbidden');
     }
 
     let body: z.infer<typeof CreateCustomerSchema>;
@@ -36,11 +40,11 @@ export async function POST(req: Request) {
       const raw = await req.json();
       const parsed = CreateCustomerSchema.safeParse(raw);
       if (!parsed.success) {
-        return NextResponse.json({ error: 'Invalid payload', details: parsed.error.flatten() }, { status: 400 });
+        return badRequest('Invalid payload', parsed.error.flatten());
       }
       body = parsed.data;
     } catch {
-      return NextResponse.json({ error: 'Invalid JSON payload' }, { status: 400 });
+      return badRequest('Invalid JSON payload');
     }
 
     const emailLower = body.email.trim().toLowerCase();
@@ -49,8 +53,8 @@ export async function POST(req: Request) {
     const docRef = adminDb.collection('customers').doc(emailLower);
     const existing = await docRef.get();
     if (existing.exists) {
-      const data = existing.data() as any;
-      return NextResponse.json({ id: existing.id, email: data?.email || emailLower, name: data?.name ?? null }, { status: 200 });
+      const data = existing.data() as CustomerDoc;
+      return ok({ id: existing.id, email: data?.email || emailLower, name: data?.name ?? null });
     }
 
     await docRef.set({
@@ -59,10 +63,10 @@ export async function POST(req: Request) {
       createdAt: FieldValue.serverTimestamp(),
     });
 
-    return NextResponse.json({ id: docRef.id, email: emailLower, name }, { status: 201 });
+    return ok({ id: docRef.id, email: emailLower, name });
   } catch (err) {
     console.error('Create customer error:', err);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return serverError('Internal server error');
   }
 }
 

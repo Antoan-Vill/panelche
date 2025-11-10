@@ -1,6 +1,16 @@
 import { getCloudCartClient } from './client';
 import { VariantSchema } from '@/schemas/variant';
 import type { Variant } from '@/lib/types/products';
+import type { VariantStockUpdateResponse } from '@/lib/types/api';
+
+/**
+ * Raw CloudCart API response for variants
+ */
+interface CloudCartVariantsResponse {
+  data?: unknown;
+  included?: unknown[];
+  [key: string]: unknown;
+}
 
 /**
  * CloudCart Variants API
@@ -12,7 +22,7 @@ export class CloudCartVariantsService {
    * Get variants for a product
    */
   async getByProductId(productId: string): Promise<Variant[]> {
-    const response = await this.client.get<{ included?: unknown[] }>(
+    const response = await this.client.get<CloudCartVariantsResponse>(
       `/api/v2/products/${productId}?include=variants`,
       this.client.productsRevalidate
     );
@@ -37,8 +47,8 @@ export class CloudCartVariantsService {
   /**
    * Update variant stock quantity
    */
-  async updateStock(variantId: string, quantity: number): Promise<unknown> {
-    return this.client.patch(
+  async updateStock(variantId: string, quantity: number): Promise<VariantStockUpdateResponse> {
+    return this.client.patch<VariantStockUpdateResponse>(
       `/api/v2/variants/${variantId}`,
       {
         data: {

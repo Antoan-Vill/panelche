@@ -5,8 +5,10 @@ import { NextRequest } from 'next/server';
 import { ProductsQuerySchema } from '@/lib/validators/query-params';
 import { badRequest, serverError, ok } from '@/lib/http/response';
 import { cloudCartProducts } from '@/lib/services/cloudcart';
+import type { ApiRouteResponse } from '@/lib/types/api';
+import type { ProductsResponse } from '@/lib/types/products';
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): ApiRouteResponse<ProductsResponse> {
   try {
     const { searchParams } = request.nextUrl;
     const query = searchParams.get('q');

@@ -228,7 +228,7 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
               <div className="relative">
                 <div className="pr-20">
                   <div className="flex flex-wrap items-center gap-3">
-                      <h1 className="text-lg font-bold text-foreground">{category.attributes.name} / {category.attributes.id}</h1>
+                      <h1 className="text-lg font-bold text-foreground">{category.attributes.name} / {category.id}</h1>
                       {/* {category.attributes.description && (
                         <p className="text-muted-foreground mt-1" dangerouslySetInnerHTML={{ __html: category.attributes.description }}></p>
                     )} */}

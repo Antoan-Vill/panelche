@@ -10,7 +10,27 @@ export interface GetCategoriesOptions {
 }
 
 export interface GetCategoriesResponse {
-  data: Category[];
+  data: RawCategory[];
+}
+
+/**
+ * Raw category data from CloudCart API (may include passthrough fields)
+ */
+interface RawCategoryAttributes {
+  image_id?: string;
+  [key: string]: unknown;
+}
+
+interface RawCategory {
+  attributes?: RawCategoryAttributes;
+  [key: string]: unknown;
+}
+
+/**
+ * Category with temporary image ID property
+ */
+interface CategoryWithImageId extends Category {
+  _imageId?: string;
 }
 
 /**
@@ -43,7 +63,7 @@ export class CloudCartCategoriesService {
     
     // Validate and transform categories, preserving image_id for image fetching
     const validatedCategoriesWithImageIds = categories
-      .map((cat) => {
+      .map((cat: RawCategory) => {
         const parsed = CategorySchema.safeParse(cat);
         if (!parsed.success) {
           console.warn('Invalid category data:', parsed.error);
@@ -52,8 +72,8 @@ export class CloudCartCategoriesService {
         // Transform schema Category to lib Category (convert null to undefined)
         const schemaCategory = parsed.data;
         // Extract image_id from raw attributes (may exist due to passthrough)
-        const imageId = (cat as any)?.attributes?.image_id as string | undefined;
-        const transformedCategory: Category & { _imageId?: string } = {
+        const imageId = cat?.attributes?.image_id as string | undefined;
+        const transformedCategory: CategoryWithImageId = {
           ...schemaCategory,
           attributes: {
             ...schemaCategory.attributes,
@@ -69,17 +89,17 @@ export class CloudCartCategoriesService {
           },
         };
         if (imageId) {
-          (transformedCategory as any)._imageId = imageId;
+          transformedCategory._imageId = imageId;
         }
         return transformedCategory;
       })
-      .filter((cat): cat is Category & { _imageId?: string } => cat !== null);
+      .filter((cat): cat is CategoryWithImageId => cat !== null);
 
     // If images are requested, fetch them
     if (include?.includes('images')) {
       return Promise.all(
         validatedCategoriesWithImageIds.map(async (category) => {
-          const imageId = (category as any)._imageId;
+          const imageId = category._imageId;
           if (imageId) {
             const imageData = await cloudCartImages.getById(imageId);
             if (imageData) {
@@ -87,16 +107,16 @@ export class CloudCartCategoriesService {
             }
           }
           // Remove the temporary _imageId property
-          const { _imageId, ...cleanCategory } = category as any;
-          return cleanCategory as Category;
+          const { _imageId, ...cleanCategory } = category;
+          return cleanCategory;
         })
       );
     }
 
     // Remove temporary _imageId property if not fetching images
     const validatedCategories = validatedCategoriesWithImageIds.map((cat) => {
-      const { _imageId, ...cleanCategory } = cat as any;
-      return cleanCategory as Category;
+      const { _imageId, ...cleanCategory } = cat;
+      return cleanCategory;
     });
 
     return validatedCategories;

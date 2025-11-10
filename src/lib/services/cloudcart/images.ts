@@ -3,6 +3,14 @@ import type { ImageData } from '@/lib/types/products';
 import { ImageDataSchema } from '@/schemas/product';
 
 /**
+ * Raw CloudCart API response for images
+ */
+interface CloudCartImageResponse {
+  data: unknown;
+  [key: string]: unknown;
+}
+
+/**
  * CloudCart Images API
  */
 export class CloudCartImagesService {
@@ -13,7 +21,7 @@ export class CloudCartImagesService {
    */
   async getById(imageId: string): Promise<ImageData | null> {
     try {
-      const response = await this.client.get<{ data: unknown }>(
+      const response = await this.client.get<CloudCartImageResponse>(
         `/api/v2/images/${imageId}`,
         this.client.productsRevalidate
       );

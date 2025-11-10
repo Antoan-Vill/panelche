@@ -2,11 +2,12 @@ import { z } from 'zod';
 import { cloudCartVariants } from '@/lib/services/cloudcart';
 import { badRequest, serverError, ok } from '@/lib/http/response';
 import { VariantStockUpdateSchema } from '@/schemas/variant';
+import type { ApiRouteResponse, VariantStockUpdateResponse } from '@/lib/types/api';
 
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ variantId: string }> }
-) {
+): ApiRouteResponse<VariantStockUpdateResponse['data']> {
   try {
     const { variantId } = await params;
     const ParamsSchema = z.object({ variantId: z.string().min(1) });
@@ -29,7 +30,7 @@ export async function PATCH(
     }
 
     const result = await cloudCartVariants.updateStock(variantId, parsedBody.data.quantity);
-    return ok(result);
+    return ok(result.data);
   } catch (error) {
     console.error('Error updating variant stock:', error);
     return serverError('Internal server error');

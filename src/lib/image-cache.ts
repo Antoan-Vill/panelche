@@ -38,12 +38,15 @@ export async function fetchImageUrlAndCache(imageId: string, timeoutMs: number =
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
-  const data = await fetchImageEndpoint(imageId, controller.signal);
+  const response = await fetchImageEndpoint(imageId, controller.signal);
   clearTimeout(timeout);
 
-  const url: string | null = data?.attributes?.thumbs?.["600x600"]
-    || data?.attributes?.thumbs?.["300x300"]
-    || data?.attributes?.src
+  // Extract the actual image data from the API response wrapper
+  const imageData = response?.success && response?.data ? response.data : null;
+
+  const url: string | null = imageData?.attributes?.thumbs?.["600x600"]
+    || imageData?.attributes?.thumbs?.["300x300"]
+    || imageData?.attributes?.src
     || null;
 
   if (url) {

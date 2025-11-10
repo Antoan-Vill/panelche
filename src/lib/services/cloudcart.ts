@@ -16,7 +16,9 @@ export {
 import { env } from '@/lib/env';
 import { fetchJson } from '@/lib/http/fetcher';
 import { REVALIDATE } from '@/lib/cache';
-import type { ProductsResponse, Variant, ImageData } from '@/lib/types/products';
+import type { ProductsResponse, Variant, ImageData, Product } from '@/lib/types/products';
+import type { Category } from '@/lib/types/categories';
+import type { VariantStockUpdateResponse } from '@/lib/types/api';
 
 // Helper function to get the base URL for internal API calls
 function getBaseUrl(): string {
@@ -48,7 +50,7 @@ export async function getProductsByCategory(categorySlug: string, page: number =
   }
 }
 
-export async function getCategoryBySlug(slug: string) {
+export async function getCategoryBySlug(slug: string): Promise<Category | null> {
   const isServer = typeof window === 'undefined';
   
   if (isServer) {
@@ -58,7 +60,7 @@ export async function getCategoryBySlug(slug: string) {
   } else {
     // Client-side: make HTTP request using relative URL
     const url = `/api/categories/${slug}`;
-    return fetchJson<any>(url, { next: { revalidate: REVALIDATE.categories } });
+    return fetchJson<Category>(url, { next: { revalidate: REVALIDATE.categories } });
   }
 }
 
@@ -83,7 +85,11 @@ export async function getProductVariants(productId: string): Promise<Variant[]> 
     throw error;
   }
 
-  const data = await res.json();
+  interface CloudCartVariantsResponse {
+    included?: Variant[];
+  }
+
+  const data = await res.json() as CloudCartVariantsResponse;
   return data.included || [];
 }
 
@@ -104,11 +110,18 @@ export async function getImageDetails(imageId: string): Promise<ImageData | null
     return null;
   }
 
-  const data = await res.json();
+  interface CloudCartImageResponse {
+    data: ImageData;
+  }
+
+  const data = await res.json() as CloudCartImageResponse;
   return data.data;
 }
 
-export async function updateVariantStock(variantId: string, quantity: number) {
+export async function updateVariantStock(
+  variantId: string, 
+  quantity: number
+): Promise<VariantStockUpdateResponse> {
   if (!env.SITE_URL || !env.CLOUDCART_API_KEY) {
     const error = new Error('Missing environment variables for API call') as Error & { status?: number };
     error.status = 500;
@@ -138,11 +151,16 @@ export async function updateVariantStock(variantId: string, quantity: number) {
     throw error;
   }
 
-  return res.json();
+  return res.json() as Promise<VariantStockUpdateResponse>;
 }
 
 
-export async function getProductById(productId: string) {
+interface CloudCartProductResponse {
+  data: Product;
+  included?: unknown[];
+}
+
+export async function getProductById(productId: string): Promise<CloudCartProductResponse> {
   if (!env.SITE_URL || !env.CLOUDCART_API_KEY) {
     const error = new Error('Missing environment variables for API call') as Error & { status?: number };
     error.status = 500;
@@ -163,5 +181,5 @@ export async function getProductById(productId: string) {
     throw error;
   }
 
-  return res.json();
+  return res.json() as Promise<CloudCartProductResponse>;
 }

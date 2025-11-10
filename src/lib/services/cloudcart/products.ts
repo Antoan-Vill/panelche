@@ -11,6 +11,16 @@ export interface GetProductsOptions {
 }
 
 /**
+ * Raw CloudCart API response before validation
+ */
+interface RawCloudCartProductsResponse {
+  data?: unknown[];
+  included?: unknown[];
+  meta?: unknown;
+  [key: string]: unknown;
+}
+
+/**
  * CloudCart Products API
  */
 export class CloudCartProductsService {
@@ -45,7 +55,7 @@ export class CloudCartProductsService {
       'direction': 'asc',
     });
 
-    const response = await this.client.get<unknown>(
+    const response = await this.client.get<RawCloudCartProductsResponse>(
       `/api/v2/products?${params.toString()}`,
       this.client.productsRevalidate
     );
@@ -87,7 +97,7 @@ export class CloudCartProductsService {
       params.append('filter[name][icontains]', query);
     }
 
-    const response = await this.client.get<unknown>(
+    const response = await this.client.get<RawCloudCartProductsResponse>(
       `/api/v2/products?${params.toString()}`,
       this.client.productsRevalidate
     );

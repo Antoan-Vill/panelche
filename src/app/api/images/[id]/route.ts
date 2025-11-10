@@ -1,11 +1,13 @@
 import { z } from 'zod';
 import { badRequest, notFound, serverError, ok } from '@/lib/http/response';
 import { cloudCartImages } from '@/lib/services/cloudcart';
+import type { ApiRouteResponse } from '@/lib/types/api';
+import type { ImageData } from '@/lib/types/products';
 
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+): ApiRouteResponse<ImageData> {
   try {
     const { id } = await params;
     const ParamsSchema = z.object({ id: z.string().min(1) });
