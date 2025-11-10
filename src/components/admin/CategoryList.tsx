@@ -38,7 +38,7 @@ export default function CategoryList({ categories, activeSlug }: CategoryListPro
       <div className="p-4 border-b border-border relative">
         
         <>
-          <h2 className="text-lg font-semibold text-foreground">{!collapsed ? ('Categories') : <span className="opacity-0">|</span>}</h2>
+          <h2 className="text-lg font-semibold text-foreground" title="Категории">{!collapsed ? ('Categories') : <span className="opacity-0">|</span>}</h2>
         </>
         
         <div className="absolute top-2 right-2">
@@ -46,7 +46,7 @@ export default function CategoryList({ categories, activeSlug }: CategoryListPro
             variant="ghost"
             size="icon"
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            title={collapsed ? 'Expand' : 'Collapse'}
+            title={collapsed ? 'Разгъни' : 'Сгъни'}
             onClick={() => setCollapsed((v) => !v)}
           >
             <span className="text-lg">{collapsed ? '›' : '‹'}</span>
@@ -58,7 +58,7 @@ export default function CategoryList({ categories, activeSlug }: CategoryListPro
           <div className="p-2">
             {categories.length === 0 ? (
               <div className="text-sm text-muted-foreground text-center py-4">
-                No categories found
+                <span title="Няма намерени категории">No categories found</span>
               </div>
             ) : (
               <div className="space-y-1">
@@ -86,7 +86,7 @@ export default function CategoryList({ categories, activeSlug }: CategoryListPro
                             variant="ghost"
                             size="icon"
                             aria-label={isExpanded ? 'Collapse' : 'Expand'}
-                            title={isExpanded ? 'Collapse' : 'Expand'}
+                            title={isExpanded ? 'Сгъни' : 'Разгъни'}
                             onClick={toggle}
                           >
                             <span className="text-xs">{isExpanded ? '▾' : '▸'}</span>

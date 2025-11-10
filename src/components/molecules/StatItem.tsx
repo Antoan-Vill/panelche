@@ -17,7 +17,7 @@ export function StatItem({ title, value, icon, iconVariant = 'solid' }: StatItem
           </Icon>
         </div>
         <div className="ml-4">
-          <dt className="text-sm font-medium text-muted-foreground truncate">{title}</dt>
+          <dt className="text-sm font-medium text-muted-foreground truncate" title={title === 'Total Products' ? 'Общо продукти' : title === 'Total Categories' ? 'Общо категории' : title === 'In Stock Products' ? 'Продукти на склад' : title === 'Active Products' ? 'Активни продукти' : title}>{title}</dt>
           <dd className="text-2xl font-semibold text-foreground">{value}</dd>
         </div>
       </div>

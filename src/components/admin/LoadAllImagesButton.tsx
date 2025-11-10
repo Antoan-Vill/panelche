@@ -46,7 +46,7 @@ export default function LoadAllImagesButton({ products }: LoadAllImagesButtonPro
       disabled={loading}
       className="text-sm font-medium text-blue-600 hover:text-blue-800 px-3 py-1 rounded border border-blue-200 hover:border-blue-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      {loading ? `Loading images ${done}/${total}` : `Load images (${total})`}
+      <span title={loading ? `Зареждане на изображения ${done}/${total}` : `Зареди изображения (${total})`}>{loading ? `Loading images ${done}/${total}` : `Load images (${total})`}</span>
     </button>
   );
 }

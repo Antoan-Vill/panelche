@@ -26,11 +26,11 @@ export function AdminOrderCart({ items, onUpdateQuantity, onRemoveItem }: AdminO
 
   return (
     <div className="bg-card rounded-lg border border-border p-6">
-      <h3 className="uppercase text-xs opacity-50 mb-2 font-bold">Order Cart</h3>
+      <h3 className="uppercase text-xs opacity-50 mb-2 font-bold" title="Количка за поръчка">Order Cart</h3>
 
       {items.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
-          No items in cart. Add products to get started.
+          <span title="Няма артикули в количката. Добавете продукти, за да започнете.">No items in cart. Add products to get started.</span>
         </div>
       ) : (
         <div className="space-y-4">
@@ -54,7 +54,7 @@ export function AdminOrderCart({ items, onUpdateQuantity, onRemoveItem }: AdminO
                     <div className="text-xs text-muted-foreground">{item.variantLabel}</div>
                   )}
                   {item.note && (
-                    <div className="text-xs text-muted-foreground italic">Note: {item.note}</div>
+                    <div className="text-xs text-muted-foreground italic" title="Бележка">Note: {item.note}</div>
                   )}
                   <div className="text-sm text-foreground">{(item.unitPrice || 0).toFixed(2)} лв</div>
                   {item.sku && <div className="text-sm text-foreground">{lookupSku(item.sku, priceIndex)?.['angro-inseason']} лв</div>}
@@ -94,7 +94,7 @@ export function AdminOrderCart({ items, onUpdateQuantity, onRemoveItem }: AdminO
                   className="bg-red-100 rounded-md px-2 py-1 text-red-600 hover:text-red-800 text-sm"
                 >
                   <FontAwesomeIcon icon={faXmark}  />
-                  <span className="ml-2">Remove</span>
+                  <span className="ml-2" title="Премахни">Remove</span>
                 </button>
               </div>
             ))}
@@ -103,18 +103,18 @@ export function AdminOrderCart({ items, onUpdateQuantity, onRemoveItem }: AdminO
           {/* Order Summary */}
           <div className="border-t pt-4">
             <div className="flex justify-between items-center text-sm">
-              <span>Subtotal:</span>
+              <span title="Междинна сума">Subtotal:</span>
               <span>${subtotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between items-center font-medium text-lg mt-2">
-              <span>Total:</span>
+              <span title="Общо">Total:</span>
               <span>${total.toFixed(2)}</span>
             </div>
           </div>
 
           {/* Cart Stats */}
           <div className="text-xs text-muted-foreground">
-            {items.length} item{items.length !== 1 ? 's' : ''} • {items.reduce((sum, item) => sum + item.quantity, 0)} total quantity
+            <span title={items.length === 1 ? '1 артикул' : `${items.length} артикула`}>{items.length} item{items.length !== 1 ? 's' : ''}</span> • <span title="общо количество">{items.reduce((sum, item) => sum + item.quantity, 0)} total quantity</span>
           </div>
         </div>
       )}

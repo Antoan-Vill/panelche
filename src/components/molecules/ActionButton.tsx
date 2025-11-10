@@ -16,7 +16,7 @@ export function ActionButton({ icon, label, onClick, href, variant = 'default' }
       <Icon variant={variant} size="sm" className="mb-2">
         {icon}
       </Icon>
-      <span className="text-sm font-medium text-foreground">{label}</span>
+      <span className="text-sm font-medium text-foreground" title={label === 'Add User' ? 'Добави потребител' : label === 'View Sales' ? 'Виж продажби' : label === 'Manage Catalog' ? 'Управлявай каталог' : label === 'Settings' ? 'Настройки' : label === 'Reports' ? 'Отчети' : label}>{label}</span>
     </>
   );
 

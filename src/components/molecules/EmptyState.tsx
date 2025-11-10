@@ -23,12 +23,13 @@ export function EmptyState({
       <div className="flex justify-center mb-4">
         {icon}
       </div>
-      <h3 className="text-lg font-medium text-foreground mb-2">{title}</h3>
-      <p className="text-muted-foreground mb-6 max-w-sm mx-auto">{description}</p>
+      <h3 className="text-lg font-medium text-foreground mb-2" title={title === 'No Categories Found' ? 'Няма намерени категории' : title}>{title}</h3>
+      <p className="text-muted-foreground mb-6 max-w-sm mx-auto" title={description.includes('No categories are available') ? 'Няма налични категории в момента. Моля, проверете конфигурацията на SITE_URL или опитайте отново по-късно.' : description}>{description}</p>
       {action && (
         <Link
           href={action.href}
           className={buttonVariants({ variant: 'default', size: 'default' })}
+          title={action.label === 'Refresh' ? 'Обнови' : action.label}
         >
           {action.label}
         </Link>

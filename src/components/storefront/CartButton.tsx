@@ -15,7 +15,7 @@ export default function CartButton({ onClick }: CartButtonProps) {
       onClick={onClick}
       className="relative inline-flex items-center px-3 py-2 rounded bg-gray-900 text-white hover:bg-gray-800"
     >
-      <span className="mr-2">Cart</span>
+      <span className="mr-2" title="Количка">Cart</span>
       <span className="inline-flex items-center justify-center text-xs font-semibold w-5 h-5 rounded-full bg-white text-gray-900">
         {count}
       </span>

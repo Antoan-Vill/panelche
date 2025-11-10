@@ -9,6 +9,7 @@ export default function CopyEditUrlButton({ productId }: { productId: number | s
       onClick={() => navigator.clipboard.writeText(url)}
       className="absolute bottom-0 left-0 w-24 h-20 bg-white/10 hover:bg-white/70 transition-all duration-300"
       aria-label="Copy admin edit URL"
+      title="Копирай URL за редактиране"
     />
   );
 }

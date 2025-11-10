@@ -143,12 +143,12 @@ export function AdminOrderCreate() {
           disabled={!canProceed || saving}
           className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
         >
-      {saving || creating ? 'Saving…' : 'Save Order'}
+      <span title={saving || creating ? 'Запазване…' : 'Запази поръчка'}>{saving || creating ? 'Saving…' : 'Save Order'}</span>
         </button>
       </div>
 
       {error && (
-        <div className="text-sm text-red-600">{error}</div>
+        <div className="text-sm text-red-600" title={error}>{error}</div>
       )}
 
       {/* Debug Info (temporary) */}

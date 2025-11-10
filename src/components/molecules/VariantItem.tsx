@@ -56,7 +56,7 @@ export default function VariantItem({ variant }: VariantItemProps) {
     >
       <div className="flex justify-between items-center">
         <span className="font-medium">
-          {variant.attributes.v1 && `Size: ${variant.attributes.v1}`}
+          {variant.attributes.v1 && <span title="Размер">{`Size: ${variant.attributes.v1}`}</span>}
         </span>
         <div>
           <span className="me-1 text-green-600 font-medium">
@@ -75,7 +75,7 @@ export default function VariantItem({ variant }: VariantItemProps) {
             onClick={handleBadgeClick}
             className="absolute bottom-0 right-0 inline-block bg-red-500 text-white text-xs px-2 py-1 rounded font-medium cursor-pointer hover:bg-red-600 transition-colors"
           >
-            Out of Stock
+            <span title="Няма наличност">Out of Stock</span>
           </span>
         ) : (
           <VariantStockManager
@@ -89,7 +89,7 @@ export default function VariantItem({ variant }: VariantItemProps) {
       </div>
       {copied && (
         <div className="mt-1 text-green-600 text-xs font-medium">
-          ID copied!
+          <span title="ID копиран!">ID copied!</span>
         </div>
       )}
     </div>

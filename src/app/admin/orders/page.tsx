@@ -333,28 +333,29 @@ export default function AdminOrdersPage() {
       {/* Heading */}
 
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">All Orders</h2>
+        <h2 className="text-xl font-semibold" title="Всички поръчки">All Orders</h2>
         <a
           href="/admin/orders/create"
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium"
+          title="Създай поръчка"
         >
           Create Order
         </a>
       </div>
-      {loading && <div className="text-muted-foreground">Loading…</div>}
-      {error && <div className="text-red-600 text-sm">{error}</div>}
+      {loading && <div className="text-muted-foreground" title="Зареждане…">Loading…</div>}
+      {error && <div className="text-red-600 text-sm" title={error}>{error}</div>}
       {!loading && !error && (
         <div className="overflow-auto border border-border rounded">
           <table className="w-full text-sm">
             <thead className="bg-muted text-left">
               <tr>
-                <th className="px-3 py-2 border-b">Order ID</th>
-                <th className="px-3 py-2 border-b">User ID</th>
-                <th className="px-3 py-2 border-b">Status</th>
-                <th className="px-3 py-2 border-b">Items</th>
-                <th className="px-3 py-2 border-b">Subtotal</th>
-                <th className="px-3 py-2 border-b">Total</th>
-                <th className="px-3 py-2 border-b">Actions</th>
+                <th className="px-3 py-2 border-b" title="ID на поръчката">Order ID</th>
+                <th className="px-3 py-2 border-b" title="ID на потребителя">User ID</th>
+                <th className="px-3 py-2 border-b" title="Статус">Status</th>
+                <th className="px-3 py-2 border-b" title="Артикули">Items</th>
+                <th className="px-3 py-2 border-b" title="Междинна сума">Subtotal</th>
+                <th className="px-3 py-2 border-b" title="Общо">Total</th>
+                <th className="px-3 py-2 border-b" title="Действия">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -373,7 +374,7 @@ export default function AdminOrdersPage() {
                     <td className="px-3 py-2 border-b">
                       {o.status}
                     </td>
-                    <td className="px-3 py-2 border-b">
+                    <td className="px-3 py-2 border-b" title={o.items.length === 1 ? '1 артикул' : `${o.items.length} артикула`}>
                       {`${o.items.length} item${o.items.length !== 1 ? 's' : ''}`}
                     </td>
                     <td className="px-3 py-2 border-b">{subtotal.toFixed(2)}</td>
@@ -387,7 +388,7 @@ export default function AdminOrdersPage() {
             </tbody>
           </table>
           {orders.length === 0 && (
-            <div className="p-4 text-muted-foreground">No orders found.</div>
+            <div className="p-4 text-muted-foreground" title="Няма намерени поръчки.">No orders found.</div>
           )}
         </div>
       )}
@@ -396,12 +397,12 @@ export default function AdminOrdersPage() {
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center" onClick={cancelEdit}>
           <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-xl w-full max-w-2xl mx-4" onClick={(e) => e.stopPropagation()}>
             <div className="p-4 border-b flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Edit Order <span className="font-mono">{editingId}</span></h3>
-              <button onClick={cancelEdit} className="px-2 py-1 text-sm rounded hover:bg-muted">✕</button>
+              <h3 className="text-lg font-semibold" title="Редактирай поръчка">Edit Order <span className="font-mono">{editingId}</span></h3>
+              <button onClick={cancelEdit} className="px-2 py-1 text-sm rounded hover:bg-muted" title="Затвори">✕</button>
             </div>
             <div className="p-4 space-y-4">
               <div className="flex items-center gap-3">
-                <label className="text-sm w-24">Status</label>
+                <label className="text-sm w-24" title="Статус">Status</label>
                 <select
                   value={editForm.status}
                   onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
@@ -415,7 +416,7 @@ export default function AdminOrdersPage() {
               </div>
 
               <div className="space-y-2 bg-gray-50 p-4 border border-border rounded">
-                <div className="text-sm font-medium">Items</div>
+                <div className="text-sm font-medium" title="Артикули">Items</div>
                 <div className="divide-y">
                   {editForm.items.map((item, index) => {
                     const isEmpty = !item.productName || item.productName.trim() === '';
@@ -432,6 +433,7 @@ export default function AdminOrdersPage() {
                             <input
                               type="text"
                               placeholder="Search for product..."
+                              title="Търси продукт..."
                               value={searchQuery}
                               onChange={(e) => handleItemSearchChange(index, e.target.value)}
                               onBlur={() => {
@@ -463,14 +465,14 @@ export default function AdminOrdersPage() {
                             )}
                             {searchQuery && filteredProductsForItem.length === 0 && searchQuery.trim().length > 2 && (
                               <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded shadow-lg px-3 py-2 text-sm text-muted-foreground">
-                                No products found
+                                <span title="Няма намерени продукти">No products found</span>
                               </div>
                             )}
                           </div>
                           {isSelectingProduct && (
                             <div className="pl-2 border-l-2 border-blue-500">
                               {isLoadingVariants ? (
-                                <div className="text-sm text-muted-foreground py-2">Loading variants...</div>
+                                <div className="text-sm text-muted-foreground py-2" title="Зареждане на варианти...">Loading variants...</div>
                               ) : selectedProducts[index] ? (
                                 <VariantSelector
                                   variants={variants}
@@ -490,7 +492,7 @@ export default function AdminOrdersPage() {
                         <div className="flex items-center justify-between gap-3 text-sm">
                           <div className="min-w-0 flex-1">
                             <div className="truncate" title={item.productName}>{item.productName}</div>
-                            {item.sku && <div className="text-xs text-muted-foreground">SKU: {item.sku}</div>}
+                            {item.sku && <div className="text-xs text-muted-foreground" title="SKU">SKU: {item.sku}</div>}
                           </div>
                           <div className="flex items-center gap-2">
                             <input
@@ -538,11 +540,11 @@ export default function AdminOrdersPage() {
                   return (
                     <>
                       <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground">Subtotal</span>
+                        <span className="text-muted-foreground" title="Междинна сума">Subtotal</span>
                         <span className="font-medium tabular-nums">{totals.subtotal.toFixed(2)}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground">Total</span>
+                        <span className="text-muted-foreground" title="Общо">Total</span>
                         <span className="font-semibold tabular-nums">{totals.total.toFixed(2)}</span>
                       </div>
                     </>
@@ -554,17 +556,17 @@ export default function AdminOrdersPage() {
             <div className="p-4 flex justify-end">
               <button onClick={() => setEditForm({ ...editForm, items: [...editForm.items, { productId: '', productName: '', sku: '', variantId: '', quantity: 1, unitPrice: 0, totalPrice: 0, imageUrl: '', angroPrice: 0, note: '' }] })} className="px-3 py-2 bg-blue-600 text-white text-sm rounded">
                 <FontAwesomeIcon icon={faPlus} className="me-1" />
-                Add More Items
+                <span title="Добави още артикули">Add More Items</span>
               </button>  
             </div>
             <div className="p-4 border-t flex items-center justify-between">
-              <button onClick={() => editingId && startDelete(editingId)} className="px-3 py-2 bg-red-600 text-white text-sm rounded">
+              <button onClick={() => editingId && startDelete(editingId)} className="px-3 py-2 bg-red-600 text-white text-sm rounded" title="Изтрий">
                 <FontAwesomeIcon icon={faTrash} className="me-1" />
                 Delete
               </button>
               <div className="flex gap-2">
-                <button onClick={cancelEdit} className="px-3 py-2 bg-muted text-foreground text-sm rounded">Cancel</button>
-                <button onClick={() => saveEdit(editingId)} className="px-3 py-2 bg-green-600 text-white text-sm rounded">Save changes</button>
+                <button onClick={cancelEdit} className="px-3 py-2 bg-muted text-foreground text-sm rounded" title="Отказ">Cancel</button>
+                <button onClick={() => saveEdit(editingId)} className="px-3 py-2 bg-green-600 text-white text-sm rounded" title="Запази промените">Save changes</button>
               </div>
             </div>
           </div>

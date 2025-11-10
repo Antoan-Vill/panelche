@@ -29,7 +29,7 @@ export function QuickActions() {
   return (
     <div className="bg-card rounded-lg shadow">
       <div className="px-6 py-4 border-b border-border">
-        <h3 className="text-lg font-medium text-foreground">Quick Actions</h3>
+        <h3 className="text-lg font-medium text-foreground" title="Бързи действия">Quick Actions</h3>
       </div>
       <div className="p-6">
         <div className="grid grid-cols-2 gap-4">
@@ -41,7 +41,7 @@ export function QuickActions() {
               <div className={`w-8 h-8 ${action.iconBgColor} rounded-md flex items-center justify-center mb-2`}>
                 <span className={`${action.iconTextColor} text-sm font-bold`}>{action.icon}</span>
               </div>
-              <span className="text-sm font-medium text-foreground">{action.label}</span>
+              <span className="text-sm font-medium text-foreground" title={action.label === 'Add User' ? 'Добави потребител' : action.label === 'View Sales' ? 'Виж продажби' : action.label === 'Settings' ? 'Настройки' : action.label === 'Reports' ? 'Отчети' : action.label}>{action.label}</span>
             </button>
           ))}
         </div>

@@ -66,8 +66,8 @@ export function DashboardHeader({
               <Heading level={1}>{title}</Heading>
             </div>
             <div>
-              <Link href="/admin/catalog" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Catalog</Link>
-              <Link href="/admin/orders" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Orders</Link>
+              <Link href="/admin/catalog" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors" title="Каталог">Catalog</Link>
+              <Link href="/admin/orders" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors" title="Поръчки">Orders</Link>
               {/* <Link href="/admin/customers" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Customers</Link> */}
               {/* <Link href="/admin/settings" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Settings</Link> */}
             </div>
@@ -111,7 +111,7 @@ export function DashboardHeader({
                         e.stopPropagation();
                         handleCopyUserId();
                       }}
-                      title="Click to copy User ID"
+                      title="Кликни за копиране на потребителски ID"
                     >
                       {user.displayName || user.email}
                     </div>
@@ -119,7 +119,7 @@ export function DashboardHeader({
                       {user.email}
                     </div>
                     {copied && (
-                      <div className="text-xs text-green-600 font-medium mt-1">
+                      <div className="text-xs text-green-600 font-medium mt-1" title="Потребителски ID копиран!">
                         User ID copied!
                       </div>
                     )}
@@ -128,6 +128,7 @@ export function DashboardHeader({
                     <img
                       src={user.photoURL}
                       alt="Profile"
+                      title="Профил"
                       className="w-9 h-9 rounded-full object-cover"
                     />
                   ) : (
@@ -140,7 +141,7 @@ export function DashboardHeader({
                 {menuOpen && (
                   <div className="absolute right-0 mt-2 w-56 bg-card border border-border rounded-md shadow-lg z-10">
                     <div className="px-4 py-3 border-b">
-                      <p className="text-sm font-medium text-foreground truncate">
+                      <p className="text-sm font-medium text-foreground truncate" title={user.displayName ? user.displayName : 'Влязъл'}>
                         {user.displayName || 'Signed in'}
                       </p>
                       <p className="text-xs text-muted-foreground truncate">{user.email}</p>
@@ -153,6 +154,7 @@ export function DashboardHeader({
                               <Button
                                 variant="ghost"
                                 className="w-full justify-start"
+                                title="Табло"
                               >
                                 Dashboard
                               </Button>
@@ -163,6 +165,7 @@ export function DashboardHeader({
                               <Button
                                 variant="ghost"
                                 className="w-full justify-start"
+                                title="Админ панел"
                               >
                                 Admin Panel
                               </Button>
@@ -172,6 +175,7 @@ export function DashboardHeader({
                             <Button
                               variant="ghost"
                               className="w-full justify-start"
+                              title="Магазин"
                             >
                               Store
                             </Button>
@@ -185,6 +189,7 @@ export function DashboardHeader({
                           setMenuOpen(false);
                           logout();
                         }}
+                        title="Излез"
                       >
                         Sign out
                       </Button>
@@ -193,7 +198,7 @@ export function DashboardHeader({
                 )}
               </div>
             ) : (
-              <Button onClick={() => signInWithGoogle()}>Sign in</Button>
+              <Button onClick={() => signInWithGoogle()} title="Влез">Sign in</Button>
             )}
           </div>
         </div>

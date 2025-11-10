@@ -16,7 +16,7 @@ export function StatsSection({ stats, isLoading = false, error }: StatsSectionPr
 
   if (error) {
     return (
-      <div className="mb-8">
+      <div className="mb-8" title="Неуспешно зареждане на статистики на таблото">
         <ErrorMessage message={`Failed to load dashboard statistics: ${error}`} />
       </div>
     );

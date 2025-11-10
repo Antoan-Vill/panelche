@@ -9,16 +9,16 @@ export default function CartSummary() {
   return (
     <div className="p-4 bg-muted rounded border border-border">
       <div className="flex justify-between text-sm mb-2">
-        <span>Subtotal</span>
+        <span title="Междинна сума">Subtotal</span>
         <span>{subtotal.toFixed(2)}</span>
       </div>
       <div className="flex justify-between font-semibold">
-        <span>Total</span>
+        <span title="Общо">Total</span>
         <span>{total.toFixed(2)}</span>
       </div>
 
       <Link href="/store/checkout" className="mt-4 block text-center px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700">
-        Proceed to Checkout
+        <span title="Продължи към плащане">Proceed to Checkout</span>
       </Link>
     </div>
   );

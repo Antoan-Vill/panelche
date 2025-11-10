@@ -88,7 +88,7 @@ export default function ProductVariants({ productId }: ProductVariantsProps) {
         onClick={handleToggle}
         className="text-sm font-medium text-blue-600 hover:text-blue-800"
       >
-        {effectiveIsOpen ? 'Hide variants' : 'Show variants'}
+        <span title={effectiveIsOpen ? 'Скрий варианти' : 'Покажи варианти'}>{effectiveIsOpen ? 'Hide variants' : 'Show variants'}</span>
       </button>
 
       {effectiveIsOpen && (
@@ -111,13 +111,13 @@ export default function ProductVariants({ productId }: ProductVariantsProps) {
                 onClick={handleRetry}
                 className="ml-2 text-blue-600 hover:text-blue-800"
               >
-                Retry
+                <span title="Опитай отново">Retry</span>
               </button>
             </div>
           )}
 
           {!isLoading && !error && hasFetched && (variants?.length ?? 0) === 0 && (
-            <p className="text-xs text-muted-foreground">No variants found.</p>
+            <p className="text-xs text-muted-foreground" title="Няма намерени варианти.">No variants found.</p>
           )}
 
           {!isLoading && !error && hasFetched && (variants?.length ?? 0) > 0 && (

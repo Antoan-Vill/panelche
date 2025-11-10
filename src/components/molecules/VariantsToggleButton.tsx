@@ -12,7 +12,7 @@ export default function VariantsToggleButton() {
         onClick={toggleVariants}
         className="text-sm font-medium text-blue-600 hover:text-blue-800 px-3 py-1 rounded border border-blue-200 hover:border-blue-300 transition-colors"
       >
-        {showVariants ? 'Hide All Variants' : 'Show All Variants'}
+        <span title={showVariants ? 'Скрий всички варианти' : 'Покажи всички варианти'}>{showVariants ? 'Hide All Variants' : 'Show All Variants'}</span>
       </button>
 
       {anyVariantsVisible && (
@@ -21,7 +21,7 @@ export default function VariantsToggleButton() {
           onClick={hideAllVariants}
           className="text-sm font-medium text-red-600 hover:text-red-800 px-3 py-1 rounded border border-red-200 hover:border-red-300 transition-colors"
         >
-          Hide All Variants
+          <span title="Скрий всички варианти">Hide All Variants</span>
         </button>
       )}
     </div>

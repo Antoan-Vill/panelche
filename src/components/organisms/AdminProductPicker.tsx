@@ -130,9 +130,9 @@ function ProductWithVariants({
       {/* Expanded Variant Selection */}
       {expanded && (
         <div className="px-3 pb-3 bg-muted">
-          {loadingVariants ? (
-            <div className="text-sm text-muted-foreground py-2">Loading variants...</div>
-          ) : (
+                          {loadingVariants ? (
+                            <div className="text-sm text-muted-foreground py-2" title="Зареждане на варианти...">Loading variants...</div>
+                          ) : (
             <VariantSelector
               variants={variants}
               priceCents={product.attributes.price ?? null}
@@ -452,7 +452,7 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
 
   return (
     <div className="bg-card rounded-lg border border-border p-6">
-      <h3 className="uppercase text-xs opacity-50 mb-2 font-bold">Add Products</h3>
+      <h3 className="uppercase text-xs opacity-50 mb-2 font-bold" title="Добави продукти">Add Products</h3>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Categories */}
@@ -463,7 +463,7 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
               !selectedCategory ? 'bg-blue-50 text-blue-700' : ''
             }`}
           >
-            All products
+            <span title="Всички продукти">All products</span>
             {/* <FontAwesomeIcon icon={faXmark} /> */}
           </button>
           <div className="border border-border rounded max-h-96 overflow-y-auto">
@@ -485,33 +485,33 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
         <div>
           <div className="">
             <div className="searchProducts w-full flex items-center mb-2">
-              <input type="text" placeholder="Search" className="w-full border border-border rounded me-2 px-2 py-1 text-sm" onChange={(e: any) => handleSearch(e.target.value)} />
+              <input type="text" placeholder="Search" className="w-full border border-border rounded me-2 px-2 py-1 text-sm" onChange={(e: any) => handleSearch(e.target.value)} title="Търси" />
               {search && (
-                <button onClick={() => handleClearSearch()} className="text-sm text-muted-foreground hover:text-foreground transition-colors">Clear</button>
+                <button onClick={() => handleClearSearch()} className="text-sm text-muted-foreground hover:text-foreground transition-colors" title="Изчисти">Clear</button>
               )}
             </div>
-              <h4 className="uppercase text-xs opacity-50 mb-2 mr-2 font-bold">Products</h4>
+              <h4 className="uppercase text-xs opacity-50 mb-2 mr-2 font-bold" title="Продукти">Products</h4>
           </div>
           <div className="max-h-96 overflow-y-auto border border-border rounded">
-            {loading && <div className="p-4 text-center text-muted-foreground">Loading...</div>}
+            {loading && <div className="p-4 text-center text-muted-foreground" title="Зареждане...">Loading...</div>}
             {!loading && searchingOtherCategories && (
               <div className="p-4 text-center text-muted-foreground">
                 <div className="flex items-center justify-center gap-2">
                   <div className="animate-spin rounded-full h-4 w-4 border-2 border-muted-foreground border-t-transparent"></div>
-                  <span>Searching other categories...</span>
+                  <span title="Търсене в други категории...">Searching other categories...</span>
                 </div>
               </div>
             )}
             {!loading && !searchingOtherCategories && showingOtherCategories && (
-              <div className="p-2 text-xs text-muted-foreground bg-yellow-50 border-b border-border text-center">
+              <div className="p-2 text-xs text-muted-foreground bg-yellow-50 border-b border-border text-center" title="Няма резултати в избраната категория. Показват се резултати от други категории.">
                 No results in selected category. Showing results from other categories.
               </div>
             )}
             {!loading && !searchingOtherCategories && filteredProducts.length === 0 && selectedCategory && !showingOtherCategories && (
-              <div className="p-4 text-center text-muted-foreground">No products found</div>
+              <div className="p-4 text-center text-muted-foreground" title="Няма намерени продукти">No products found</div>
             )}
             {!loading && !selectedCategory && filteredProducts.length === 0 && (
-              <div className="p-4 text-center text-muted-foreground">
+              <div className="p-4 text-center text-muted-foreground" title="Разгледай всички продукти или избери категория">
                 Browse all products or pick a category
               </div>
             )}

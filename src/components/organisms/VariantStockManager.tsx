@@ -109,7 +109,7 @@ export default function VariantStockManager({ variant, onStockChange, onClose }:
           className="w-16 text-center bg-card border border-border rounded px-1 py-0.5 text-xs"
         />
       ) : (
-        <span>Stock: {isLoading ? '...' : displayQuantity}</span>
+        <span title="Наличност">Stock: {isLoading ? '...' : displayQuantity}</span>
       )}
     </span>
   );

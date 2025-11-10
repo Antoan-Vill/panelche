@@ -11,7 +11,7 @@ export function LoadingCard({ title = 'Loading...', height = 'h-32' }: LoadingCa
     <Card className={`${height} flex items-center justify-center`}>
       <div className="text-center">
         <Spinner className="mx-auto mb-2" />
-        <p className="text-sm text-muted-foreground">{title}</p>
+        <p className="text-sm text-muted-foreground" title={title === 'Loading...' ? 'Зареждане...' : title === 'Loading categories...' ? 'Зареждане на категории...' : title}>{title}</p>
       </div>
     </Card>
   );

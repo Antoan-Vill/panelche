@@ -246,7 +246,7 @@ export function VariantMultiSelectModal({
             />
           ) : null}
           <div className="flex-1">
-            <h2 id="variant-multi-select-heading" className="text-lg font-semibold text-foreground">
+            <h2 id="variant-multi-select-heading" className="text-lg font-semibold text-foreground" title="Избери варианти">
               Select Variants
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">{productName}</p>
@@ -256,7 +256,7 @@ export function VariantMultiSelectModal({
             onClick={onCancel}
             className="rounded border border-transparent px-3 py-1 text-sm text-muted-foreground hover:bg-muted"
           >
-            Cancel
+            <span title="Отказ">Cancel</span>
           </button>
         </div>
 
@@ -314,14 +314,14 @@ export function VariantMultiSelectModal({
                           <div className="mt-1 text-xs text-muted-foreground">
                             {/* {sku ? <span className="mr-3">SKU: {sku}</span> : null} */}
                             {/* {Number.isFinite(price) ? <span className="mr-3">${price.toFixed(2)}</span> : null} */}
-                            {stockCount !== null ? <span>Stock: {stockCount}</span> : null}
+                            {stockCount !== null ? <span title="Наличност">Stock: {stockCount}</span> : null}
                           </div>
                         </div>
                       </label>
                       {isChecked ? (
                         <>
                           <div className="flex items-center gap-2 px-4 py-3">
-                            <span className="text-xs text-muted-foreground">Qty</span>
+                            <span className="text-xs text-muted-foreground" title="Количество">Qty</span>
                             <div className="flex items-center gap-1">
                               <button
                                 type="button"
@@ -356,12 +356,13 @@ export function VariantMultiSelectModal({
                             </div>
                           </div>
                           <div className="flex items-center gap-2 px-4 py-3">
-                            <span className="text-xs text-muted-foreground">Note</span>
+                            <span className="text-xs text-muted-foreground" title="Бележка">Note</span>
                             <input
                               type="text"
                               value={notes[id] || ''}
                               onChange={(event) => setNoteForVariant(id, event.target.value)}
                               placeholder="Optional note..."
+                              title="Опционална бележка..."
                               className="flex-1 rounded border border-border px-2 py-1 text-sm"
                             />
                           </div>
@@ -377,7 +378,7 @@ export function VariantMultiSelectModal({
 
         <div className="flex items-center justify-between border-t border-border px-6 py-4">
           <div className="text-sm text-muted-foreground">
-            {selectedCount} variant{selectedCount === 1 ? '' : 's'} selected
+            <span title={selectedCount === 1 ? '1 избран вариант' : `${selectedCount} избрани варианта`}>{selectedCount} variant{selectedCount === 1 ? '' : 's'} selected</span>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -385,7 +386,7 @@ export function VariantMultiSelectModal({
               onClick={onCancel}
               className="rounded border border-border px-4 py-1.5 text-sm hover:bg-muted"
             >
-              Cancel
+              <span title="Отказ">Cancel</span>
             </button>
             <button
               type="button"
@@ -396,6 +397,7 @@ export function VariantMultiSelectModal({
                   ? 'cursor-not-allowed bg-muted text-muted-foreground'
                   : 'bg-green-600 hover:bg-green-700'
               }`}
+              title="Добави избрани"
             >
               Add Selected
             </button>

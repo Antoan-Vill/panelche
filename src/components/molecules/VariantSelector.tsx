@@ -108,6 +108,7 @@ export function VariantSelector({
       <button
         onClick={handleAdd}
         className="py-1 px-2 rounded bg-green-600 text-white hover:bg-green-700 text-sm"
+        title="Добави"
       >
         Add
       </button>

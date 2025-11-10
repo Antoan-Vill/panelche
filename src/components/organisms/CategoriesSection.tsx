@@ -30,7 +30,9 @@ export function CategoriesSection({
             ))}
           </div>
         ) : error ? (
-          <ErrorMessage message={`Failed to load categories: ${error}`} />
+          <div title="Неуспешно зареждане на категории">
+            <ErrorMessage message={`Failed to load categories: ${error}`} />
+          </div>
         ) : categories.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {categories.map((category) => (
