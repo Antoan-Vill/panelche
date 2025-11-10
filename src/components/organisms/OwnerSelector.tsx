@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { getAuth } from 'firebase/auth';
-import { searchCustomersByEmailPrefix } from '@/lib/firebase/repositories/customers';
+import { searchCustomersByEmailOrName } from '@/lib/firebase/repositories/customers';
 import type { Customer, OrderOwner } from '@/lib/types/customers';
 
 interface OwnerSelectorProps {
@@ -54,7 +54,7 @@ export function OwnerSelector({ selectedOwner, onOwnerChange }: OwnerSelectorPro
       setLoading(true);
       try {
         const q = customerSearch.trim().toLowerCase();
-        const results = await searchCustomersByEmailPrefix(q);
+        const results = await searchCustomersByEmailOrName(q);
         setSearchResults(results);
       } catch (error) {
         console.error('Error searching customers:', error);
@@ -219,13 +219,13 @@ export function OwnerSelector({ selectedOwner, onOwnerChange }: OwnerSelectorPro
       {mode === 'customer' && (
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Search by Email</label>
+            <label className="block text-sm font-medium mb-1">Search by Email or Name</label>
             <input
-              type="email"
+              type="text"
               value={customerSearch}
               onChange={(e) => setCustomerSearch(e.target.value)}
               className="w-full border rounded px-3 py-2"
-              placeholder="Start typing email..."
+              placeholder="Start typing email or name..."
             />
           </div>
 
