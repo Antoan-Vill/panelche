@@ -44,7 +44,14 @@ export async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> 
     throw new Error(`${res.status}: ${text}`);
   }
 
-  return res.json() as Promise<T>;
+  const body = await res.json();
+  
+  // Extract data from standardized response format { success: true, data: ... }
+  const data = (body && typeof body === 'object' && 'data' in body && 'success' in body && body.success === true) 
+    ? (body as { data: T }).data 
+    : body;
+  
+  return data as T;
 }
 
 

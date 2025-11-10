@@ -2,11 +2,12 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { getCategories } from '@/lib/categories';
-import { getProductsByCategory, getProductVariantsClient } from '@/lib/products';
+import { getProductVariantsClient } from '@/lib/products';
+import { getProductsByCategory } from '@/lib/services/cloudcart';
 import { VariantSelector } from '@/components/molecules/VariantSelector';
 import { VariantMultiSelectModal, type VariantMultiSelectModalItem } from '@/components/organisms/VariantMultiSelectModal';
 import { variantLabel } from '@/lib/variants';
-import { useProductSearch } from '@/hooks/useProductSearch';
+import { useProductSearch } from '@/hooks';
 import type { Category } from '@/lib/categories';
 import type { Product, Variant, ProductsResponse } from '@/lib/types/products';
 import type { AdminCartItem } from '@/lib/types/customers';

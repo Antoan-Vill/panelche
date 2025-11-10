@@ -1,3 +1,18 @@
+// Re-export new service layer for server-side usage
+export {
+  getCloudCartClient,
+  CloudCartClient,
+  cloudCartImages,
+  CloudCartImagesService,
+  cloudCartCategories,
+  CloudCartCategoriesService,
+  cloudCartProducts,
+  CloudCartProductsService,
+  cloudCartVariants,
+  CloudCartVariantsService,
+} from '@/lib/services/cloudcart/index';
+
+// Client-side functions (for use in client components that call internal API routes)
 import { env } from '@/lib/env';
 import { fetchJson } from '@/lib/http/fetcher';
 import { REVALIDATE } from '@/lib/cache';
@@ -132,4 +147,3 @@ export async function getProductById(productId: string) {
 
   return res.json();
 }
-

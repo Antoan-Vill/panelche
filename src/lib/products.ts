@@ -1,14 +1,7 @@
 import type { Variant } from '@/lib/types/products';
 
-export {
-  getProductsByCategory,
-  getCategoryBySlug,
-  getProductVariants,
-  getImageDetails,
-  getProductById,
-} from '@/lib/services/cloudcart';
-
-// Client-safe helper: fetch variants via our Next.js API route
+// Only export client-safe functions here
+// Server-only functions should be imported directly in server components
 export async function getProductVariantsClient(productId: string): Promise<Variant[]> {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || '';

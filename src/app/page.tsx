@@ -2,8 +2,7 @@
 
 import { DashboardTemplate } from '@/components/templates';
 import { StatsSection, CategoriesSection, ActionsPanel, ActivityFeed } from '@/components/organisms';
-import { useCategories } from '@/hooks/useCategories';
-import { useDashboardStats } from '@/hooks/useDashboardStats';
+import { useCategories, useDashboardStats } from '@/hooks';
 import AuthGate from '@/components/AuthGate';
 
 const actions = [
@@ -49,7 +48,7 @@ const activities = [
 ];
 
 export default function Dashboard() {
-  const { categories, isLoading: categoriesLoading, error: categoriesError } = useCategories();
+  const { data: categories, isLoading: categoriesLoading, error: categoriesError } = useCategories();
   const { stats, isLoading: statsLoading, error: statsError } = useDashboardStats();
 
   return (
@@ -61,7 +60,7 @@ export default function Dashboard() {
           error={statsError}
         />
         <CategoriesSection
-          categories={categories}
+          categories={categories || []}
           isLoading={categoriesLoading}
           error={categoriesError}
         />

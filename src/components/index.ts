@@ -1,11 +1,11 @@
-// Legacy exports for backward compatibility
-export { CategoryCard } from './CategoryCard';
-export { Pagination } from './Pagination';
-export { default as VariantStockManager } from './VariantStockManager';
-export { default as VariantItem } from './VariantItem';
-export { default as ProductVariants } from './ProductVariants';
-export { CategoryDescription } from './CategoryDescription';
-export { default as VariantsToggleButton } from './VariantsToggleButton';
+// Legacy exports for backward compatibility - these are now re-exported from atomic folders
+export { CategoryCard } from './molecules/CategoryCard';
+export { Pagination } from './molecules/Pagination';
+export { default as VariantStockManager } from './organisms/VariantStockManager';
+export { default as VariantItem } from './molecules/VariantItem';
+export { default as ProductVariants } from './organisms/ProductVariants';
+export { CategoryDescription } from './molecules/CategoryDescription';
+export { default as VariantsToggleButton } from './molecules/VariantsToggleButton';
 export { default as CategoryList } from './admin/CategoryList';
 
 // New atomic design exports

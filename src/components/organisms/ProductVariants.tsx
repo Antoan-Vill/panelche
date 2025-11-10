@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Variant } from '@/lib/types/products';
-import VariantItem from './VariantItem';
+import VariantItem from '@/components/molecules/VariantItem';
 import { useVariantVisibility } from '@/lib/variant-visibility';
 import { useProductVariants } from '@/hooks';
 import { useVariantsPreload } from '@/lib/variants-preload';

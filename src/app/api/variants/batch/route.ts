@@ -2,8 +2,9 @@ export const revalidate = 300;
 
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { getProductVariants } from '@/lib/services/cloudcart';
+import { cloudCartVariants } from '@/lib/services/cloudcart';
 import { VariantSchema } from '@/schemas/variant';
+import { badRequest, serverError, ok } from '@/lib/http/response';
 
 const BodySchema = z.object({
   productIds: z.array(z.string().min(1)).min(1),
@@ -15,7 +16,7 @@ export async function POST(req: Request) {
     const json = await req.json().catch(() => ({}));
     const parsed = BodySchema.safeParse(json);
     if (!parsed.success) {
-      return NextResponse.json({ error: 'Invalid payload', details: parsed.error.flatten() }, { status: 400 });
+      return badRequest('Invalid payload', parsed.error.flatten());
     }
     const { productIds, concurrency = 4 } = parsed.data;
 
@@ -30,7 +31,7 @@ export async function POST(req: Request) {
         index += 1;
         const productId = queue[current];
         try {
-          const variants = await getProductVariants(productId);
+          const variants = await cloudCartVariants.getByProductId(productId);
           // Validate each variant; keep only valid ones
           const validated = Array.isArray(variants)
             ? variants.filter((v: unknown) => VariantSchema.safeParse(v).success)
@@ -44,9 +45,10 @@ export async function POST(req: Request) {
 
     const workers = Array.from({ length: Math.min(concurrency, queue.length) }, () => worker());
     await Promise.all(workers);
-    return NextResponse.json({ data: result });
+    return ok(result);
   } catch (e) {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('Error in batch variants route:', e);
+    return serverError('Internal server error');
   }
 }
 

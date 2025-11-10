@@ -1,5 +1,5 @@
 import { Category } from '@/lib/types/categories';
-import { CategoryCard } from '../CategoryCard';
+import { CategoryCard } from '@/components/molecules/CategoryCard';
 import { Card, CardHeader, CardContent, Heading } from '@/components/atoms';
 import { EmptyState, LoadingCard } from '@/components/molecules';
 import { ErrorMessage } from '@/components/atoms';

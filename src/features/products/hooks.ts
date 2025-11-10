@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Variant } from '@/schemas/variant';
+import type { Product } from '@/lib/types/products';
 
 type AsyncState<T> = {
   data: T | undefined;
@@ -59,26 +60,27 @@ export function useProductVariants(
       .then(async (res) => {
         const json = await res.json().catch(() => ({}));
         if (!res.ok) {
-          const rawError = (json as any)?.error;
+          const rawError = (json as { error?: unknown })?.error;
           const message =
             typeof rawError === 'string'
               ? rawError
               : (rawError && typeof rawError === 'object' && 'message' in rawError)
-                ? (rawError as any).message
+                ? (rawError as { message: string }).message
                 : `Failed to load variants (${res.status})`;
-          const details = rawError && typeof rawError === 'object' ? (rawError as any).details : undefined;
-          const err: any = new Error(message);
+          const details = rawError && typeof rawError === 'object' ? (rawError as { details?: unknown }).details : undefined;
+          const err = new Error(message) as Error & { status?: number; details?: unknown };
           err.status = res.status;
           if (details !== undefined) err.details = details;
           throw err;
         }
-        const variants = Array.isArray((json as any)?.data) ? ((json as any).data as Variant[]) : [];
+        const variants = Array.isArray((json as { data?: Variant[] })?.data) ? ((json as { data: Variant[] }).data as Variant[]) : [];
         setData(variants);
       })
-      .catch((e: any) => {
-        if (e?.name === 'AbortError') return;
-        setError(e?.message || 'Failed to load variants');
-        setErrorDetails(e?.status ? { status: e.status, details: e?.details ?? null } : (e?.details ?? null));
+      .catch((e: unknown) => {
+        const err = e as { name?: string; message?: string; status?: number; details?: unknown };
+        if (err?.name === 'AbortError') return;
+        setError(err?.message || 'Failed to load variants');
+        setErrorDetails(err?.status ? { status: err.status, details: err?.details ?? null } : (err?.details ?? null));
       })
       .finally(() => {
         setIsLoading(false);
@@ -140,6 +142,37 @@ export function useProductVariants(
   ]);
 
   return useMemo(() => ({ data, isLoading, error, errorDetails, reload }), [data, isLoading, error, errorDetails, reload]);
+}
+
+/**
+ * Hook for searching/filtering products client-side
+ */
+export function useProductSearch(products: Product[]) {
+  const [search, setSearch] = useState('');
+
+  const filteredProducts = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    if (term.length <= 2) return products;
+    return products.filter((product) =>
+      product.attributes.name.toLowerCase().includes(term)
+    );
+  }, [products, search]);
+
+  const handleSearch = useCallback((value: string) => {
+    setSearch(value);
+  }, []);
+
+  const handleClearSearch = useCallback(() => {
+    setSearch('');
+  }, []);
+
+  return {
+    search,
+    setSearch,
+    filteredProducts,
+    handleSearch,
+    handleClearSearch,
+  };
 }
 
 

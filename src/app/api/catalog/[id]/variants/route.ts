@@ -1,14 +1,9 @@
 export const revalidate = 300;
 
-import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { getProductVariants } from '@/lib/services/cloudcart';
-import { serverError, badRequest } from '@/lib/http/response';
+import { serverError, badRequest, ok } from '@/lib/http/response';
+import { cloudCartVariants } from '@/lib/services/cloudcart';
 import { VariantSchema } from '@/schemas/variant';
-
-interface HttpError extends Error {
-  status?: number;
-}
 
 export async function GET(
   _request: Request,
@@ -22,23 +17,25 @@ export async function GET(
       return badRequest('Invalid parameters', parsedParams.error.flatten());
     }
 
-    const variants = await getProductVariants(id);
+    const variants = await cloudCartVariants.getByProductId(id);
+    
+    // Validate variants
     const isValid = Array.isArray(variants) && variants.every((v) => VariantSchema.safeParse(v).success);
     if (!isValid) {
       // Attach the raw payload as error details for debugging in the UI
       return serverError('Invalid variants payload', variants);
     }
 
-    return NextResponse.json({ data: variants });
+    return ok(variants);
   } catch (error) {
-    const err = error as HttpError;
+    const err = error as { status?: number; message?: string };
     const status = typeof err?.status === 'number' ? err.status : 500;
     const message =
       status === 429
         ? 'Rate limited while fetching product variants. Please try again shortly.'
         : 'Failed to fetch product variants.';
 
-    return NextResponse.json({ error: message }, { status });
+    return serverError(message, { status });
   }
 }
 

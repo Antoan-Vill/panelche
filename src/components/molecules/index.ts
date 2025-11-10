@@ -3,3 +3,8 @@ export { ActivityItem } from './ActivityItem';
 export { StatItem } from './StatItem';
 export { EmptyState } from './EmptyState';
 export { LoadingCard } from './LoadingCard';
+export { CategoryCard } from './CategoryCard';
+export { CategoryDescription } from './CategoryDescription';
+export { Pagination } from './Pagination';
+export { default as VariantItem } from './VariantItem';
+export { default as VariantsToggleButton } from './VariantsToggleButton';

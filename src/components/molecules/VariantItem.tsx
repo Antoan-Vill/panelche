@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Variant } from '@/lib/types/products';
-import VariantStockManager from './VariantStockManager';
+import VariantStockManager from '@/components/organisms/VariantStockManager';
 
 import { priceIndex, lookupSku, type PriceRow } from '@/lib/sku-index';
 

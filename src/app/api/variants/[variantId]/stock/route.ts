@@ -1,7 +1,6 @@
-import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { updateVariantStock } from '@/lib/services/cloudcart';
-import { badRequest, serverError } from '@/lib/http/response';
+import { cloudCartVariants } from '@/lib/services/cloudcart';
+import { badRequest, serverError, ok } from '@/lib/http/response';
 import { VariantStockUpdateSchema } from '@/schemas/variant';
 
 export async function PATCH(
@@ -29,8 +28,8 @@ export async function PATCH(
       return badRequest('Invalid body', parsedBody.error.flatten());
     }
 
-    const result = await updateVariantStock(variantId, parsedBody.data.quantity);
-    return NextResponse.json({ success: true, data: result });
+    const result = await cloudCartVariants.updateStock(variantId, parsedBody.data.quantity);
+    return ok(result);
   } catch (error) {
     console.error('Error updating variant stock:', error);
     return serverError('Internal server error');
