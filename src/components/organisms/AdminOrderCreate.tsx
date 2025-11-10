@@ -111,7 +111,7 @@ export function AdminOrderCreate() {
       // Reset form or navigate after success
       setCartItems([]);
       setOwner(null);
-      router.push('/admin');
+      router.push('/admin/orders');
     } catch (e: any) {
       setError(e?.message || 'Failed to save order');
     } finally {

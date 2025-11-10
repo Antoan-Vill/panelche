@@ -62,14 +62,14 @@ export function DashboardHeader({
           {/* back */}
           <div className="flex items-center justify-between w-full me-4 py-2 pe-4 border-border border-r ">
             <div className="flex flex-col space-x-2">
-              <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">&#60;&#60; Back to Dashboard</Link>
+              {/* <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">&#60;&#60; Back to Dashboard</Link> */}
               <Heading level={1}>{title}</Heading>
             </div>
             <div>
               <Link href="/admin/catalog" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Catalog</Link>
-              <Link href="/admin" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Orders</Link>
-              <Link href="/admin/customers" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Customers</Link>
-              <Link href="/admin/settings" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Settings</Link>
+              <Link href="/admin/orders" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Orders</Link>
+              {/* <Link href="/admin/customers" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Customers</Link> */}
+              {/* <Link href="/admin/settings" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Settings</Link> */}
             </div>
           </div>
           <div className="flex items-center space-x-4 relative">

@@ -1,8 +1,18 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  console.log('Middleware running for:', pathname);
+
+  // Redirect home page to admin catalog
+  if (pathname === '/') {
+    return NextResponse.redirect(new URL('/admin/catalog', request.url), 307);
+  }
+  if (pathname === '/admin') {
+    return NextResponse.redirect(new URL('/admin/orders', request.url), 307);
+  }
 
   // Skip middleware for static files, API routes, and Next.js internals
   // Authentication is handled client-side by AuthGate component
