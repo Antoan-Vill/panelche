@@ -287,8 +287,8 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
     (async () => {
       setLoading(true);
       try {
-        const base = process.env.NEXT_PUBLIC_APP_URL || '';
-        const res = await fetch(`${base}/api/products?page=1&per_page=100`, {
+        // Use relative URL instead of constructing absolute URL
+        const res = await fetch('/api/products?page=1&per_page=100', {
           cache: 'no-store',
           signal: controller.signal,
         });
