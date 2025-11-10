@@ -146,7 +146,6 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
 
   // Fetch category info
   const category = await getCategoryBySlug(slug).catch(() => null);
-  // console.log('category', category);
   if (!category) {
     return (
       <div className="min-h-screen bg-background">

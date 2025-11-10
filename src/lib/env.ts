@@ -1,5 +1,9 @@
 import { z } from 'zod';
 
+// Constants
+const DEFAULT_APP_URL = 'http://localhost:3000';
+const FIREBASE_PREFIX = 'NEXT_PUBLIC_FIREBASE_';
+
 // Helper to handle empty strings as undefined for defaults
 const emptyStringToUndefined = <T extends z.ZodTypeAny>(schema: T) =>
   z.preprocess((val) => (val === '' ? undefined : val), schema);
@@ -20,7 +24,7 @@ const serverEnvSchema = z.object({
 const clientEnvSchema = z.object({
   // Next.js Configuration
   NEXT_PUBLIC_APP_URL: emptyStringToUndefined(
-    z.string().url().default('http://localhost:3000')
+    z.string().url().default(DEFAULT_APP_URL)
   ),
 
   // Firebase Configuration (optional during build, required at runtime)
@@ -37,139 +41,123 @@ const clientEnvSchema = z.object({
   ),
 });
 
+// Type exports
+type ClientEnv = z.infer<typeof clientEnvSchema>;
+type ServerEnv = z.infer<typeof serverEnvSchema>;
+type EnvErrors = Record<string, string[] | undefined>;
+
 // Check if we're on the server
 const isServer = typeof window === 'undefined';
 
-// Parse and validate environment variables
-function validateEnv() {
-  // Always validate client env vars
+/**
+ * Formats validation errors into a readable string.
+ */
+const formatValidationErrors = (errors: EnvErrors): string => {
+  return Object.entries(errors)
+    .map(([key, messages]) => `${key}: ${messages?.join(', ')}`)
+    .join('\n');
+};
+
+/**
+ * Separates Firebase-related errors from critical errors.
+ */
+const separateFirebaseErrors = (
+  errors: EnvErrors
+): { critical: EnvErrors; firebase: EnvErrors } => {
+  const critical: EnvErrors = {};
+  const firebase: EnvErrors = {};
+  
+  for (const [key, messages] of Object.entries(errors)) {
+    if (key.startsWith(FIREBASE_PREFIX)) {
+      firebase[key] = messages;
+    } else {
+      critical[key] = messages;
+    }
+  }
+  
+  return { critical, firebase };
+};
+
+/**
+ * Builds a partial client environment object from process.env.
+ * Used when validation fails but we still need to extract valid values.
+ */
+const buildPartialClientEnv = (): Partial<ClientEnv> => ({
+  NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || DEFAULT_APP_URL,
+  NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  NEXT_PUBLIC_FIREBASE_PROJECT_ID: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  NEXT_PUBLIC_FIREBASE_APP_ID: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  NODE_ENV: (process.env.NODE_ENV as ClientEnv['NODE_ENV']) || 'development',
+});
+
+/**
+ * Validates server environment variables.
+ * @returns Validated server env object, or null if not on server
+ * @throws {Error} If validation fails
+ */
+const validateServerEnv = (): ServerEnv | null => {
+  if (!isServer) return null;
+  
+  const serverEnv = serverEnvSchema.safeParse(process.env);
+  if (!serverEnv.success) {
+    const errorMessages = formatValidationErrors(serverEnv.error.flatten().fieldErrors);
+    console.error('❌ Server environment validation failed:\n', errorMessages);
+    throw new Error(`Invalid server environment configuration:\n${errorMessages}`);
+  }
+  
+  return serverEnv.data;
+};
+
+/**
+ * Validates and parses environment variables.
+ * @throws {Error} If critical environment variables are missing or invalid
+ * @returns Validated environment variables object
+ */
+function validateEnv(): ClientEnv & Partial<ServerEnv> {
   const clientEnv = clientEnvSchema.safeParse(process.env);
   
+  // Handle client validation errors
   if (!clientEnv.success) {
     const errors = clientEnv.error.flatten().fieldErrors;
-    // Filter out optional Firebase variables from critical errors
-    const criticalErrors = Object.entries(errors).filter(
-      ([key]) => !key.startsWith('NEXT_PUBLIC_FIREBASE_')
-    );
+    const { critical, firebase } = separateFirebaseErrors(errors);
     
-    if (criticalErrors.length > 0) {
-      const errorMessages = criticalErrors
-        .map(([key, messages]) => `${key}: ${messages?.join(', ')}`)
-        .join('\n');
+    // Throw on critical errors
+    if (Object.keys(critical).length > 0) {
+      const errorMessages = formatValidationErrors(critical);
       console.error('❌ Client environment validation failed:\n', errorMessages);
       throw new Error(`Invalid client environment configuration:\n${errorMessages}`);
     }
     
-    // Warn about missing Firebase variables but don't throw
-    const firebaseErrors = Object.entries(errors).filter(
-      ([key]) => key.startsWith('NEXT_PUBLIC_FIREBASE_')
-    );
-    if (firebaseErrors.length > 0) {
-      const warningMessages = firebaseErrors
-        .map(([key]) => key)
-        .join(', ');
-      console.warn(`⚠️  Missing Firebase environment variables: ${warningMessages}. Make sure they're set in .env.local`);
+    // Warn about missing Firebase variables
+    if (Object.keys(firebase).length > 0) {
+      const missingKeys = Object.keys(firebase).join(', ');
+      console.warn(`⚠️  Missing Firebase environment variables: ${missingKeys}. Make sure they're set in .env.local`);
     }
     
-    // Return partial data even if Firebase vars are missing (they're optional)
-    // Extract valid values from process.env directly
-    const partialClientEnv = {
-      NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
-      NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-      NEXT_PUBLIC_FIREBASE_PROJECT_ID: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-      NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-      NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-      NEXT_PUBLIC_FIREBASE_APP_ID: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-      NODE_ENV: (process.env.NODE_ENV as 'development' | 'production' | 'test') || 'development',
-    };
-
-    // Only validate server env vars on the server
-    if (isServer) {
-      const serverEnv = serverEnvSchema.safeParse(process.env);
-      
-      if (!serverEnv.success) {
-        const errors = serverEnv.error.flatten().fieldErrors;
-        const errorMessages = Object.entries(errors)
-          .map(([key, messages]) => `${key}: ${messages?.join(', ')}`)
-          .join('\n');
-        console.error('❌ Server environment validation failed:\n', errorMessages);
-        throw new Error(`Invalid server environment configuration:\n${errorMessages}`);
-      }
-
-      return {
-        ...partialClientEnv,
-        ...serverEnv.data,
-      };
-    }
-
-    return partialClientEnv;
-  }
-
-  // Only validate server env vars on the server
-  if (isServer) {
-    const serverEnv = serverEnvSchema.safeParse(process.env);
+    // Return partial data even if Firebase vars are missing
+    const partialClientEnv = buildPartialClientEnv();
+    const serverEnv = validateServerEnv();
     
-    if (!serverEnv.success) {
-      const errors = serverEnv.error.flatten().fieldErrors;
-      const errorMessages = Object.entries(errors)
-        .map(([key, messages]) => `${key}: ${messages?.join(', ')}`)
-        .join('\n');
-      console.error('❌ Server environment validation failed:\n', errorMessages);
-      throw new Error(`Invalid server environment configuration:\n${errorMessages}`);
-    }
-
-    return {
-      ...clientEnv.data,
-      ...serverEnv.data,
-    };
+    return serverEnv ? { ...partialClientEnv, ...serverEnv } as ClientEnv & ServerEnv : partialClientEnv as ClientEnv;
   }
 
-  return clientEnv.data;
-}
-
-// Runtime validation helper for Firebase config
-export function validateFirebaseConfig() {
-  const required = [
-    'NEXT_PUBLIC_FIREBASE_API_KEY',
-    'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN',
-    'NEXT_PUBLIC_FIREBASE_PROJECT_ID',
-    'NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET',
-    'NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID',
-    'NEXT_PUBLIC_FIREBASE_APP_ID',
-  ] as const;
-
-  const missing = required.filter(key => {
-    const value = env[key as keyof typeof env];
-    return !value || (typeof value === 'string' && value.trim() === '');
-  });
-  
-  if (missing.length > 0) {
-    throw new Error(
-      `Missing required Firebase environment variables: ${missing.join(', ')}. ` +
-      `Please add them to your .env.local file and restart the dev server.`
-    );
-  }
-  
-  return {
-    apiKey: env.NEXT_PUBLIC_FIREBASE_API_KEY!,
-    authDomain: env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
-    projectId: env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
-    storageBucket: env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET!,
-    messagingSenderId: env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
-    appId: env.NEXT_PUBLIC_FIREBASE_APP_ID!,
-  };
+  // Client validation succeeded - validate server env vars on server
+  const serverEnv = validateServerEnv();
+  return serverEnv ? { ...clientEnv.data, ...serverEnv } : clientEnv.data;
 }
 
 // Export validated environment variables
-export const env = validateEnv() as z.infer<typeof clientEnvSchema> & Partial<z.infer<typeof serverEnvSchema>>;
+export const env = validateEnv();
 
 // Type-safe accessors for server-only variables
-export const getServerEnv = () => {
+export const getServerEnv = (): ClientEnv & ServerEnv => {
   if (!isServer) {
     throw new Error('Server environment variables can only be accessed on the server');
   }
-  return env as z.infer<typeof clientEnvSchema> & z.infer<typeof serverEnvSchema>;
+  return env as ClientEnv & ServerEnv;
 };
 
 

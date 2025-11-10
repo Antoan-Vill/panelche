@@ -75,7 +75,6 @@ export default function ProductVariants({ productId }: ProductVariantsProps) {
   const handleShowErrorDetails = () => {
     if (!errorDetails) return;
     try {
-      console.log(errorDetails);
       alert(typeof errorDetails === 'string' ? errorDetails : JSON.stringify(errorDetails, null, 2));
     } catch {
       alert(String(errorDetails));

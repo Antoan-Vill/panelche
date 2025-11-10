@@ -28,8 +28,6 @@ export function AdminOrderCreate() {
       note: item.note || '',
     };
 
-    console.log('newItem', newItem);
-
     setCartItems((prev) => {
       const existingIndex = prev.findIndex(
         (existing) =>

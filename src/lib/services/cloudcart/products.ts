@@ -24,14 +24,11 @@ export class CloudCartProductsService {
     const { cloudCartCategories } = await import('./categories');
     const category = await cloudCartCategories.getBySlug(slug);
 
-    console.log('category', category);
-
     if (!category) {
       throw new Error(`Category with slug "${slug}" not found`);
     }
 
     const products = await this.getByCategoryId(category.id, page);
-    console.log('products', products);
     return products;
   }
 

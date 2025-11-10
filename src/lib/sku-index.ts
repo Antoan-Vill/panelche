@@ -19,9 +19,6 @@ const normalizeSku = (sku: string | number) => {
   if (hyphenCount === 2) {
     sku = String(sku).split('-').slice(0, -1).join('-');
   }
-  
-  console.log('sku', String(sku).trim().toUpperCase());
-
   return String(sku).trim().toUpperCase();
 };
 

@@ -47,7 +47,6 @@ export async function fetchImageUrlAndCache(imageId: string, timeoutMs: number =
     || null;
 
   if (url) {
-    console.log('setting cached image url', imageId, url);
     setCachedImageUrl(imageId, url);
   }
 

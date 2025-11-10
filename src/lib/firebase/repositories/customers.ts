@@ -12,7 +12,6 @@ export async function searchCustomersByEmailPrefix(prefix: string): Promise<Cust
       limit(10)
     );
     const snap = await getDocs(q);
-    console.log('snap', snap.docs.map((doc) => doc.data()));
     return snap.docs.map((doc) => ({
       id: doc.id,
       email: doc.data().email,

@@ -28,7 +28,6 @@ export async function GET(
 
     // Fetch products by category slug using service layer
     const productsResponse = await cloudCartProducts.getByCategory(slug, page);
-    console.log('productsResponse', productsResponse);
 
     return ok(productsResponse);
   } catch (error) {

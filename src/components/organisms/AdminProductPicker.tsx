@@ -175,7 +175,6 @@ function ProductWithVariants({
             setInitialSelectedVariantIds([]);
           }}
           onConfirm={(items: VariantMultiSelectModalItem[]) => {
-            console.log('items', items);
             items.forEach(({ variantId, quantity, unitPrice, sku, note }) => {
               onAddToCart({
                 productId: product.id,
