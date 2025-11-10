@@ -4,12 +4,10 @@ import type { NextRequest } from 'next/server';
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  console.log('Middleware running for:', pathname);
-
   // Redirect home page to admin catalog
-  // if (pathname === '/') {
-  //   return NextResponse.redirect(new URL('/admin/catalog', request.url), 307);
-  // }
+  if (pathname === '/') {
+    return NextResponse.redirect(new URL('/admin/catalog', request.url), 307);
+  }
   if (pathname === '/admin') {
     return NextResponse.redirect(new URL('/admin/orders', request.url), 307);
   }
