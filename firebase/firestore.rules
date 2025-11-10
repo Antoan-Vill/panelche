@@ -1,25 +1,47 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{uid}     { allow read, write: if request.auth != null && request.auth.uid == uid; }
+    match /users/{uid} {
+    	allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
 
     // Customers: admin read-only from client; writes go via Admin SDK
     match /customers/{customerId} {
-      allow read: if request.auth != null && request.auth.token.admin == true;
+    	allow read, write: if true;
+    }
+    
+    
+    // Orders: top-level collection
+
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email.matches('.*@yourdomain\\.com$') // Add your domain
+        // Or check specific emails (less flexible)
+        ||
+        request.auth.token.email == 'conposo@gmail.com'
+      );
     }
 
-    // Orders: owner read, owner create, admin read/update
-    match /users/{uid}/orders/{orderId} {
-      allow read: if request.auth != null && (request.auth.uid == uid || request.auth.token.admin == true);
-      allow create: if request.auth != null && request.auth.uid == uid;
-      allow update: if request.auth != null && request.auth.token.admin == true;
-      allow delete: if false;
-    }
-
-    // Collection group access for orders (needed for collectionGroup queries)
-    match /{path=**}/orders/{orderId} {
-      allow read: if request.auth != null && request.auth.token.admin == true;
-      allow update: if request.auth != null && request.auth.token.admin == true;
+    // Orders: top-level collection
+    match /orders/{orderId} {
+      // For collection queries, allow if admin
+      allow read: if isAdmin();
+      
+      // For individual document reads, also allow if user owns the order
+      allow get: if request.auth != null && (
+        request.auth.uid == resource.data.userId || 
+        isAdmin()
+      );
+      
+      allow create: if request.auth != null && (
+        request.auth.uid == request.resource.data.userId || 
+        isAdmin()
+      );
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
     }
   }
 }

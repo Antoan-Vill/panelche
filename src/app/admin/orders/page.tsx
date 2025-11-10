@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { collectionGroup, getDocs, query, doc, updateDoc, getDoc } from 'firebase/firestore';
+import { collectionGroup, getDocs, query, doc, updateDoc, getDoc, collection } from 'firebase/firestore';
 import { db } from '@/lib/firebase/client';
 import type { OrderItem } from '@/lib/types/orders';
 import { deleteOrderForUser } from '@/lib/firebase/repositories/orders';
@@ -62,12 +62,11 @@ export default function AdminOrdersPage() {
       setError(null);
       setLoading(true);
       try {
-        const q = query(collectionGroup(db, 'orders'));
+        const q = query(collection(db, 'orders'));
         const snap = await getDocs(q);
         const rows: OrderListItem[] = snap.docs.map((doc) => {
           const data: any = doc.data();
-          const parentUserRef = doc.ref.parent?.parent;
-          const userId = parentUserRef?.id ?? data.userId ?? 'unknown';
+          const userId = data.userId ?? 'unknown';
           const createdAt = data.createdAt?.toDate ? data.createdAt.toDate() : null;
           const items: OrderItem[] = Array.isArray(data.items) ? data.items.map((item: any) => ({
             productId: item.productId || '',
@@ -313,7 +312,7 @@ export default function AdminOrdersPage() {
       const targetOrder = orders.find(o => o.id === orderId);
       if (!targetOrder) return;
       const { subtotal, total } = calculateTotals(editForm.items);
-      const docRef = doc(db, 'users', targetOrder.userId, 'orders', orderId);
+      const docRef = doc(db, 'orders', orderId);
       await updateDoc(docRef, {
         status: editForm.status,
         items: editForm.items,

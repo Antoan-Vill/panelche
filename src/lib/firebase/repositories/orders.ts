@@ -5,7 +5,7 @@ import { db } from '@/lib/firebase/client';
 import type { OrderDoc } from '@/lib/types/orders';
 
 export async function createOrderForUser(userId: string, order: Omit<OrderDoc, 'createdAt'>): Promise<string> {
-  const docRef = await addDoc(collection(db, 'users', userId, 'orders'), {
+  const docRef = await addDoc(collection(db, 'orders'), {
     ...order,
     userId,
     createdAt: serverTimestamp(),
@@ -15,5 +15,5 @@ export async function createOrderForUser(userId: string, order: Omit<OrderDoc, '
 
 
 export async function deleteOrderForUser(userId: string, orderId: string): Promise<void> {
-  await deleteDoc(doc(db, 'users', userId, 'orders', orderId));
+  await deleteDoc(doc(db, 'orders', orderId));
 }

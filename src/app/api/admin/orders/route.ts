@@ -78,8 +78,6 @@ export async function POST(req: Request): ApiRouteResponse<{ id: string }> {
     }
 
     const docRef = await adminDb
-      .collection('users')
-      .doc(ownerId)
       .collection('orders')
       .add({
         userId: ownerId,

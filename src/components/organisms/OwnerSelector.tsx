@@ -249,7 +249,7 @@ export function OwnerSelector({ selectedOwner, onOwnerChange }: OwnerSelectorPro
             </div>
           )}
 
-          {!loading && customerSearch.length >= 2 && searchResults.length === 0 && (
+          {!loading && customerSearch.length >= 2 && (searchResults?.length ?? 0) === 0 && (
             <div className="space-y-3">
               <div className="text-sm text-muted-foreground">No customers found</div>
               <div className="border border-border rounded p-3 space-y-3">
