@@ -53,6 +53,9 @@ export function AdminOrderCart({ items, onUpdateQuantity, onRemoveItem }: AdminO
                   {item.variantLabel && (
                     <div className="text-xs text-muted-foreground">{item.variantLabel}</div>
                   )}
+                  {item.note && (
+                    <div className="text-xs text-muted-foreground italic">Note: {item.note}</div>
+                  )}
                   <div className="text-sm text-foreground">{(item.unitPrice || 0).toFixed(2)} лв</div>
                   {item.sku && <div className="text-sm text-foreground">{lookupSku(item.sku, priceIndex)?.['angro-inseason']} лв</div>}
                 </div>

@@ -152,6 +152,7 @@ function ProductWithVariants({
                   sku: sku ?? null,
                   unitPrice,
                   quantity,
+                  note: '',
                 });
                 setExpanded(false);
               }}
@@ -175,7 +176,7 @@ function ProductWithVariants({
           }}
           onConfirm={(items: VariantMultiSelectModalItem[]) => {
             console.log('items', items);
-            items.forEach(({ variantId, quantity, unitPrice, sku }) => {
+            items.forEach(({ variantId, quantity, unitPrice, sku, note }) => {
               onAddToCart({
                 productId: product.id,
                 productName: product.attributes.name,
@@ -184,6 +185,7 @@ function ProductWithVariants({
                 sku: sku ?? null,
                 unitPrice,
                 quantity,
+                note,
               });
             });
             // setShowVariantModal(false);

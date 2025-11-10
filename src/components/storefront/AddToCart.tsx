@@ -30,6 +30,7 @@ export default function AddToCart({ productId, productName, baseSku = null, imag
           quantity,
           unitPrice,
           imageUrl: imageUrl ?? null,
+          note: '',
         });
       }}
     />

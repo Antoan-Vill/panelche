@@ -18,7 +18,7 @@ export const CategoriesQuerySchema = z.object({
 export const ProductsQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1).optional(),
   per_page: z.coerce.number().int().min(1).max(100).default(20).optional(),
-  q: z.string().optional(), // search query
+  q: z.string().nullable().optional().default(''), // search query
   category_id: z.string().optional(),
   include: z.string().optional(), // e.g., "images,variants"
 });

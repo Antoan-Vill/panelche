@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     const productsResponse = await cloudCartProducts.getAll({
       page,
       perPage: per_page,
-      query: q,
+      query: q || undefined,
       include: 'images',
     });
 

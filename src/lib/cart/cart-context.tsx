@@ -49,6 +49,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
               totalPrice: Number(it.totalPrice) || ((Number(it.unitPrice) || 0) * Math.max(1, Math.floor(Number(it.quantity) || 1))),
               angroPrice: Number(it.angroPrice) || 0,
               imageUrl: it.imageUrl ?? null,
+              note: it.note || '',
             }))
           );
         }

@@ -14,6 +14,7 @@ export type VariantMultiSelectModalItem = {
   quantity: number;
   unitPrice: number;
   sku: string | null;
+  note: string;
 };
 
 type VariantMultiSelectModalProps = {
@@ -51,6 +52,7 @@ export function VariantMultiSelectModal({
     buildInitialSelection(initialSelectedIds)
   );
   const [tripleClickEnabled, setTripleClickEnabled] = useState<Set<string>>(new Set());
+  const [notes, setNotes] = useState<Record<string, string>>({});
 
   useEffect(() => {
     setSelection(buildInitialSelection(initialSelectedIds));
@@ -132,6 +134,13 @@ export function VariantMultiSelectModal({
     }));
   };
 
+  const setNoteForVariant = (variantId: string, note: string) => {
+    setNotes((prev) => ({
+      ...prev,
+      [variantId]: note,
+    }));
+  };
+
   const decreaseQuantity = (variantId: string) => {
     setSelection((prev) => {
       const currentQty = prev[variantId] ?? 1;
@@ -201,6 +210,7 @@ export function VariantMultiSelectModal({
           quantity,
           unitPrice,
           sku,
+          note: notes[variant.id] || '',
         };
       });
     if (!items.length) return;
@@ -309,37 +319,53 @@ export function VariantMultiSelectModal({
                         </div>
                       </label>
                       {isChecked ? (
-                        <div className="flex items-center gap-2 px-4 py-3">
-                          <span className="text-xs text-muted-foreground">Qty</span>
-                          <div className="flex items-center gap-1">
-                            <button
-                              type="button"
-                              onClick={() => decreaseQuantity(id)}
-                              disabled={qty <= 1}
-                              className="flex h-7 w-7 items-center justify-center rounded border border-border bg-white text-sm hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
-                              aria-label="Decrease quantity"
-                            >
-                              <FontAwesomeIcon icon={faMinus} className="h-3 w-3" />
-                            </button>
-                            <input
-                              type="number"
-                              min={1}
-                              value={qty}
-                              onChange={(event) =>
-                                setQuantityForVariant(id, Number(event.target.value) || 1)
-                              }
-                              className="w-16 bg-white rounded border border-border px-2 py-1 text-center text-sm"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => increaseQuantity(id)}
-                              className="flex h-7 w-7 items-center justify-center rounded border border-border bg-white text-sm hover:bg-muted"
-                              aria-label="Increase quantity"
-                            >
-                              <FontAwesomeIcon icon={faPlus} className="h-3 w-3" />
-                            </button>
+                        <>
+                          <div className="flex items-center gap-2 px-4 py-3">
+                            <span className="text-xs text-muted-foreground">Qty</span>
+                            <div className="flex items-center gap-1">
+                              <button
+                                type="button"
+                                onClick={() => decreaseQuantity(id)}
+                                disabled={qty <= 1}
+                                className="flex h-7 w-7 items-center justify-center rounded border border-border bg-white text-sm hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+                                aria-label="Decrease quantity"
+                              >
+                                <FontAwesomeIcon icon={faMinus} className="h-3 w-3" />
+                              </button>
+                              <input
+                                type="number"
+                                min={1}
+                                value={qty}
+                                onChange={(event) =>
+                                  setQuantityForVariant(id, Number(event.target.value) || 1)
+                                }
+                                className={`w-16 rounded border border-border px-2 py-1 text-center text-sm ${
+                                  stockCount !== null && qty > stockCount
+                                    ? 'bg-red-100'
+                                    : 'bg-white'
+                                }`}
+                              />
+                              <button
+                                type="button"
+                                onClick={() => increaseQuantity(id)}
+                                className="flex h-7 w-7 items-center justify-center rounded border border-border bg-white text-sm hover:bg-muted"
+                                aria-label="Increase quantity"
+                              >
+                                <FontAwesomeIcon icon={faPlus} className="h-3 w-3" />
+                              </button>
+                            </div>
                           </div>
-                        </div>
+                          <div className="flex items-center gap-2 px-4 py-3">
+                            <span className="text-xs text-muted-foreground">Note</span>
+                            <input
+                              type="text"
+                              value={notes[id] || ''}
+                              onChange={(event) => setNoteForVariant(id, event.target.value)}
+                              placeholder="Optional note..."
+                              className="flex-1 rounded border border-border px-2 py-1 text-sm"
+                            />
+                          </div>
+                        </>
                       ) : null}
                     </div>
                   </li>

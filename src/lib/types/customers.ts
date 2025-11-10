@@ -14,4 +14,5 @@ export type AdminCartItem = {
   quantity: number;
   lineTotal: number; // quantity * unitPrice
   sku: string | null;
+  note: string;
 };

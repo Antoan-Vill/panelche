@@ -24,6 +24,7 @@ const ItemSchema = z.object({
   unitPrice: z.number().finite().min(0),
   totalPrice: z.number().finite().min(0).optional(),
   imageUrl: z.string().url().nullable().optional(),
+  note: z.string().optional(),
 });
 
 export const PayloadSchema = z.object({
@@ -58,6 +59,7 @@ export function normalizeItems(items: ValidItem[]) {
       totalPrice,
       totalPriceCents: toCents(totalPrice),
       imageUrl: i.imageUrl ?? null,
+      note: i.note || '',
     };
   });
 }

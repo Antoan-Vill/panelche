@@ -25,6 +25,7 @@ export function AdminOrderCreate() {
       unitPrice: unitPrice,
       lineTotal: unitPrice * item.quantity,
       sku: item.sku ?? null,
+      note: item.note || '',
     };
 
     console.log('newItem', newItem);
@@ -33,7 +34,8 @@ export function AdminOrderCreate() {
       const existingIndex = prev.findIndex(
         (existing) =>
           existing.productId === newItem.productId &&
-          existing.variantId === newItem.variantId
+          existing.variantId === newItem.variantId &&
+          existing.note === newItem.note
       );
 
       if (existingIndex >= 0) {
@@ -50,7 +52,7 @@ export function AdminOrderCreate() {
 
       return [...prev, newItem];
     });
-    
+
   };
 
   const handleUpdateQuantity = (itemId: string, quantity: number) => {
@@ -85,13 +87,14 @@ export function AdminOrderCreate() {
       const items: OrderItem[] = cartItems.map((item) => ({
         productId: item.productId,
         productName: item.productName,
-        sku: null,
+        sku: item.sku ?? null,
         variantId: item.variantId ?? null,
         quantity: item.quantity,
         unitPrice: Number(item.unitPrice || 0),
         totalPrice: Number(((item.unitPrice || 0) * item.quantity).toFixed(2)),
         angroPrice: 0,
         imageUrl: item.imageUrl ?? null,
+        note: item.note,
       }));
 
       const subtotal = items.reduce((sum, i) => sum + i.totalPrice, 0);

@@ -8,6 +8,7 @@ export type OrderItem = {
   totalPrice: number; // quantity * unitPrice
   angroPrice: number; // quantity * angroPrice
   imageUrl: string | null;
+  note: string;
 };
 
 export type OrderDoc = {
