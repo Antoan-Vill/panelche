@@ -20,22 +20,6 @@ import type { ProductsResponse, Variant, ImageData, Product } from '@/lib/types/
 import type { Category } from '@/lib/types/categories';
 import type { VariantStockUpdateResponse } from '@/lib/types/api';
 
-// Helper function to get the base URL for internal API calls
-function getBaseUrl(): string {
-  const isServer = typeof window === 'undefined';
-  
-  if (isServer) {
-    // Server-side: use VERCEL_URL if available, otherwise NEXT_PUBLIC_APP_URL
-    if (process.env.VERCEL_URL) {
-      return `https://${process.env.VERCEL_URL}`;
-    }
-    return process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-  }
-  
-  // Client-side: use NEXT_PUBLIC_APP_URL
-  return env.NEXT_PUBLIC_APP_URL;
-}
-
 export async function getProductsByCategory(categorySlug: string, page: number = 1) {
   const isServer = typeof window === 'undefined';
   
@@ -62,35 +46,6 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
     const url = `/api/categories/${slug}`;
     return fetchJson<Category>(url, { next: { revalidate: REVALIDATE.categories } });
   }
-}
-
-export async function getProductVariants(productId: string): Promise<Variant[]> {
-  if (!env.SITE_URL || !env.CLOUDCART_API_KEY) {
-    const error = new Error('Missing environment variables for API call') as Error & { status?: number };
-    error.status = 500;
-    throw error;
-  }
-
-  const res = await fetch(`${env.SITE_URL}/api/v2/products/${productId}?include=variants`, {
-    headers: {
-      'X-CloudCart-ApiKey': env.CLOUDCART_API_KEY,
-      'Content-Type': 'application/json',
-    },
-    next: { revalidate: REVALIDATE.products },
-  });
-
-  if (!res.ok) {
-    const error = new Error('Failed to fetch product variants') as Error & { status?: number };
-    error.status = res.status;
-    throw error;
-  }
-
-  interface CloudCartVariantsResponse {
-    included?: Variant[];
-  }
-
-  const data = await res.json() as CloudCartVariantsResponse;
-  return data.included || [];
 }
 
 export async function getImageDetails(imageId: string): Promise<ImageData | null> {
@@ -152,34 +107,4 @@ export async function updateVariantStock(
   }
 
   return res.json() as Promise<VariantStockUpdateResponse>;
-}
-
-
-interface CloudCartProductResponse {
-  data: Product;
-  included?: unknown[];
-}
-
-export async function getProductById(productId: string): Promise<CloudCartProductResponse> {
-  if (!env.SITE_URL || !env.CLOUDCART_API_KEY) {
-    const error = new Error('Missing environment variables for API call') as Error & { status?: number };
-    error.status = 500;
-    throw error;
-  }
-
-  const res = await fetch(`${env.SITE_URL}/api/v2/products/${productId}?include=images`, {
-    headers: {
-      'X-CloudCart-ApiKey': env.CLOUDCART_API_KEY,
-      'Content-Type': 'application/json',
-    },
-    next: { revalidate: REVALIDATE.products },
-  });
-
-  if (!res.ok) {
-    const error = new Error('Failed to fetch product') as Error & { status?: number };
-    error.status = res.status;
-    throw error;
-  }
-
-  return res.json() as Promise<CloudCartProductResponse>;
 }

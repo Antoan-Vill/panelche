@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getProductById, getProductVariants } from '@/lib/services/cloudcart';
+import { cloudCartProducts, cloudCartVariants } from '@/lib/services/cloudcart';
 import type { Variant } from '@/lib/types/products';
 import AddToCart from '@/components/storefront/AddToCart';
 
@@ -10,11 +10,10 @@ interface PageProps {
 export default async function ProductDetailPage({ params }: PageProps) {
   const { id } = await params;
 
-  const productJson = await getProductById(id).catch(() => null);
-  if (!productJson || !productJson.data) notFound();
+  const product = await cloudCartProducts.getById(id).catch(() => null);
+  if (!product || !product) notFound();
 
-  const product = productJson.data;
-  const variants: Variant[] = await getProductVariants(id).catch(() => []);
+  const variants: Variant[] = await cloudCartVariants.getByProductId(id).catch(() => []);
 
   const priceCents: number | null = product?.attributes?.price ?? null;
   const imageUrl: string | null = product?.attributes?.thumbnail_url || product?.attributes?.image_url || null;
