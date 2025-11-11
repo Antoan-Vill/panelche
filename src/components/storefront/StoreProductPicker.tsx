@@ -1,0 +1,522 @@
+'use client';
+
+import { useState, useEffect, useMemo } from 'react';
+import { getCategories } from '@/lib/categories';
+import { getProductVariantsClient } from '@/lib/products';
+import { getProductsByCategory } from '@/lib/services/cloudcart';
+import { VariantSelector } from '@/components/molecules/VariantSelector';
+import { VariantMultiSelectModal, type VariantMultiSelectModalItem } from '@/components/organisms/VariantMultiSelectModal';
+import { variantLabel } from '@/lib/variants';
+import { useProductSearch } from '@/hooks';
+import { useCart } from '@/lib/cart/cart-context';
+import type { Category } from '@/lib/categories';
+import type { Product, Variant, ProductsResponse } from '@/lib/types/products';
+
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+
+// Helper function to get products and cache thems
+const PRODUCTS_CACHE_KEY = 'av:productsCache:v1';
+const PRODUCTS_CACHE_TTL_MS = 1000 * 60 * 60 * 12; // 12h
+
+type CachedCategory = { updatedAt: number; products: Product[] };
+type ProductsCache = Record<string, CachedCategory>;
+
+function loadProductsCache(): ProductsCache {
+  try {
+    const raw = localStorage.getItem(PRODUCTS_CACHE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveProductsCache(cache: ProductsCache) {
+  try {
+    localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(cache));
+  } catch {}
+}
+
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+function getCachedCategoryProducts(slug: string, maxAgeMs = PRODUCTS_CACHE_TTL_MS): Product[] | null {
+  const cache = loadProductsCache();
+  const entry = cache[slug];
+  if (!entry) return null;
+  if (Date.now() - entry.updatedAt > maxAgeMs) return null;
+  return entry.products || null;
+}
+
+function setCachedCategoryProducts(slug: string, products: Product[]) {
+  const cache = loadProductsCache();
+  cache[slug] = { updatedAt: Date.now(), products };
+  saveProductsCache(cache);
+}
+
+const getAllCachedProducts = (maxAgeMs = PRODUCTS_CACHE_TTL_MS): Product[] => {
+  const cache = loadProductsCache();
+  return Object.values(cache).flatMap(entry => entry.products).filter(Boolean);
+};
+// END of products cache helpers
+
+// Component for displaying a product with its variants inline
+function ProductWithVariants({
+  index,
+  product,
+}: {
+  index: number;
+  product: Product;
+}) {
+  const { addItem } = useCart();
+  const [variants, setVariants] = useState<Variant[]>([]);
+  const [loadingVariants, setLoadingVariants] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [showVariantModal, setShowVariantModal] = useState(false);
+  const [initialSelectedVariantIds, setInitialSelectedVariantIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!expanded) return;
+
+    const loadVariants = async () => {
+      setLoadingVariants(true);
+      try {
+        const vars = await getProductVariantsClient(product.id);
+        setVariants(vars);
+      } catch (error) {
+        console.error('Error loading variants:', error);
+        setVariants([]);
+      } finally {
+        setLoadingVariants(false);
+      }
+    };
+
+    loadVariants();
+  }, [expanded, product]);
+
+  return (
+    <div className="border-b border-border last:border-b-0">
+      {/* Product Header */}
+      <div
+        onClick={() => setExpanded(!expanded)}
+        className={`flex items-center justify-between p-3 cursor-pointer${expanded ? ' bg-muted' : ''}`}
+      >
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          {/* {product.attributes.image_id && (
+            <img
+              src={product.attributes.image_id}
+              alt=""
+              className="w-10 h-10 object-cover rounded flex-shrink-0"
+            />
+          )} */}
+          <div className="flex items-center justify-between w-full font-medium text-sm truncate">
+            {product.attributes.name}
+            <sup className="opacity-10 text-xs text-muted-foreground">{index + 1}.</sup>
+          </div>
+          {/* <div className="text-xs text-muted-foreground">${(product.attributes.price || 0).toFixed(2)}</div> */}
+        </div>
+        {expanded ? (
+          <span className="px-3 py-2 text-xs bg-blue-100 text-blue-700 hover:bg-blue-200 -mt-3 -mr-3" >
+            <FontAwesomeIcon icon={faXmark} />
+          </span>
+        ) : (
+          ''
+        )}
+      </div>
+
+      {/* Expanded Variant Selection */}
+      {expanded && (
+        <div className="px-3 pb-3 bg-muted">
+                          {loadingVariants ? (
+                            <div className="text-sm text-muted-foreground py-2" title="Зареждане на варианти...">Loading variants...</div>
+                          ) : (
+            <VariantSelector
+              variants={variants}
+              priceCents={product.attributes.price ?? null}
+              baseSku={product.attributes.sku ?? null}
+              enablePivotToMulti
+              onRequestMultiSelect={({ initialSelectedIds }) => {
+                setInitialSelectedVariantIds(initialSelectedIds);
+                setShowVariantModal(true);
+              }}
+                onAdd={({ selectedVariantId, quantity, unitPrice, sku }) => {
+                addItem({
+                  productId: product.id,
+                  productName: product.attributes.name,
+                  sku: sku ?? null,
+                  variantId: selectedVariantId ?? null,
+                  quantity,
+                  unitPrice: unitPrice, // Already in dollars from VariantSelector
+                  imageUrl: product.attributes.image_url || null,
+                  note: '',
+                });
+                setExpanded(false);
+              }}
+            />
+          )}
+        </div>
+      )}
+
+      {showVariantModal && (
+        <VariantMultiSelectModal
+          productId={product.id}
+          productName={product.attributes.name}
+          imageUrl={product.attributes.image_url || null}
+          baseSku={product.attributes.sku || null}
+          priceCents={product.attributes.price ?? null}
+          variants={variants}
+          initialSelectedIds={initialSelectedVariantIds}
+          onCancel={() => {
+            setShowVariantModal(false);
+            setInitialSelectedVariantIds([]);
+          }}
+          onConfirm={(items: VariantMultiSelectModalItem[]) => {
+            items.forEach(({ variantId, quantity, unitPrice, sku, note }) => {
+              addItem({
+                productId: product.id,
+                productName: product.attributes.name,
+                sku: sku ?? null,
+                variantId: variantId,
+                quantity,
+                unitPrice: unitPrice, // Already in dollars from VariantMultiSelectModal
+                imageUrl: product.attributes.image_url || null,
+                note,
+              });
+            });
+            // setShowVariantModal(false);
+            // setInitialSelectedVariantIds([]);
+            // setExpanded(false);
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+export function StoreProductPicker() {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [otherCategoriesProducts, setOtherCategoriesProducts] = useState<Product[]>([]);
+  const [searchingOtherCategories, setSearchingOtherCategories] = useState(false);
+
+  // Load categories on mount
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const cats = await getCategories();
+        setCategories(cats);
+        if (cats.length) {
+          // select the first category to trigger product load
+          setSelectedCategory((prev) => prev ?? cats[0]);
+        }
+      } catch (error) {
+        console.error('Error loading categories:', error);
+      }
+    };
+    loadCategories();
+  }, []);
+
+  // Load products when category changes
+  useEffect(() => {
+    if (!selectedCategory) {
+      setProducts([]);
+      return;
+    }
+
+    const slug = selectedCategory.attributes?.url_handle;
+    if (!slug) {
+      setProducts([]);
+      return;
+    }
+
+    const cached = getCachedCategoryProducts(slug);
+    if (cached) {
+      setProducts(cached);
+      return; // cache hit; skip network
+    }
+
+    let ignore = false;
+    (async () => {
+      setLoading(true);
+      try {
+        const first: ProductsResponse = await getProductsByCategory(slug, 1);
+        const lastPage = first?.meta?.page?.['last-page'] ?? 1;
+        let all = [...(first?.data ?? [])];
+        for (let page = 2; page <= lastPage; page++) {
+          const resp = await getProductsByCategory(slug, page);
+          all = all.concat(resp?.data ?? []);
+        }
+        if (!ignore) {
+          setProducts(all);
+          setCachedCategoryProducts(slug, all);
+        }
+      } catch (error: any) {
+        if (!ignore) {
+          console.error('Error loading products:', error);
+          setProducts([]);
+        }
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    })();
+
+    return () => { ignore = true; };
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    if (selectedCategory) return;
+
+    const cachedAll = getAllCachedProducts();
+    if (cachedAll.length) {
+      setProducts(cachedAll);
+      return;
+    }
+
+    const controller = new AbortController();
+    let ignore = false;
+
+    (async () => {
+      setLoading(true);
+      try {
+        // Use relative URL instead of constructing absolute URL
+        const res = await fetch('/api/products?page=1&per_page=100', {
+          cache: 'no-store',
+          signal: controller.signal,
+        });
+        const json = await res.json();
+        if (!ignore) setProducts(Array.isArray(json.data) ? json.data : []);
+      } catch (e: any) {
+        if (!ignore && e?.name !== 'AbortError') setProducts([]);
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    })();
+
+    return () => { ignore = true; controller.abort(); };
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    if (!categories.length) return;
+
+    const run = async () => {
+      for (const c of categories) {
+        const slug = c.attributes?.url_handle;
+        if (!slug) continue;
+        if (getCachedCategoryProducts(slug)) continue; // fresh
+
+        try {
+          const first: ProductsResponse = await getProductsByCategory(slug, 1);
+          const lastPage = first?.meta?.page?.['last-page'] ?? 1;
+          let all = [...(first?.data ?? [])];
+          for (let page = 2; page <= lastPage; page++) {
+            const resp = await getProductsByCategory(slug, page);
+            all = all.concat(resp?.data ?? []);
+            await sleep(50); // be polite
+          }
+          setCachedCategoryProducts(slug, all);
+        } catch {
+          // ignore category fetch errors in background
+        }
+      }
+    };
+
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(run, { timeout: 2000 });
+    } else {
+      setTimeout(run, 0);
+    }
+  }, [categories]);
+
+  const handleCategorySelect = (category: Category) => {
+    setSelectedCategory(category);
+  };
+
+  const { search, handleSearch, handleClearSearch, filteredProducts: filteredProductsFromCategory } = useProductSearch(products);
+
+  // Async search in other categories when no results in selected category
+  useEffect(() => {
+    // Reset other categories products when search changes
+    setOtherCategoriesProducts([]);
+    setSearchingOtherCategories(false);
+
+    // If no search term or results found in selected category, don't search other categories
+    if (!search.trim() || filteredProductsFromCategory.length > 0 || !selectedCategory) {
+      return;
+    }
+
+    const term = search.trim().toLowerCase();
+    if (term.length <= 2) {
+      return;
+    }
+
+    // Search in other categories asynchronously to avoid blocking UI
+    let cancelled = false;
+    setSearchingOtherCategories(true);
+
+    const searchOtherCategories = async () => {
+      try {
+        // Use requestIdleCallback or setTimeout to avoid blocking
+        await new Promise<void>((resolve) => {
+          if ('requestIdleCallback' in window) {
+            (window as any).requestIdleCallback(() => resolve(), { timeout: 100 });
+          } else {
+            setTimeout(() => resolve(), 0);
+          }
+        });
+
+        if (cancelled) return;
+
+        const allCachedProducts = getAllCachedProducts();
+        const selectedCategorySlug = selectedCategory.attributes?.url_handle;
+        const selectedCategoryProducts = getCachedCategoryProducts(selectedCategorySlug || '') || [];
+        const selectedCategoryProductIds = new Set(selectedCategoryProducts.map(p => p.id));
+
+        // Filter out products from the selected category
+        const otherCategoryProducts = allCachedProducts.filter(
+          (product) => !selectedCategoryProductIds.has(product.id)
+        );
+
+        if (cancelled) return;
+
+        // Process in chunks to avoid blocking UI
+        const chunkSize = 100;
+        const results: Product[] = [];
+
+        for (let i = 0; i < otherCategoryProducts.length; i += chunkSize) {
+          if (cancelled) return;
+
+          const chunk = otherCategoryProducts.slice(i, i + chunkSize);
+          const chunkResults = chunk.filter((product) =>
+            product.attributes.name.toLowerCase().includes(term)
+          );
+          results.push(...chunkResults);
+
+          // Yield to browser between chunks
+          if (i + chunkSize < otherCategoryProducts.length) {
+            await new Promise<void>((resolve) => {
+              if ('requestIdleCallback' in window) {
+                (window as any).requestIdleCallback(() => resolve(), { timeout: 50 });
+              } else {
+                setTimeout(() => resolve(), 0);
+              }
+            });
+          }
+        }
+
+        if (!cancelled) {
+          setOtherCategoriesProducts(results);
+          setSearchingOtherCategories(false);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error('Error searching other categories:', error);
+          setSearchingOtherCategories(false);
+        }
+      }
+    };
+
+    searchOtherCategories();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [search, filteredProductsFromCategory, selectedCategory]);
+
+  // Determine which products to show
+  const { filteredProducts, showingOtherCategories } = useMemo(() => {
+    // If no search term or results found in selected category, return normal filtered products
+    if (!search.trim() || filteredProductsFromCategory.length > 0) {
+      return { filteredProducts: filteredProductsFromCategory, showingOtherCategories: false };
+    }
+
+    // If we have results from other categories, show those
+    if (otherCategoriesProducts.length > 0) {
+      return {
+        filteredProducts: otherCategoriesProducts,
+        showingOtherCategories: true
+      };
+    }
+
+    return { filteredProducts: filteredProductsFromCategory, showingOtherCategories: false };
+  }, [search, filteredProductsFromCategory, otherCategoriesProducts]);
+
+  return (
+    <div className="bg-card rounded-lg border border-border p-6">
+      <h3 className="uppercase text-xs opacity-50 mb-2 font-bold" title="Добави продукти">Add Products</h3>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Categories */}
+        <div className="border border-border rounded">
+          <button
+            onClick={() => setSelectedCategory(null)}
+            className={`w-full text-left px-3 py-2 hover:bg-muted border-b ${
+              !selectedCategory ? 'bg-blue-50 text-blue-700' : ''
+            }`}
+          >
+            <span title="Всички продукти">All products</span>
+            {/* <FontAwesomeIcon icon={faXmark} /> */}
+          </button>
+          <div className="border border-border rounded max-h-96 overflow-y-auto">
+            {categories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => handleCategorySelect(category)}
+                className={`w-full text-left px-3 py-2 hover:bg-muted border-b last:border-b-0 ${
+                  selectedCategory?.id === category.id ? 'bg-blue-50 text-blue-700' : ''
+                }`}
+              >
+                {category.attributes.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Products with inline variant selection */}
+        <div>
+          <div className="">
+            <div className="searchProducts w-full flex items-center mb-2">
+              <input type="text" placeholder="Search" className="w-full border border-border rounded me-2 px-2 py-1 text-sm" onChange={(e: any) => handleSearch(e.target.value)} title="Търси" />
+              {search && (
+                <button onClick={() => handleClearSearch()} className="text-sm text-muted-foreground hover:text-foreground transition-colors" title="Изчисти">Clear</button>
+              )}
+            </div>
+              <h4 className="uppercase text-xs opacity-50 mb-2 mr-2 font-bold" title="Продукти">Products</h4>
+          </div>
+          <div className="max-h-96 overflow-y-auto border border-border rounded">
+            {loading && <div className="p-4 text-center text-muted-foreground" title="Зареждане...">Loading...</div>}
+            {!loading && searchingOtherCategories && (
+              <div className="p-4 text-center text-muted-foreground">
+                <div className="flex items-center justify-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-muted-foreground border-t-transparent"></div>
+                  <span title="Търсене в други категории...">Searching other categories...</span>
+                </div>
+              </div>
+            )}
+            {!loading && !searchingOtherCategories && showingOtherCategories && (
+              <div className="p-2 text-xs text-muted-foreground bg-yellow-50 border-b border-border text-center" title="Няма резултати в избраната категория. Показват се резултати от други категории.">
+                No results in selected category. Showing results from other categories.
+              </div>
+            )}
+            {!loading && !searchingOtherCategories && filteredProducts.length === 0 && selectedCategory && !showingOtherCategories && (
+              <div className="p-4 text-center text-muted-foreground" title="Няма намерени продукти">No products found</div>
+            )}
+            {!loading && !selectedCategory && filteredProducts.length === 0 && (
+              <div className="p-4 text-center text-muted-foreground" title="Разгледай всички продукти или избери категория">
+                Browse all products or pick a category
+              </div>
+            )}
+            {filteredProducts.map((product: Product, index: number) => (
+              <ProductWithVariants
+                key={product.id}
+                index={index}
+                product={product}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
