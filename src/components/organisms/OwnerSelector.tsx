@@ -11,7 +11,7 @@ interface OwnerSelectorProps {
 }
 
 export function OwnerSelector({ selectedOwner, onOwnerChange }: OwnerSelectorProps) {
-  const [mode, setMode] = useState<'guest' | 'customer'>('guest');
+  const [mode, setMode] = useState<'guest' | 'customer'>('customer');
   const [guestName, setGuestName] = useState('');
   const [guestEmail, setGuestEmail] = useState('');
   const [customerSearch, setCustomerSearch] = useState('');
@@ -161,16 +161,6 @@ export function OwnerSelector({ selectedOwner, onOwnerChange }: OwnerSelectorPro
       {/* Mode Selection */}
       <div className="flex gap-4 mb-6">
         <button
-          onClick={() => handleModeChange('guest')}
-          className={`px-4 py-2 rounded border ${
-            mode === 'guest'
-              ? 'bg-blue-50 border-blue-300 text-blue-700'
-              : 'border-border text-muted-foreground hover:bg-muted'
-          }`}
-        >
-          Guest Customer
-        </button>
-        <button
           onClick={() => handleModeChange('customer')}
           className={`px-4 py-2 rounded border ${
             mode === 'customer'
@@ -179,6 +169,16 @@ export function OwnerSelector({ selectedOwner, onOwnerChange }: OwnerSelectorPro
           }`}
         >
           Existing Customer
+        </button>
+        <button
+          onClick={() => handleModeChange('guest')}
+          className={`px-4 py-2 rounded border ${
+            mode === 'guest'
+              ? 'bg-blue-50 border-blue-300 text-blue-700'
+              : 'border-border text-muted-foreground hover:bg-muted'
+          }`}
+        >
+          Guest Customer
         </button>
       </div>
 

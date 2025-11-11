@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { MouseEvent } from 'react';
 import type { Variant } from '@/lib/types/products';
 import { variantLabel } from '@/lib/variants';
+import { priceIndex, lookupSku } from '@/lib/sku-index';
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -200,11 +201,20 @@ export function VariantMultiSelectModal({
       .filter((v) => Boolean(selection[v.id]))
       .map((variant) => {
         const quantity = Math.max(1, selection[variant.id] ?? 1);
-        const rawPrice = variant.attributes.price ?? 0;
-        const fallbackPrice = priceCents ?? 0;
-        const unitPriceSource = rawPrice || fallbackPrice;
-        const unitPrice = Number((unitPriceSource / 100).toFixed(2));
         const sku = variant.attributes.sku ?? baseSku ?? null;
+
+        // Try to get angro price first, fall back to retail price
+        const angroPrice = sku ? lookupSku(sku, priceIndex)?.['angro-inseason'] : null;
+        let unitPrice: number;
+        if (angroPrice) {
+          unitPrice = Number(angroPrice.toFixed(2));
+        } else {
+          const rawPrice = variant.attributes.price ?? 0;
+          const fallbackPrice = priceCents ?? 0;
+          const unitPriceSource = rawPrice || fallbackPrice;
+          unitPrice = Number((unitPriceSource / 100).toFixed(2));
+        }
+
         return {
           variantId: variant.id,
           quantity,
@@ -271,11 +281,19 @@ export function VariantMultiSelectModal({
                 const id = variant.id;
                 const isChecked = Boolean(selection[id]);
                 const qty = selection[id] ?? 1;
-                const rawPrice = variant.attributes.price ?? 0;
-                const fallbackPrice = priceCents ?? 0;
-                const priceSource = rawPrice || fallbackPrice;
-                const price = Number((priceSource / 100).toFixed(2));
                 const sku = variant.attributes.sku ?? baseSku ?? null;
+
+                // Try to get angro price first, fall back to retail price
+                const angroPrice = sku ? lookupSku(sku, priceIndex)?.['angro-inseason'] : null;
+                let price: number;
+                if (angroPrice) {
+                  price = Number(angroPrice.toFixed(2));
+                } else {
+                  const rawPrice = variant.attributes.price ?? 0;
+                  const fallbackPrice = priceCents ?? 0;
+                  const priceSource = rawPrice || fallbackPrice;
+                  price = Number((priceSource / 100).toFixed(2));
+                }
                 const label = variantLabel(variant) || variant.attributes.v1 || 'Variant';
                 const stockCount = typeof variant.attributes.quantity === 'number'
                   ? variant.attributes.quantity
@@ -312,9 +330,9 @@ export function VariantMultiSelectModal({
                         <div className="flex-1">
                           <div className="text-sm font-medium text-foreground">{label}</div>
                           <div className="mt-1 text-xs text-muted-foreground">
-                            {/* {sku ? <span className="mr-3">SKU: {sku}</span> : null} */}
-                            {/* {Number.isFinite(price) ? <span className="mr-3">${price.toFixed(2)}</span> : null} */}
-                            {stockCount !== null ? <span title="Наличност">Stock: {stockCount}</span> : null}
+                            {sku ? <span className="mr-3 whitespace-nowrap">SKU: {sku}</span> : null}
+                            {Number.isFinite(price) ? <span className="mr-3 whitespace-nowrap font-medium">{price.toFixed(2)} лв</span> : null}
+                            {stockCount !== null ? <span className="whitespace-nowrap" title="Наличност">Stock: {stockCount}</span> : null}
                           </div>
                         </div>
                       </label>
@@ -363,7 +381,7 @@ export function VariantMultiSelectModal({
                               onChange={(event) => setNoteForVariant(id, event.target.value)}
                               placeholder="Optional note..."
                               title="Опционална бележка..."
-                              className="flex-1 rounded border border-border px-2 py-1 text-sm"
+                              className="flex-1 bg-white rounded border border-border px-2 py-1 text-sm"
                             />
                           </div>
                         </>

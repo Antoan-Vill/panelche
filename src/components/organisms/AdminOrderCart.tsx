@@ -85,7 +85,7 @@ export function AdminOrderCart({ items, onUpdateQuantity, onRemoveItem }: AdminO
 
                 {/* Line Total */}
                 <div className="text-sm font-medium w-16 text-right">
-                  ${(item.lineTotal || 0).toFixed(2)}
+                  {(item.lineTotal || 0).toFixed(2)} лв
                 </div>
 
                 {/* Remove Button */}
@@ -104,11 +104,11 @@ export function AdminOrderCart({ items, onUpdateQuantity, onRemoveItem }: AdminO
           <div className="border-t pt-4">
             <div className="flex justify-between items-center text-sm">
               <span title="Междинна сума">Subtotal:</span>
-              <span>${subtotal.toFixed(2)}</span>
+              <span>{subtotal.toFixed(2)} лв</span>
             </div>
             <div className="flex justify-between items-center font-medium text-lg mt-2">
               <span title="Общо">Total:</span>
-              <span>${total.toFixed(2)}</span>
+              <span>{total.toFixed(2)} лв</span>
             </div>
           </div>
 

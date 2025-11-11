@@ -377,8 +377,8 @@ export default function AdminOrdersPage() {
                     <td className="px-3 py-2 border-b" title={o.items.length === 1 ? '1 артикул' : `${o.items.length} артикула`}>
                       {`${o.items.length} item${o.items.length !== 1 ? 's' : ''}`}
                     </td>
-                    <td className="px-3 py-2 border-b">{subtotal.toFixed(2)}</td>
-                    <td className="px-3 py-2 border-b font-semibold">{total.toFixed(2)}</td>
+                    <td className="px-3 py-2 border-b">{subtotal.toFixed(2)} лв</td>
+                    <td className="px-3 py-2 border-b font-semibold">{total.toFixed(2)} лв</td>
                     <td className="px-3 py-2 border-b">
                       <span className="text-xs text-muted-foreground">{o.createdAt ? o.createdAt.toLocaleString() : '-'}</span>
                     </td>
@@ -503,10 +503,10 @@ export default function AdminOrdersPage() {
                               className="border rounded px-2 py-1 text-sm w-20 text-right"
                             />
                             <div className="w-28 text-right tabular-nums text-xs">
-                              {item.unitPrice ? item.unitPrice.toFixed(2) : '-'}
+                              {item.unitPrice ? `${item.unitPrice.toFixed(2)} лв` : '-'}
                             </div>
                             <div className="w-28 text-right font-medium tabular-nums">
-                              {item.totalPrice ? item.totalPrice.toFixed(2) : '-'}
+                              {item.totalPrice ? `${item.totalPrice.toFixed(2)} лв` : '-'}
                             </div>
                             <div onClick={() => deleteItem(index)} className="w-28 text-right font-medium tabular-nums cursor-pointer">
                               <FontAwesomeIcon icon={faTrash} className="me-2" />
@@ -541,11 +541,11 @@ export default function AdminOrdersPage() {
                     <>
                       <div className="flex items-center gap-2">
                         <span className="text-muted-foreground" title="Междинна сума">Subtotal</span>
-                        <span className="font-medium tabular-nums">{totals.subtotal.toFixed(2)}</span>
+                        <span className="font-medium tabular-nums">{totals.subtotal.toFixed(2)} лв</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-muted-foreground" title="Общо">Total</span>
-                        <span className="font-semibold tabular-nums">{totals.total.toFixed(2)}</span>
+                        <span className="font-semibold tabular-nums">{totals.total.toFixed(2)} лв</span>
                       </div>
                     </>
                   );

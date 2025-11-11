@@ -58,15 +58,13 @@ export default function VariantItem({ variant }: VariantItemProps) {
         <span className="font-medium">
           {variant.attributes.v1 && <span title="Размер">{`Size: ${variant.attributes.v1}`}</span>}
         </span>
-        <div>
-          <span className="me-1 text-green-600 font-medium">
+        <div className="flex flex-col text-right">
+          <span className="text-green-600 font-medium">
             {(variant.attributes.price / 100).toFixed(2)} лв
           </span>
-          <span className="text-muted-foreground">{lookupSku(variant.attributes.sku, priceIndex)?.['angro-offseason']}</span>
-          <span className="text-muted-foreground">/</span>
-          <span className="text-muted-foreground">{lookupSku(variant.attributes.sku, priceIndex)?.['angro-inseason']}</span>
-          {/* <span className="text-muted-foreground"> / </span> */}
-          {/* <span className="text-muted-foreground">{lookupSku(variant.attributes.sku, priceIndex)?.['end-price-inseason']}</span> */}
+          <div className="text-xs text-muted-foreground">
+            <span>Angro: {lookupSku(variant.attributes.sku, priceIndex)?.['angro-offseason']} / {lookupSku(variant.attributes.sku, priceIndex)?.['angro-inseason']} лв</span>
+          </div>
         </div>
       </div>
       <div className="flex justify-between items-center mt-1">

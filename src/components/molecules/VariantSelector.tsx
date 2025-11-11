@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import type { Variant } from '@/lib/types/products';
 import { variantLabel } from '@/lib/variants';
+import { priceIndex, lookupSku } from '@/lib/sku-index';
 
 type VariantSelectorProps = {
   variants?: Variant[];
@@ -30,12 +31,26 @@ export function VariantSelector({
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(variants?.[0]?.id ?? null);
 
   const unitPrice = useMemo(() => {
+    let sku: string | null = null;
+
     if (variants.length > 0 && selectedVariantId) {
       const v = variants.find((x) => x.id === selectedVariantId);
-      if (v) return Number((v.attributes.price / 100).toFixed(2));
+      if (v) {
+        sku = v.attributes.sku ?? null;
+        // Try to get angro price first, fall back to retail price
+        const angroPrice = sku ? lookupSku(sku, priceIndex)?.['angro-inseason'] : null;
+        if (angroPrice) return Number(angroPrice.toFixed(2));
+        return Number((v.attributes.price / 100).toFixed(2));
+      }
     }
+
+    // For products without variants, use base SKU
+    sku = baseSku ?? null;
+    const angroPrice = sku ? lookupSku(sku, priceIndex)?.['angro-inseason'] : null;
+    if (angroPrice) return Number(angroPrice.toFixed(2));
+
     return Number(((priceCents ?? 0) / 100).toFixed(2));
-  }, [variants, selectedVariantId, priceCents]);
+  }, [variants, selectedVariantId, priceCents, baseSku]);
 
   const sku = useMemo(() => {
     if (variants.length > 0 && selectedVariantId) {
@@ -54,64 +69,86 @@ export function VariantSelector({
     });
   }
 
+  const retailPrice = useMemo(() => {
+    if (variants.length > 0 && selectedVariantId) {
+      const v = variants.find((x) => x.id === selectedVariantId);
+      if (v) return Number((v.attributes.price / 100).toFixed(2));
+    }
+    return Number(((priceCents ?? 0) / 100).toFixed(2));
+  }, [variants, selectedVariantId, priceCents]);
+
   return (
-    <div className="flex items-center gap-2">
-      {variants.length > 0 && (
-        <span
-          className=""
-          data-value={selectedVariantId ?? ''}
+    <div className="flex flex-col gap-2">
+      {/* Price Display */}
+      <div className="flex flex-col">
+        <div className="text-lg font-semibold text-green-600">
+          {unitPrice.toFixed(2)} лв
+        </div>
+        {unitPrice !== retailPrice && (
+          <div className="text-xs text-muted-foreground">
+            Retail: {retailPrice.toFixed(2)} лв
+          </div>
+        )}
+      </div>
+
+      <div className="flex items-center gap-2">
+        {variants.length > 0 && (
+          <span
+            className=""
+            data-value={selectedVariantId ?? ''}
+          >
+            {variants.map((v) => {
+              const handleClick = () => {
+                if (
+                  enablePivotToMulti &&
+                  !!onRequestMultiSelect &&
+                  selectedVariantId &&
+                  selectedVariantId !== v.id
+                ) {
+                  const initialSelectedIds = Array.from(
+                    new Set([selectedVariantId, v.id])
+                  );
+                  onRequestMultiSelect({ initialSelectedIds });
+                  return;
+                }
+                setSelectedVariantId(v.id);
+              };
+
+              return (
+                <span
+                  onClick={handleClick}
+                  key={v.id}
+                  data-value={v.id}
+                  className={`border rounded mr-3 px-3 py-2 text-sm cursor-pointer ${
+                    v.attributes.quantity === 0
+                      ? 'bg-red-100 border-red-500 text-red-700'
+                      : 'bg-white'
+                  } ${selectedVariantId === v.id && v.attributes.quantity !== 0 ? 'border-green-500' : ''}`}
+                >
+                {/* {variantLabel(v)} {selectedVariantId === v.id ? 'selected '+selectedVariantId+ '/' + v.id : ''} */}
+                {v.attributes.v1}
+                </span>
+              );
+            })}
+          </span>
+        )}
+
+        <input
+          type="number"
+          min={1}
+          value={quantity}
+          onChange={(e) => setQuantity(Number(e.target.value) || 1)}
+          className="w-16 bg-white border rounded px-2 py-1 text-sm"
+        />
+
+        <button
+          onClick={handleAdd}
+          className="py-1 px-2 rounded bg-green-600 text-white hover:bg-green-700 text-sm"
+          title="Добави"
         >
-          {variants.map((v) => {
-            const handleClick = () => {
-              if (
-                enablePivotToMulti &&
-                !!onRequestMultiSelect &&
-                selectedVariantId &&
-                selectedVariantId !== v.id
-              ) {
-                const initialSelectedIds = Array.from(
-                  new Set([selectedVariantId, v.id])
-                );
-                onRequestMultiSelect({ initialSelectedIds });
-                return;
-              }
-              setSelectedVariantId(v.id);
-            };
-
-            return (
-              <span
-                onClick={handleClick}
-                key={v.id}
-                data-value={v.id}
-                className={`border rounded mr-3 px-3 py-2 text-sm cursor-pointer ${
-                  v.attributes.quantity === 0
-                    ? 'bg-red-100 border-red-500 text-red-700'
-                    : 'bg-white'
-                } ${selectedVariantId === v.id && v.attributes.quantity !== 0 ? 'border-green-500' : ''}`}
-              >
-              {/* {variantLabel(v)} {selectedVariantId === v.id ? 'selected '+selectedVariantId+ '/' + v.id : ''} */}
-              {v.attributes.v1}
-              </span>
-            );
-          })}
-        </span>
-      )}
-
-      <input
-        type="number"
-        min={1}
-        value={quantity}
-        onChange={(e) => setQuantity(Number(e.target.value) || 1)}
-        className="w-16 bg-white border rounded px-2 py-1 text-sm"
-      />
-
-      <button
-        onClick={handleAdd}
-        className="py-1 px-2 rounded bg-green-600 text-white hover:bg-green-700 text-sm"
-        title="Добави"
-      >
-        Add
-      </button>
+          Add
+        </button>
+      </div>
     </div>
   );
 }

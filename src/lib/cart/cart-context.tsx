@@ -78,11 +78,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         };
         return newItems;
       }
-      const angroUnitPrice = item.sku ? lookupSku(item.sku, priceIndex)?.['angro-inseason'] ?? 0 : 0;
+      const angroUnitPrice = item.sku ? lookupSku(item.sku, priceIndex)?.['angro-inseason'] : null;
+      // Use angro price if available, otherwise use the provided unitPrice
+      const effectiveUnitPrice = angroUnitPrice ?? item.unitPrice;
       const toInsert: OrderItem = {
         ...item,
-        totalPrice: Number((item.quantity * item.unitPrice).toFixed(2)),
-        angroPrice: Number((item.quantity * angroUnitPrice).toFixed(2)),
+        unitPrice: effectiveUnitPrice,
+        totalPrice: Number((item.quantity * effectiveUnitPrice).toFixed(2)),
+        angroPrice: Number((item.quantity * effectiveUnitPrice).toFixed(2)), // Since we use effectiveUnitPrice, angroPrice should match
       };
       return [...prev, toInsert];
     });

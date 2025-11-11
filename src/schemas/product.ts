@@ -40,15 +40,18 @@ export const ProductSchema = z.object({
   attributes: z.object({
     name: z.string(),
     description: z.string().nullable().optional(),
-    price: z.number().optional(),
-    price_from: z.number().optional(),
-    price_to: z.number().optional(),
+    price: z.union([z.number(), z.string()]).optional().transform(val => typeof val === 'string' ? parseFloat(val) || 0 : val),
+    price_from: z.union([z.number(), z.string()]).optional().transform(val => typeof val === 'string' ? parseFloat(val) || 0 : val),
+    price_to: z.union([z.number(), z.string()]).optional().transform(val => typeof val === 'string' ? parseFloat(val) || 0 : val),
     image_url: z.string().optional(),
     thumbnail_url: z.string().optional(),
     url_handle: z.string().optional(),
     sku: z.string().optional(),
-    stock_quantity: z.number().optional(),
-    is_in_stock: z.boolean().optional(),
+    stock_quantity: z.union([z.number(), z.string()]).optional().transform(val => typeof val === 'string' ? parseInt(val) || 0 : val),
+    is_in_stock: z.union([z.boolean(), z.string()]).optional().transform(val => {
+      if (typeof val === 'string') return val === '1' || val.toLowerCase() === 'true';
+      return val;
+    }),
     categories: z
       .array(
         z.object({
