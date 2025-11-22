@@ -62,17 +62,6 @@ export class CloudCartProductsService {
 
     const parsed = ProductsResponseSchema2.safeParse(response);
     if (!parsed.success) {
-      console.error('Schema validation failed for category ID:', categoryId);
-      console.error('Validation errors:', JSON.stringify(parsed.error.issues.slice(0, 5), null, 2));
-      console.error('Response structure:', {
-        hasData: 'data' in response,
-        hasMeta: 'meta' in response,
-        hasLinks: 'links' in response,
-        dataType: typeof response.data,
-        dataLength: Array.isArray(response.data) ? response.data.length : 'not array',
-        metaType: typeof response.meta,
-        firstProductKeys: response.data && response.data[0] ? Object.keys(response.data[0]) : 'no data'
-      });
       throw new Error('Invalid products response format');
     }
 
