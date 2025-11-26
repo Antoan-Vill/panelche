@@ -14,101 +14,7 @@ interface AdminProductsPageProps {
   searchParams: Promise<{ slug?: string; page?: string; showHidden?: string }>;
 }
 
-const productIdsToHide = [
-  693,
-  349,
-  715,
-  366,
-  365,
-  364,
-  937,
-  644,
-  642,
-  80,
-  79,
-  301,
-  341,
-  836,
-  748,
-  712,
-  118,
-  730,
-  728,
-  727,
-  726,
-  844,
-  934,
-  631,
-  629,
-  628,
-  627,
-  625,
-  624,
-  623,
-  611,
-  610,
-  103,
-  105,
-  605,
-  604,
-  603,
-  613,
-  608,
-  254,
-  825,
-  813,
-  808,
-  317,
-  981,
-  323,
-  318,
-  320,
-  346,
-  68,
-  695,
-  534,
-  559,
-  562,
-  298,
-  621,
-  83,
-  23,
-  646,
-  645,
-  367,
-  641,
-  190,
-  977,
-  963,
-  961,
-  959,
-  802,
-  869,
-  838,
-  833,
-  828,
-  764,
-  550,
-  549,
-  546,
-  511,
-  509,
-  508,
-  505,
-  497,
-  614,
-  694,
-  721,
-  630,
-  612,
-  607,
-  72,
-  570,
-  640,
-  1062,
-  1023,
-  868
-];
+import { productIdsLastChance } from '@/../constants';
 
 export default async function AdminProductsPage({ searchParams }: AdminProductsPageProps) {
   const { slug, page, showHidden } = await searchParams;
@@ -181,7 +87,7 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
   const allProducts = productsResponse.data;
   const products = showHiddenProducts
     ? allProducts
-    : allProducts.filter((product: Product) => !productIdsToHide.includes(Number(product.id)));
+    : allProducts; //.filter((product: Product) => !productIdsLastChance.includes(Number(product.id)));
 
   const baseParams: Record<string, string> = {};
   if (slug) {
@@ -251,13 +157,13 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                   <div className="flex items-center gap-2">
                     <VariantsToggleButton />
                     <LoadAllImagesButton products={products} />
-                    <Link
+                    {/* <Link
                       href={toggleHiddenProductsHref}
                       className="text-sm font-medium text-blue-600 hover:text-blue-800 px-3 py-1 rounded border border-blue-200 hover:border-blue-300 transition-colors"
                       title={showHiddenProducts ? 'Скрий изключени продукти' : 'Покажи изключени продукти'}
                     >
                       {showHiddenProducts ? 'Hide excluded products' : 'Show excluded products'}
-                    </Link>
+                    </Link> */}
                   </div>
                 </div>
               </div>
