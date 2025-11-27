@@ -10,8 +10,10 @@ export { cloudCartImages, CloudCartImagesService } from './images';
 export { cloudCartCategories, CloudCartCategoriesService } from './categories';
 export { cloudCartProducts, CloudCartProductsService } from './products';
 export { cloudCartVariants, CloudCartVariantsService } from './variants';
+export { cloudCartOrders, CloudCartOrdersService } from './orders';
 
 // Re-export types for convenience
 export type { GetCategoriesOptions, GetCategoriesResponse } from './categories';
 export type { GetProductsOptions } from './products';
+export type { GetOrdersOptions } from './orders';
 

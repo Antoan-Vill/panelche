@@ -5,11 +5,13 @@ import { collectionGroup, getDocs, query, doc, updateDoc, getDoc, collection } f
 import { db } from '@/lib/firebase/client';
 import type { OrderItem } from '@/lib/types/orders';
 import { deleteOrderForUser } from '@/lib/firebase/repositories/orders';
-import { faPen, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faPlus, faTrash, faSync, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getProductVariantsClient } from '@/lib/products';
 import type { Product, Variant } from '@/lib/types/products';
 import { VariantSelector } from '@/components/molecules/VariantSelector';
+import { SyncOptionsModal } from '@/components/organisms/SyncOptionsModal';
+import { CloudCartOrderEditModal } from '@/components/organisms/CloudCartOrderEditModal';
 
 type OrderListItem = {
   id: string;
@@ -19,6 +21,8 @@ type OrderListItem = {
   subtotal: number;
   items: OrderItem[];
   createdAt: Date | null;
+  source?: 'cloudcart' | 'manual';
+  externalOrderId?: string;
 };
 
 // Product cache helpers (reused from AdminProductPicker)
@@ -46,9 +50,13 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<OrderListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState(false);
+  const [showSyncModal, setShowSyncModal] = useState(false);
+  const [hideCloudCartOrders, setHideCloudCartOrders] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<{ status: string; items: OrderItem[] } | null>(null);
+  const [viewingCloudCartOrder, setViewingCloudCartOrder] = useState<{ order: OrderListItem; data?: any } | null>(null);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(false);
   const [itemSearchQueries, setItemSearchQueries] = useState<Record<number, string>>({});
@@ -88,6 +96,8 @@ export default function AdminOrdersPage() {
             subtotal: Number(data.subtotal ?? 0),
             items,
             createdAt,
+            source: data.source,
+            externalOrderId: data.externalOrderId,
           };
         });
         rows.sort((a, b) => {
@@ -170,6 +180,25 @@ export default function AdminOrdersPage() {
   }
 
   function startEdit(order: OrderListItem) {
+    if (order.source === 'cloudcart') {
+      // Find full order data to get cloudCartData
+      // In a real app we might need to fetch the single doc if it's not fully in the list
+      // For now we'll rely on what we have, but if we need the original payload we should grab it
+      // Let's quickly fetch the single doc to get the full `cloudCartData` field which might be large
+      setLoading(true);
+      getDoc(doc(db, 'orders', order.id)).then((snap) => {
+        if (snap.exists()) {
+          const data = snap.data();
+          setViewingCloudCartOrder({
+            order,
+            data: data.cloudCartData
+          });
+        } else {
+          setViewingCloudCartOrder({ order });
+        }
+      }).finally(() => setLoading(false));
+      return;
+    }
     setEditingId(order.id);
     setEditForm({ status: order.status, items: [...order.items] });
   }
@@ -328,19 +357,123 @@ export default function AdminOrdersPage() {
     }
   }
 
+  async function handleSync(options: { limit: number; status?: string; dateFrom?: string; dateTo?: string }) {
+    setSyncing(true);
+    setError(null);
+    try {
+      const { getAuth } = await import('firebase/auth');
+      const auth = getAuth();
+      const token = await auth.currentUser?.getIdToken();
+      
+      if (!token) {
+        throw new Error('Not authenticated');
+      }
+
+      const res = await fetch('/api/admin/orders/sync-cloudcart', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(options),
+      });
+
+      if (!res.ok) {
+        const json = await res.json().catch(() => ({}));
+        throw new Error(json.message || 'Sync failed');
+      }
+
+      const data = await res.json();
+      const stats = data.data;
+      
+      setShowSyncModal(false);
+      alert(`Sync completed!\nFetched: ${stats.totalFetched}\nNew: ${stats.newOrdersSaved}\nSkipped: ${stats.skippedDuplicates}\nFailed: ${stats.failedOrders}`);
+      
+      // Reload orders
+      setLoading(true);
+      const q = query(collection(db, 'orders'));
+      const snap = await getDocs(q);
+      const rows: OrderListItem[] = snap.docs.map((doc) => {
+        const data: any = doc.data();
+        // ... same mapping as in useEffect ...
+        const userId = data.userId ?? 'unknown';
+        const createdAt = data.createdAt?.toDate ? data.createdAt.toDate() : null;
+        const items: OrderItem[] = Array.isArray(data.items) ? data.items.map((item: any) => ({
+          productId: item.productId || '',
+          productName: item.productName || '',
+          sku: item.sku ?? null,
+          variantId: item.variantId ?? null,
+          quantity: Number(item.quantity) || 1,
+          unitPrice: Number(item.unitPrice) || 0,
+          totalPrice: Number(item.totalPrice) || 0,
+          angroPrice: Number(item.angroPrice) || 0,
+          imageUrl: item.imageUrl ?? null,
+          note: item.note || '',
+        })) : [];
+        return {
+          id: doc.id,
+          userId,
+          status: data.status ?? 'pending',
+          total: Number(data.total ?? 0),
+          subtotal: Number(data.subtotal ?? 0),
+          items,
+          createdAt,
+          source: data.source,
+          externalOrderId: data.externalOrderId,
+        };
+      });
+      rows.sort((a, b) => {
+        const at = a.createdAt ? a.createdAt.getTime() : 0;
+        const bt = b.createdAt ? b.createdAt.getTime() : 0;
+        return bt - at;
+      });
+      setOrders(rows);
+      setLoading(false);
+
+    } catch (e) {
+      console.error('Sync error:', e);
+      setError(e instanceof Error ? e.message : 'Sync failed');
+    } finally {
+      setSyncing(false);
+    }
+  }
+
   return (
     <div>
       {/* Heading */}
 
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold" title="Всички поръчки">All Orders</h2>
-        <a
-          href="/admin/orders/create"
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium"
-          title="Създай поръчка"
-        >
-          Create Order
-        </a>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setHideCloudCartOrders(!hideCloudCartOrders)}
+            className={`px-4 py-2 rounded text-sm font-medium flex items-center gap-2 border ${
+              hideCloudCartOrders 
+                ? 'bg-gray-100 text-gray-700 border-gray-200' 
+                : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
+            }`}
+            title={hideCloudCartOrders ? "Покажи CloudCart поръчки" : "Скрий CloudCart поръчки"}
+          >
+            <FontAwesomeIcon icon={hideCloudCartOrders ? faEyeSlash : faEye} />
+            {hideCloudCartOrders ? 'Hidden CC Orders' : 'Hide CC Orders'}
+          </button>
+          <button
+            onClick={() => setShowSyncModal(true)}
+            disabled={syncing || loading}
+            className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-sm font-medium disabled:opacity-50 flex items-center gap-2"
+            title="Синхронизирай с CloudCart"
+          >
+            <FontAwesomeIcon icon={faSync} className={syncing ? 'fa-spin' : ''} />
+            {syncing ? 'Syncing...' : 'Sync CloudCart'}
+          </button>
+          <a
+            href="/admin/orders/create"
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium"
+            title="Създай поръчка"
+          >
+            Create Order
+          </a>
+        </div>
       </div>
       {loading && <div className="text-muted-foreground" title="Зареждане…">Loading…</div>}
       {error && <div className="text-red-600 text-sm" title={error}>{error}</div>}
@@ -352,6 +485,7 @@ export default function AdminOrdersPage() {
                 <th className="px-3 py-2 border-b" title="ID на поръчката">Order ID</th>
                 <th className="px-3 py-2 border-b" title="ID на потребителя">User ID</th>
                 <th className="px-3 py-2 border-b" title="Статус">Status</th>
+                <th className="px-3 py-2 border-b" title="Източник">Source</th>
                 <th className="px-3 py-2 border-b" title="Артикули">Items</th>
                 <th className="px-3 py-2 border-b" title="Междинна сума">Subtotal</th>
                 <th className="px-3 py-2 border-b" title="Общо">Total</th>
@@ -359,7 +493,9 @@ export default function AdminOrdersPage() {
               </tr>
             </thead>
             <tbody>
-              {orders.map((o) => {
+              {orders
+                .filter(o => !hideCloudCartOrders || o.source !== 'cloudcart')
+                .map((o) => {
                 const isEditing = editingId === o.id;
                 const currentItems = isEditing ? editForm?.items ?? [] : o.items;
                 const { subtotal, total } = isEditing ? calculateTotals(currentItems) : { subtotal: o.subtotal, total: o.total };
@@ -369,10 +505,24 @@ export default function AdminOrdersPage() {
                     <td onClick={() => startEdit(o)} className="px-3 py-2 border-b font-mono">
                       <FontAwesomeIcon icon={faPen} className="me-2" /> 
                       {o.id}
+                      {o.externalOrderId && (
+                        <div className="text-xs text-muted-foreground mt-1" title="External ID">
+                          Ext: {o.externalOrderId}
+                        </div>
+                      )}
                     </td>
                     <td className="px-3 py-2 border-b font-mono">{o.userId}</td>
                     <td className="px-3 py-2 border-b">
                       {o.status}
+                    </td>
+                    <td className="px-3 py-2 border-b">
+                      <span className={`px-2 py-0.5 rounded text-xs ${
+                        o.source === 'cloudcart' 
+                          ? 'bg-blue-100 text-blue-800' 
+                          : 'bg-gray-100 text-gray-800'
+                      }`}>
+                        {o.source === 'cloudcart' ? 'CloudCart' : 'Manual'}
+                      </span>
                     </td>
                     <td className="px-3 py-2 border-b" title={o.items.length === 1 ? '1 артикул' : `${o.items.length} артикула`}>
                       {`${o.items.length} item${o.items.length !== 1 ? 's' : ''}`}
@@ -392,7 +542,24 @@ export default function AdminOrdersPage() {
           )}
         </div>
       )}
-      {/* Edit Modal */}
+      {/* Sync Modal */}
+      <SyncOptionsModal
+        isOpen={showSyncModal}
+        onClose={() => setShowSyncModal(false)}
+        onSync={handleSync}
+        isSyncing={syncing}
+      />
+
+      {/* CloudCart View Modal */}
+      {viewingCloudCartOrder && (
+        <CloudCartOrderEditModal
+          order={viewingCloudCartOrder.order}
+          cloudCartData={viewingCloudCartOrder.data}
+          onClose={() => setViewingCloudCartOrder(null)}
+        />
+      )}
+
+      {/* Edit Modal (Manual Orders) */}
       {editingId && editForm && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center" onClick={cancelEdit}>
           <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-xl w-full max-w-2xl mx-4" onClick={(e) => e.stopPropagation()}>
