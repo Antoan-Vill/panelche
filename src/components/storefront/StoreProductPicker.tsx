@@ -159,6 +159,7 @@ function ProductWithVariants({
 
       {showVariantModal && (
         <VariantMultiSelectModal
+          product={product}
           productId={product.id}
           productName={product.attributes.name}
           imageUrl={product.attributes.image_url || null}

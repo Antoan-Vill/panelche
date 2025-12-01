@@ -28,7 +28,7 @@ export function VariantSelector({
   onAdd,
 }: VariantSelectorProps) {
   const [quantity, setQuantity] = useState<number>(1);
-  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(variants?.[0]?.id ?? null);
+  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null); // variants?.[0]?.id ?? null
 
   const unitPrice = useMemo(() => {
     let sku: string | null = null;
@@ -133,7 +133,7 @@ export function VariantSelector({
           </span>
         )}
 
-        <input
+        {/* <input
           type="number"
           min={1}
           value={quantity}
@@ -147,7 +147,7 @@ export function VariantSelector({
           title="Добави"
         >
           Add
-        </button>
+        </button> */}
       </div>
     </div>
   );

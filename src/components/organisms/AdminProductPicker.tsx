@@ -2,18 +2,13 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { getCategories } from '@/lib/categories';
-import { getProductVariantsClient } from '@/lib/products';
 import { getProductsByCategory } from '@/lib/services/cloudcart';
-import { VariantSelector } from '@/components/molecules/VariantSelector';
-import { VariantMultiSelectModal, type VariantMultiSelectModalItem } from '@/components/organisms/VariantMultiSelectModal';
-import { variantLabel } from '@/lib/variants';
 import { useProductSearch } from '@/hooks';
+import { AdminProductWithVariants } from '@/components/organisms/AdminProductWithVariants';
 import type { Category } from '@/lib/categories';
-import type { Product, Variant, ProductsResponse } from '@/lib/types/products';
+import type { Product, ProductsResponse } from '@/lib/types/products';
 import type { AdminCartItem } from '@/lib/types/customers';
 
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 // Helper function to get products and cache thems
@@ -59,143 +54,6 @@ function getAllCachedProducts(maxAgeMs = PRODUCTS_CACHE_TTL_MS): Product[] {
   return Object.values(cache).flatMap(entry => entry.products).filter(Boolean);
 }
 // END of products cache helpers
-
-// Component for displaying a product with its variants inline
-function ProductWithVariants({
-  index,
-  product,
-  onAddToCart
-}: {
-  index: number;
-  product: Product;
-  onAddToCart: (item: Omit<AdminCartItem, 'lineTotal'>) => void;
-}) {
-  const [variants, setVariants] = useState<Variant[]>([]);
-  const [loadingVariants, setLoadingVariants] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-  const [showVariantModal, setShowVariantModal] = useState(false);
-  const [initialSelectedVariantIds, setInitialSelectedVariantIds] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (!expanded) return;
-
-    const loadVariants = async () => {
-      setLoadingVariants(true);
-      try {
-        const vars = await getProductVariantsClient(product.id);
-        setVariants(vars);
-      } catch (error) {
-        console.error('Error loading variants:', error);
-        setVariants([]);
-      } finally {
-        setLoadingVariants(false);
-      }
-    };
-
-    loadVariants();
-  }, [expanded, product]);
-
-  // Variant selection handled by VariantSelector below
-
-  return (
-    <div className="border-b border-border last:border-b-0">
-      {/* Product Header */}
-      <div
-        onClick={() => setExpanded(!expanded)}
-        className={`flex items-center justify-between p-3 cursor-pointer${expanded ? ' bg-muted' : ''}`}
-      >
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          {/* {product.attributes.image_id && (
-            <img
-              src={product.attributes.image_id}
-              alt=""
-              className="w-10 h-10 object-cover rounded flex-shrink-0"
-            />
-          )} */}
-          <div className="flex items-center justify-between w-full font-medium text-sm truncate">
-            {product.attributes.name}
-            <sup className="opacity-10 text-xs text-muted-foreground">{index + 1}.</sup>
-          </div>
-          {/* <div className="text-xs text-muted-foreground">${(product.attributes.price || 0).toFixed(2)}</div> */}
-        </div>
-        {expanded ? (
-          <span className="px-3 py-2 text-xs bg-blue-100 text-blue-700 hover:bg-blue-200 -mt-3 -mr-3" >
-            <FontAwesomeIcon icon={faXmark} />
-          </span>
-        ) : (
-          ''
-        )}
-      </div>
-
-      {/* Expanded Variant Selection */}
-      {expanded && (
-        <div className="px-3 pb-3 bg-muted">
-                          {loadingVariants ? (
-                            <div className="text-sm text-muted-foreground py-2" title="Зареждане на варианти...">Loading variants...</div>
-                          ) : (
-            <VariantSelector
-              variants={variants}
-              priceCents={product.attributes.price ?? null}
-              baseSku={product.attributes.sku ?? null}
-              enablePivotToMulti
-              onRequestMultiSelect={({ initialSelectedIds }) => {
-                setInitialSelectedVariantIds(initialSelectedIds);
-                setShowVariantModal(true);
-              }}
-              onAdd={({ selectedVariantId, quantity, unitPrice, sku }) => {
-                const chosen = variants.find((v) => v.id === selectedVariantId) || null;
-                onAddToCart({
-                  productId: product.id,
-                  productName: product.attributes.name,
-                  variantId: selectedVariantId ?? null,
-                  imageUrl: product.attributes.image_url || null,
-                  sku: sku ?? null,
-                  unitPrice,
-                  quantity,
-                  note: '',
-                });
-                setExpanded(false);
-              }}
-            />
-          )}
-        </div>
-      )}
-
-      {showVariantModal && (
-        <VariantMultiSelectModal
-          productId={product.id}
-          productName={product.attributes.name}
-          imageUrl={product.attributes.image_url || null}
-          baseSku={product.attributes.sku || null}
-          priceCents={product.attributes.price ?? null}
-          variants={variants}
-          initialSelectedIds={initialSelectedVariantIds}
-          onCancel={() => {
-            setShowVariantModal(false);
-            setInitialSelectedVariantIds([]);
-          }}
-          onConfirm={(items: VariantMultiSelectModalItem[]) => {
-            items.forEach(({ variantId, quantity, unitPrice, sku, note }) => {
-              onAddToCart({
-                productId: product.id,
-                productName: product.attributes.name,
-                variantId,
-                imageUrl: product.attributes.image_url || null,
-                sku: sku ?? null,
-                unitPrice,
-                quantity,
-                note,
-              });
-            });
-            // setShowVariantModal(false);
-            // setInitialSelectedVariantIds([]);
-            // setExpanded(false);
-          }}
-        />
-      )}
-    </div>
-  );
-}
 
 interface AdminProductPickerProps {
   onAddToCart: (item: Omit<AdminCartItem, 'lineTotal'>) => void;
@@ -454,9 +312,9 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
     <div className="bg-card rounded-lg border border-border p-6">
       <h3 className="uppercase text-xs opacity-50 mb-2 font-bold" title="Добави продукти">Add Products</h3>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Categories */}
-        <div className="border border-border rounded">
+        <div className="lg:col-span-4 border border-border rounded">
           <button
             onClick={() => setSelectedCategory(null)}
             className={`w-full text-left px-3 py-2 hover:bg-muted border-b ${
@@ -482,15 +340,14 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
         </div>
 
         {/* Products with inline variant selection */}
-        <div>
+        <div className="lg:col-span-8">
           <div className="">
             <div className="searchProducts w-full flex items-center mb-2">
-              <input type="text" placeholder="Search" className="w-full border border-border rounded me-2 px-2 py-1 text-sm" onChange={(e: any) => handleSearch(e.target.value)} title="Търси" />
+              <input type="text" placeholder="Search" className="w-full bg-black/5 border border-border rounded px-2 py-3 text-sm" onChange={(e: any) => handleSearch(e.target.value)} title="Търси" />
               {search && (
                 <button onClick={() => handleClearSearch()} className="text-sm text-muted-foreground hover:text-foreground transition-colors" title="Изчисти">Clear</button>
               )}
             </div>
-              <h4 className="uppercase text-xs opacity-50 mb-2 mr-2 font-bold" title="Продукти">Products</h4>
           </div>
           <div className="max-h-96 overflow-y-auto border border-border rounded">
             {loading && <div className="p-4 text-center text-muted-foreground" title="Зареждане...">Loading...</div>}
@@ -516,7 +373,7 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
               </div>
             )}
             {filteredProducts.map((product: Product, index: number) => (
-              <ProductWithVariants
+              <AdminProductWithVariants
                 key={product.id}
                 index={index}
                 product={product}
