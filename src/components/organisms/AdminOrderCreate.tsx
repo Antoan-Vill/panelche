@@ -1,22 +1,48 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Maximize2, Minimize2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { OwnerSelector } from './OwnerSelector';
 import { AdminProductPicker } from './AdminProductPicker';
 import { AdminOrderCart } from './AdminOrderCart';
 import type { OrderOwner, AdminCartItem } from '@/lib/types/customers';
 import type { OrderItem } from '@/lib/types/orders';
 import { getAuth } from 'firebase/auth';
-import { useCreateOrder } from '@/hooks';
+import { useCreateOrder, useOwnerSelection } from '@/hooks';
 import { useRouter } from 'next/navigation';
 
-export function AdminOrderCreate() {
-  const [owner, setOwner] = useState<OrderOwner | null>(null);
+interface AdminOrderCreateProps {
+  ownerSelection: ReturnType<typeof useOwnerSelection>;
+}
+
+export function AdminOrderCreate({ ownerSelection }: AdminOrderCreateProps) {
+  const { 
+    owner, 
+    isChangingOwner, 
+    handleOwnerChange, 
+    handleStartChange, 
+    handleCancelChange,
+    setOwner // we still need setOwner for reset in handleSave
+  } = ownerSelection;
+  
   const [cartItems, setCartItems] = useState<AdminCartItem[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { create, isLoading: creating } = useCreateOrder();
+
+  // Add this new state for the expanded view
+  const [expandedSection, setExpandedSection] = useState<'products' | 'cart' | null>(null);
+
+  // Close expanded view on Escape key
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setExpandedSection(null);
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, []);
 
   const handleAddToCart = (item: Omit<AdminCartItem, 'lineTotal'>) => {
     const unitPrice = item.unitPrice || 0;
@@ -124,38 +150,138 @@ export function AdminOrderCreate() {
   return (
     <div className="space-y-6">
       {/* Owner Selection */}
-      <OwnerSelector selectedOwner={owner} onOwnerChange={setOwner} />
-
-      {/* Product Selection */}
-      <AdminProductPicker onAddToCart={handleAddToCart} />
-
-      {/* Cart */}
-      <AdminOrderCart
-        items={cartItems}
-        onUpdateQuantity={handleUpdateQuantity}
-        onRemoveItem={handleRemoveItem}
-      />
-
-      {/* Continue Button */}
-      <div className="flex justify-end">
-        <button
-          onClick={handleSave}
-          disabled={!canProceed || saving}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-        >
-      <span title={saving || creating ? 'Запазване…' : 'Запази поръчка'}>{saving || creating ? 'Saving…' : 'Save Order'}</span>
-        </button>
-      </div>
-
-      {error && (
-        <div className="text-sm text-red-600" title={error}>{error}</div>
+      {!owner || isChangingOwner ? (
+        <div className="space-y-2">
+          {isChangingOwner && (
+            <div className="flex justify-end">
+              <button
+                onClick={handleCancelChange}
+                className="text-sm text-muted-foreground hover:text-foreground hover:underline"
+              >
+                Cancel Change
+              </button>
+            </div>
+          )}
+          <OwnerSelector selectedOwner={owner} onOwnerChange={handleOwnerChange} />
+        </div>
+      ) : (
+        <div className="bg-card rounded-lg border border-border p-4 flex items-center justify-between animate-in fade-in zoom-in-95 duration-200">
+          <div>
+            <h3 className="uppercase text-xs opacity-50 font-bold mb-1">Order For</h3>
+            <div className="font-medium">{owner.name || 'Guest'}</div>
+            <div className="text-sm text-muted-foreground">{owner.email}</div>
+          </div>
+          <button
+            onClick={handleStartChange}
+            className="text-sm text-blue-600 hover:text-blue-800 hover:underline px-3 py-1"
+          >
+            Change
+          </button>
+        </div>
       )}
 
-      {/* Debug Info (temporary) */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="mt-8 p-4 bg-muted rounded text-xs font-mono">
-          <div>Owner: {owner ? JSON.stringify(owner, null, 2) : 'None'}</div>
-          <div>Cart Items: {cartItems.length}</div>
+      {/* Only show the rest of the form if an owner is selected and we are not changing them */}
+      {owner && !isChangingOwner && (
+        <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-500">
+          
+          {/* PRODUCT SELECTION SECTION */}
+          <div 
+            id="add-products-section" 
+            className={cn(
+              "transition-all duration-300 ease-in-out bg-background relative", // Added relative
+              expandedSection === 'products' 
+                ? "fixed inset-0 z-50 p-6 overflow-y-auto [&_.max-h-96]:max-h-[calc(100vh-160px)]" 
+                : "border-t pt-6 scroll-mt-4"
+            )}
+          >
+            {/* Controls positioned absolutely top-right */}
+            <div className={cn("flex items-center gap-4 justify-end mb-2", expandedSection === 'products' ? "sticky top-0 z-10" : "absolute top-4 right-4 z-10")}>
+               {!expandedSection && (
+                   <button
+                    onClick={() => {
+                      document.getElementById('order-cart-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="text-sm text-blue-600 hover:text-blue-800 hover:underline bg-white/80 backdrop-blur-sm px-2 py-1 rounded"
+                  >
+                    Go to Cart ({cartItems.length})
+                  </button>
+                )}
+                <button
+                  onClick={() => setExpandedSection(expandedSection === 'products' ? null : 'products')}
+                  className="p-2 hover:bg-slate-100 rounded-full text-muted-foreground bg-white/80 backdrop-blur-sm shadow-sm border border-transparent hover:border-border transition-all"
+                  title={expandedSection === 'products' ? "Exit Fullscreen (Esc)" : "Fullscreen Mode"}
+                >
+                  {expandedSection === 'products' ? <Minimize2 size={20} /> : <Maximize2 size={16} />}
+                </button>
+            </div>
+
+            {/* Product Selection */}
+            <AdminProductPicker onAddToCart={handleAddToCart} />
+          </div>
+
+          {/* CART SECTION */}
+          <div 
+            id="order-cart-section" 
+            className={cn(
+              "transition-all duration-300 ease-in-out bg-background",
+              expandedSection === 'cart' 
+                ? "fixed inset-0 z-50 p-6 overflow-y-auto" 
+                : "scroll-mt-4 relative"
+            )}
+          >
+            {/* Header only visible when expanded or floating button when not */}
+            <div className={cn("flex justify-end mb-2", expandedSection === 'cart' ? "sticky top-0 z-10" : "absolute top-4 right-4 z-10")}>
+               <button
+                  onClick={() => setExpandedSection(expandedSection === 'cart' ? null : 'cart')}
+                  className="p-2 hover:bg-slate-100 rounded-full text-muted-foreground bg-white/80 backdrop-blur-sm shadow-sm border border-transparent hover:border-border transition-all"
+                  title={expandedSection === 'cart' ? "Exit Fullscreen (Esc)" : "Fullscreen Cart"}
+                >
+                  {expandedSection === 'cart' ? <Minimize2 size={20} /> : <Maximize2 size={16} />}
+               </button>
+            </div>
+            
+            <AdminOrderCart
+              items={cartItems}
+              onUpdateQuantity={handleUpdateQuantity}
+              onRemoveItem={handleRemoveItem}
+            />
+          </div>
+
+          {/* Continue Button */}
+          <div className="flex justify-end gap-4">
+            <button
+              onClick={() => {
+                // If we are in expanded mode, close it first so we can scroll
+                setExpandedSection(null);
+                // Small timeout to allow render to settle before scrolling
+                setTimeout(() => {
+                  document.getElementById('add-products-section')?.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+              }}
+              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"
+            >
+              Add More Products
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={!canProceed || saving}
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+            >
+              <span title={saving || creating ? 'Запазване…' : 'Запази поръчка'}>{saving || creating ? 'Saving…' : 'Save Order'}</span>
+            </button>
+          </div>
+
+          {error && (
+            <div className="text-sm text-red-600" title={error}>{error}</div>
+          )}
+
+          {/* Debug Info (temporary) */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="mt-8 p-4 bg-muted rounded text-xs font-mono">
+              <div>Owner: {owner ? JSON.stringify(owner, null, 2) : 'None'}</div>
+              <div>Cart Items: {cartItems.length}</div>
+            </div>
+          )}
         </div>
       )}
     </div>

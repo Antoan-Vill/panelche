@@ -315,15 +315,14 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Categories */}
         <div className="lg:col-span-4 border border-border rounded">
-          <button
+          {/* <button
             onClick={() => setSelectedCategory(null)}
             className={`w-full text-left px-3 py-2 hover:bg-muted border-b ${
               !selectedCategory ? 'bg-blue-50 text-blue-700' : ''
             }`}
           >
             <span title="Всички продукти">All products</span>
-            {/* <FontAwesomeIcon icon={faXmark} /> */}
-          </button>
+          </button> */}
           <div className="border border-border rounded max-h-96 overflow-y-auto">
             {categories.map((category) => (
               <button

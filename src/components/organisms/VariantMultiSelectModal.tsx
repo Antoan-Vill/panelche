@@ -117,6 +117,15 @@ export function VariantMultiSelectModal({
     };
   }, [onCancel]);
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, []);
+
   const selectedCount = useMemo(() => Object.keys(selection).length, [selection]);
 
   const variantMap = useMemo(() => {
@@ -270,7 +279,7 @@ export function VariantMultiSelectModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="variant-multi-select-heading"
-        className="w-full max-w-3xl rounded-lg bg-white shadow-xl outline-none"
+        className="w-full max-w-3xl rounded-lg bg-white dark:bg-card shadow-xl outline-none"
       >
         <div className="flex items-start gap-3 border-b border-border p-4">
           {imageUrl ? (
@@ -340,10 +349,10 @@ export function VariantMultiSelectModal({
                     className={`
                       transition
                       ${variant.attributes.quantity === 0
-                        ? 'border-b border-red-500 bg-red-50'
+                        ? 'border-b border-red-500 bg-red-50 dark:bg-red-950/30 dark:border-red-800'
                         : isChecked
-                          ? 'border-y border-green-500 bg-green-50'
-                          : 'border-b border-border bg-white'
+                          ? 'border-y border-green-500 bg-green-50 dark:bg-green-950/30 dark:border-green-800'
+                          : 'border-b border-border bg-white dark:bg-card'
                       }
                     `}
                   >
@@ -392,9 +401,9 @@ export function VariantMultiSelectModal({
                                       onChange={(event) =>
                                         setQuantityForVariant(id, Number(event.target.value) || 1)
                                       }
-                                      className={`h-full w-16 px-2 border border-border text-center ${stockCount !== null && qty > stockCount
-                                          ? 'bg-red-100'
-                                          : 'bg-white'
+                                      className={`h-full w-16 px-2 border border-border text-center rounded-sm text-foreground ${stockCount !== null && qty > stockCount
+                                          ? 'bg-red-100 dark:bg-red-900/50'
+                                          : 'bg-white dark:bg-background'
                                         }`}
                                     />
                                     <button
