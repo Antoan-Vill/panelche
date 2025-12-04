@@ -15,7 +15,8 @@ export async function GET() {
     });
   } catch (error) {
     console.error('Category test error:', error);
-    return ok({ error: error.message });
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    return ok({ error: errorMessage });
   }
 }
 

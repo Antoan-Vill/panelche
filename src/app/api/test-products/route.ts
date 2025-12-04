@@ -20,22 +20,29 @@ export async function GET() {
     // Test schema validation
     const parsed = ProductsResponseSchema2.safeParse(rawResponse);
 
+    // Type guard for object access
+    const isObject = (value: unknown): value is Record<string, unknown> => {
+      return typeof value === 'object' && value !== null;
+    };
+
     return ok({
-      rawResponseKeys: Object.keys(rawResponse),
-      hasData: 'data' in rawResponse,
-      hasMeta: 'meta' in rawResponse,
-      dataLength: rawResponse.data ? rawResponse.data.length : 0,
-      firstProductKeys: rawResponse.data && rawResponse.data[0] ? Object.keys(rawResponse.data[0]) : null,
+      rawResponseKeys: isObject(rawResponse) ? Object.keys(rawResponse) : [],
+      hasData: isObject(rawResponse) && 'data' in rawResponse,
+      hasMeta: isObject(rawResponse) && 'meta' in rawResponse,
+      dataLength: isObject(rawResponse) && rawResponse.data && Array.isArray(rawResponse.data) ? rawResponse.data.length : 0,
+      firstProductKeys: isObject(rawResponse) && rawResponse.data && Array.isArray(rawResponse.data) && rawResponse.data[0] && isObject(rawResponse.data[0]) ? Object.keys(rawResponse.data[0]) : null,
       schemaValidationSuccess: parsed.success,
       schemaErrors: parsed.success ? null : parsed.error.issues.slice(0, 3),
       rawResponseSample: JSON.stringify(rawResponse).slice(0, 1000)
     });
   } catch (error) {
     console.error('Raw API test error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : undefined;
     return ok({
       success: false,
-      error: error.message,
-      stack: error.stack
+      error: errorMessage,
+      stack: errorStack
     });
   }
 }
