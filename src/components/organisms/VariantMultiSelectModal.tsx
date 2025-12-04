@@ -2,10 +2,10 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { MouseEvent } from 'react';
-import type { Variant } from '@/lib/types/products';
+import type { Product, Variant } from '@/lib/types/products';
 import { variantLabel } from '@/lib/variants';
 import { priceIndex, lookupSku } from '@/lib/sku-index';
-import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faExternalLink, faExternalLinkAlt, faFontAwesome, faMinus, faNoteSticky, faPencil, faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type VariantSelection = Record<string, number>;
@@ -19,6 +19,7 @@ export type VariantMultiSelectModalItem = {
 };
 
 type VariantMultiSelectModalProps = {
+  product: Product;
   productId: string;
   productName: string;
   imageUrl?: string | null;
@@ -38,6 +39,7 @@ function buildInitialSelection(initialIds: string[]): VariantSelection {
 }
 
 export function VariantMultiSelectModal({
+  product,
   productName,
   imageUrl = null,
   baseSku = null,
@@ -48,12 +50,15 @@ export function VariantMultiSelectModal({
   onConfirm,
 }: VariantMultiSelectModalProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const noteModalRef = useRef<HTMLDivElement>(null);
   const clickTimersRef = useRef<Record<string, number[]>>({});
   const [selection, setSelection] = useState<VariantSelection>(() =>
     buildInitialSelection(initialSelectedIds)
   );
   const [tripleClickEnabled, setTripleClickEnabled] = useState<Set<string>>(new Set());
   const [notes, setNotes] = useState<Record<string, string>>({});
+  const [noteModalOpenFor, setNoteModalOpenFor] = useState<string | null>(null);
+  const [tempNote, setTempNote] = useState<string>('');
 
   useEffect(() => {
     setSelection(buildInitialSelection(initialSelectedIds));
@@ -93,8 +98,11 @@ export function VariantMultiSelectModal({
 
     const handleFocus = (event: FocusEvent) => {
       const current = containerRef.current;
+      const noteModal = noteModalRef.current;
       if (!current) return;
+      // Don't refocus if focus is within the main modal or the note modal
       if (current.contains(event.target as Node)) return;
+      if (noteModal && noteModal.contains(event.target as Node)) return;
       event.stopPropagation();
       current.focus({ preventScroll: true });
     };
@@ -168,7 +176,7 @@ export function VariantMultiSelectModal({
 
     const now = Date.now();
     const clicks = clickTimersRef.current[variantId] || [];
-    
+
     // Filter out clicks older than 500ms
     const recentClicks = clicks.filter((time) => now - time < 500);
     recentClicks.push(now);
@@ -181,7 +189,7 @@ export function VariantMultiSelectModal({
       setTripleClickEnabled((prev) => {
         const next = new Set(prev);
         const wasEnabled = next.has(variantId);
-        
+
         if (wasEnabled) {
           // Disabling: remove from triple-click enabled
           next.delete(variantId);
@@ -233,6 +241,23 @@ export function VariantMultiSelectModal({
     onCancel();
   };
 
+  const handleNoteModalOpen = (variantId: string) => {
+    setTempNote(notes[variantId] || '');
+    setNoteModalOpenFor(variantId);
+  };
+
+  const handleNoteModalClose = () => {
+    setNoteModalOpenFor(null);
+    setTempNote('');
+  };
+
+  const handleNoteModalSave = () => {
+    if (noteModalOpenFor) {
+      setNoteForVariant(noteModalOpenFor, tempNote);
+      handleNoteModalClose();
+    }
+  };
+
   return (
     <div
       onClick={handleOverlayClick}
@@ -247,7 +272,7 @@ export function VariantMultiSelectModal({
         aria-labelledby="variant-multi-select-heading"
         className="w-full max-w-3xl rounded-lg bg-white shadow-xl outline-none"
       >
-        <div className="flex items-start gap-3 border-b border-border px-6 py-4">
+        <div className="flex items-start gap-3 border-b border-border p-4">
           {imageUrl ? (
             <img
               src={imageUrl}
@@ -257,26 +282,34 @@ export function VariantMultiSelectModal({
           ) : null}
           <div className="flex-1">
             <h2 id="variant-multi-select-heading" className="text-lg font-semibold text-foreground" title="Избери варианти">
-              Select Variants
+              <span className="flex items-center gap-2">
+                <a href={`${process.env.NEXT_PUBLIC_SITE_URL}/product/${product.attributes.url_handle}`} target="_blank" rel="noopener noreferrer">
+                  {productName}
+                </a>
+                <a href={`${process.env.NEXT_PUBLIC_SITE_URL}/admin/products/edit/${product.id}`} target="_blank" rel="noopener noreferrer">
+                  <sup>
+                    <FontAwesomeIcon icon={faExternalLink} className="ml-1" />
+                  </sup>
+                </a>
+              </span>
             </h2>
-            <p className="mt-1 text-sm text-muted-foreground">{productName}</p>
           </div>
           <button
             type="button"
             onClick={onCancel}
-            className="rounded border border-transparent px-3 py-1 text-sm text-muted-foreground hover:bg-muted"
+            className="rounded border border-transparent py-1 text-sm text-muted-foreground hover:bg-muted"
           >
-            <span title="Отказ">Cancel</span>
+            <FontAwesomeIcon icon={faXmark} className="h-3 w-3" />
           </button>
         </div>
 
-        <div className="max-h-[26rem] overflow-y-auto px-6 py-4">
+        <div className="max-h-[26rem] overflow-y-auto">
           {variants.length === 0 ? (
             <div className="py-10 text-center text-sm text-muted-foreground">
               No variants available for this product.
             </div>
           ) : (
-            <ul className="space-y-3">
+            <ul className="space-y-0">
               {variants.map((variant) => {
                 const id = variant.id;
                 const isChecked = Boolean(selection[id]);
@@ -305,87 +338,94 @@ export function VariantMultiSelectModal({
                   <li
                     key={id}
                     className={`
-                      rounded border transition
+                      transition
                       ${variant.attributes.quantity === 0
-                        ? 'border-red-500 bg-red-50'
+                        ? 'border-b border-red-500 bg-red-50'
                         : isChecked
-                          ? 'border-green-500 bg-green-50'
-                          : 'border-border bg-white'
+                          ? 'border-y border-green-500 bg-green-50'
+                          : 'border-b border-border bg-white'
                       }
                     `}
                   >
                     <div className="flex">
-                      <label 
-                        className="flex  px-4 py-3 flex-1 cursor-pointer items-start gap-3"
+                      <label
+                        className="flex flex-1 gap-3 px-4 py-3"
                         onClick={(e) => handleClick(id, variant.attributes.quantity === 0, e)}
                       >
-                        <input
-                          type="checkbox"
-                          className="mt-1 h-4 w-4"
-                          checked={isChecked}
-                          onChange={() => toggleVariant(id)}
-                          // Disable the checkbox if the variant is out of stock (quantity === 0) and not triple-click enabled
-                          disabled={isDisabled}
-                        />
-                        <div className="flex-1">
-                          <div className="text-sm font-medium text-foreground">{label}</div>
-                          <div className="mt-1 text-xs text-muted-foreground">
-                            {sku ? <span className="mr-3 whitespace-nowrap">SKU: {sku}</span> : null}
-                            {Number.isFinite(price) ? <span className="mr-3 whitespace-nowrap font-medium">{price.toFixed(2)} лв</span> : null}
-                            {stockCount !== null ? <span className="whitespace-nowrap" title="Наличност">Stock: {stockCount}</span> : null}
+                        <div className='flex flex-col items-center justify-center'>
+                          <span className='font-medium text-foreground'>{label}</span>
+                          <input
+                            type="checkbox"
+                            className="h-full w-4"
+                            checked={isChecked}
+                            onChange={() => toggleVariant(id)}
+                            // Disable the checkbox if the variant is out of stock (quantity === 0) and not triple-click enabled
+                            disabled={isDisabled}
+                          />
+                        </div>
+                        <div className='flex flex-1 justify-between align-center -border'>
+                          <div className={`flex items-center rounded p-1 ${variant.attributes.quantity && !isChecked ? 'bg-muted' : ''}`}>
+                            <div className="text-sm">
+                              {sku ? <span className="mr-3 whitespace-nowrap text-muted-foreground">{sku}</span> : null}
+                              {stockCount !== null ? <span className="text-xs whitespace-nowrap" title="Наличност">Stock: {stockCount}</span> : null}
+                            </div>
+                          </div>
+                          <div className='flex items-center'>
+                            <div className='flex items-center -my-1'>
+                              {isChecked ? (
+                                <>
+                                  <div className="flex self-stretch items-center">
+                                    <button
+                                      type="button"
+                                      onClick={() => decreaseQuantity(id)}
+                                      disabled={qty <= 1}
+                                      className="flex h-full w-7 items-center justify-center px-5 text-sm hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+                                      aria-label="Decrease quantity"
+                                    >
+                                      <FontAwesomeIcon icon={faMinus} className="h-3 w-3" />
+                                    </button>
+                                    <input
+                                      name={`variant-qty-input-${id}`}
+                                      type="number"
+                                      min={1}
+                                      value={qty}
+                                      onChange={(event) =>
+                                        setQuantityForVariant(id, Number(event.target.value) || 1)
+                                      }
+                                      className={`h-full w-16 px-2 border border-border text-center ${stockCount !== null && qty > stockCount
+                                          ? 'bg-red-100'
+                                          : 'bg-white'
+                                        }`}
+                                    />
+                                    <button
+                                      type="button"
+                                      onClick={() => increaseQuantity(id)}
+                                      className="flex h-full w-7 items-center justify-center px-5 text-sm hover:bg-muted"
+                                      aria-label="Increase quantity"
+                                    >
+                                      <FontAwesomeIcon icon={faPlus} className="h-3 w-3" />
+                                    </button>
+                                  </div>
+                                  <div className="flex items-center gap-2 px-4 py-3">
+                                    <span
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                        handleNoteModalOpen(id);
+                                      }}
+                                      className="flex-1 cursor-pointer"
+                                      title={notes[id] ? notes[id] : "Click to add note..."}
+                                    >
+                                      {notes[id] ? <FontAwesomeIcon icon={faPencil} className="h-3 w-3" /> : <FontAwesomeIcon icon={faNoteSticky} className="h-3 w-3" />}
+                                    </span>
+                                  </div>
+                                </>
+                              ) : null}
+                            </div>
+                            {Number.isFinite(price) ? <span className="flex items-center text-sm whitespace-nowrap font-medium ">{price.toFixed(2)} лв</span> : null}
                           </div>
                         </div>
                       </label>
-                      {isChecked ? (
-                        <>
-                          <div className="flex items-center gap-2 px-4 py-3">
-                            <span className="text-xs text-muted-foreground" title="Количество">Qty</span>
-                            <div className="flex items-center gap-1">
-                              <button
-                                type="button"
-                                onClick={() => decreaseQuantity(id)}
-                                disabled={qty <= 1}
-                                className="flex h-7 w-7 items-center justify-center rounded border border-border bg-white text-sm hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
-                                aria-label="Decrease quantity"
-                              >
-                                <FontAwesomeIcon icon={faMinus} className="h-3 w-3" />
-                              </button>
-                              <input
-                                type="number"
-                                min={1}
-                                value={qty}
-                                onChange={(event) =>
-                                  setQuantityForVariant(id, Number(event.target.value) || 1)
-                                }
-                                className={`w-16 rounded border border-border px-2 py-1 text-center text-sm ${
-                                  stockCount !== null && qty > stockCount
-                                    ? 'bg-red-100'
-                                    : 'bg-white'
-                                }`}
-                              />
-                              <button
-                                type="button"
-                                onClick={() => increaseQuantity(id)}
-                                className="flex h-7 w-7 items-center justify-center rounded border border-border bg-white text-sm hover:bg-muted"
-                                aria-label="Increase quantity"
-                              >
-                                <FontAwesomeIcon icon={faPlus} className="h-3 w-3" />
-                              </button>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2 px-4 py-3">
-                            <span className="text-xs text-muted-foreground" title="Бележка">Note</span>
-                            <input
-                              type="text"
-                              value={notes[id] || ''}
-                              onChange={(event) => setNoteForVariant(id, event.target.value)}
-                              placeholder="Optional note..."
-                              title="Опционална бележка..."
-                              className="flex-1 bg-white rounded border border-border px-2 py-1 text-sm"
-                            />
-                          </div>
-                        </>
-                      ) : null}
                     </div>
                   </li>
                 );
@@ -410,11 +450,10 @@ export function VariantMultiSelectModal({
               type="button"
               onClick={handleConfirm}
               disabled={selectedCount === 0}
-              className={`rounded px-4 py-1.5 text-sm text-white transition ${
-                selectedCount === 0
-                  ? 'cursor-not-allowed bg-muted text-muted-foreground'
+              className={`rounded px-4 py-1.5 text-sm text-white transition ${selectedCount === 0
+                  ? 'cursor-not-allowed bg-black/25'
                   : 'bg-green-600 hover:bg-green-700'
-              }`}
+                }`}
               title="Добави избрани"
             >
               Add Selected
@@ -422,6 +461,76 @@ export function VariantMultiSelectModal({
           </div>
         </div>
       </div>
+
+      {/* Note Edit Modal */}
+      {noteModalOpenFor && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 px-4"
+          onClick={handleNoteModalClose}
+          role="presentation"
+        >
+          <div
+            ref={noteModalRef}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="note-edit-heading"
+            className="w-full max-w-md rounded-lg bg-white shadow-xl outline-none"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start gap-3 border-b border-border px-6 py-4">
+              <div className="flex-1">
+                <h2 id="note-edit-heading" className="text-lg font-semibold text-foreground" title="Редактирай бележка">
+                  Note for "{variantMap[noteModalOpenFor] ? variantLabel(variantMap[noteModalOpenFor]) || variantMap[noteModalOpenFor].attributes.v1 || 'Variant' : 'Variant'}"
+                </h2>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  write a note for this variant
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleNoteModalClose}
+                className="rounded border border-transparent py-1 text-sm text-muted-foreground hover:bg-muted"
+              >
+                <span title="Отказ">
+                  <FontAwesomeIcon icon={faXmark} className="h-3 w-3" />
+                </span>
+              </button>
+            </div>
+
+            <div className="px-6 py-2">
+              <textarea
+                id="variant-note-textarea"
+                value={tempNote}
+                onChange={(event) => setTempNote(event.target.value)}
+                placeholder="Optional note..."
+                title="Опционална бележка..."
+                className="block w-full bg-black/5 rounded border border-border px-3 py-2 text-sm min-h-[100px] resize-y"
+                autoFocus
+                rows={10}
+              />
+            </div>
+
+            <div className="flex items-center justify-end gap-2 border-t border-border px-6 py-4">
+              <button
+                type="button"
+                onClick={handleNoteModalClose}
+                className="rounded border border-border px-4 py-1.5 text-sm hover:bg-muted"
+              >
+                <span title="Отказ">Cancel</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleNoteModalSave}
+                className="rounded px-4 py-1.5 text-sm text-white bg-green-600 hover:bg-green-700"
+                title="Запази"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
