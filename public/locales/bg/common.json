@@ -31,7 +31,15 @@
     "list": "Списък с поръчки",
     "status": "Статус",
     "total": "Общо",
-    "date": "Дата"
+    "subtotal": "Междинна сума",
+    "date": "Дата",
+    "placingOrder": "Изпращане на поръчка...",
+    "placeOrder": "Направи поръчка",
+    "orderPlaced": "Поръчката е направена успешно!",
+    "orderFailed": "Грешка при поръчката. Моля, опитайте отново.",
+    "orderReceived": "Поръчката е получена",
+    "orderSuccessMessage": "Вашата поръчка е направена успешно.",
+    "orderId": "Номер на поръчка"
   },
   "products": {
     "title": "Продукти",
@@ -39,23 +47,49 @@
     "price": "Цена",
     "stock": "Наличност",
     "category": "Категория",
-    "variants": "Варианти"
+    "variants": "Варианти",
+    "browseProducts": "Разгледайте продукти и добавете в количката, за да започнете."
   },
   "store": {
     "title": "Магазин",
+    "shop": "Магазин",
     "cart": "Количка",
+    "yourCart": "Вашата количка",
+    "cartEmpty": "Количката ви е празна.",
     "checkout": "Плащане",
     "addToCart": "Добави в количка",
     "removeFromCart": "Премахни от количка",
     "continueShopping": "Продължи пазаруването",
     "proceedToCheckout": "Продължи към плащане"
   },
+  "checkout": {
+    "title": "Плащане",
+    "fullName": "Пълно име",
+    "email": "Имейл",
+    "phone": "Телефон",
+    "phoneOptional": "Телефон (по избор)",
+    "address": "Адрес",
+    "addressOptional": "Адрес (по избор)",
+    "city": "Град",
+    "cityOptional": "Град (по избор)",
+    "postalCode": "Пощенски код",
+    "postalCodeOptional": "Пощенски код (по избор)",
+    "total": "Общо",
+    "required": "задължително"
+  },
   "auth": {
     "login": "Вход",
     "logout": "Изход",
     "register": "Регистрация",
     "email": "Имейл",
-    "password": "Парола"
+    "password": "Парола",
+    "signInRequired": "Трябва да сте влезли в системата.",
+    "provideNameEmail": "Моля, въведете име и имейл."
+  },
+  "admin": {
+    "title": "Администрация",
+    "catalog": "Каталог",
+    "customers": "Клиенти"
   },
   "common": {
     "search": "Търсене",
@@ -67,6 +101,11 @@
     "close": "Затвори",
     "confirm": "Потвърди",
     "yes": "Да",
-    "no": "Не"
+    "no": "Не",
+    "optional": "по избор"
+  },
+  "nav": {
+    "backToDashboard": "Назад към таблото",
+    "copyUserId": "Кликни за копиране на потребителски ID"
   }
 }

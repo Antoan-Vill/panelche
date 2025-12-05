@@ -31,7 +31,15 @@
     "list": "Orders List",
     "status": "Status",
     "total": "Total",
-    "date": "Date"
+    "subtotal": "Subtotal",
+    "date": "Date",
+    "placingOrder": "Placing order...",
+    "placeOrder": "Place Order",
+    "orderPlaced": "Order placed successfully!",
+    "orderFailed": "Failed to place order. Please try again.",
+    "orderReceived": "Order received",
+    "orderSuccessMessage": "Your order has been placed successfully.",
+    "orderId": "Order ID"
   },
   "products": {
     "title": "Products",
@@ -39,23 +47,49 @@
     "price": "Price",
     "stock": "Stock",
     "category": "Category",
-    "variants": "Variants"
+    "variants": "Variants",
+    "browseProducts": "Browse products and add them to your cart to get started."
   },
   "store": {
     "title": "Store",
+    "shop": "Shop",
     "cart": "Cart",
+    "yourCart": "Your Cart",
+    "cartEmpty": "Your cart is empty.",
     "checkout": "Checkout",
     "addToCart": "Add to Cart",
     "removeFromCart": "Remove from Cart",
     "continueShopping": "Continue Shopping",
     "proceedToCheckout": "Proceed to Checkout"
   },
+  "checkout": {
+    "title": "Checkout",
+    "fullName": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "phoneOptional": "Phone (optional)",
+    "address": "Address",
+    "addressOptional": "Address (optional)",
+    "city": "City",
+    "cityOptional": "City (optional)",
+    "postalCode": "Postal Code",
+    "postalCodeOptional": "Postal Code (optional)",
+    "total": "Total",
+    "required": "required"
+  },
   "auth": {
     "login": "Login",
     "logout": "Logout",
     "register": "Register",
     "email": "Email",
-    "password": "Password"
+    "password": "Password",
+    "signInRequired": "You must be signed in.",
+    "provideNameEmail": "Please provide your name and email."
+  },
+  "admin": {
+    "title": "Admin",
+    "catalog": "Catalog",
+    "customers": "Customers"
   },
   "common": {
     "search": "Search",
@@ -67,6 +101,11 @@
     "close": "Close",
     "confirm": "Confirm",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "optional": "optional"
+  },
+  "nav": {
+    "backToDashboard": "Back to Dashboard",
+    "copyUserId": "Click to copy user ID"
   }
 }

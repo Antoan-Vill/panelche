@@ -5,9 +5,11 @@ import AuthGate from '@/components/AuthGate';
 import { CartProvider } from '@/lib/cart/cart-context';
 import { DashboardHeader } from '@/components/organisms/DashboardHeader';
 import CartButton from '@/components/storefront/CartButton';
+import { useTranslation } from '@/lib/i18n';
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const handleCartClick = () => {
     router.push('/store/cart');
@@ -18,7 +20,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
       <CartProvider>
         <div className="min-h-screen bg-background">
           <DashboardHeader
-            title="Store"
+            title={t('store.title')}
             actions={[
               {
                 label: <CartButton onClick={handleCartClick} />,

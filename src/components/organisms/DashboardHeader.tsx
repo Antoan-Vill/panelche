@@ -119,7 +119,7 @@ export function DashboardHeader({
                         e.stopPropagation();
                         handleCopyUserId();
                       }}
-                      title="Кликни за копиране на потребителски ID"
+                      title={t('nav.copyUserId')}
                     >
                       {user.displayName || user.email}
                     </div>
