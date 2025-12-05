@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { getProductVariantsClient } from '@/lib/products';
 import { VariantSelector } from '@/components/molecules/VariantSelector';
 import { VariantMultiSelectModal, type VariantMultiSelectModalItem } from '@/components/organisms/VariantMultiSelectModal';
+import { useDataSource } from '@/lib/contexts/data-source-context';
 import type { Product, Variant } from '@/lib/types/products';
 import type { AdminCartItem } from '@/lib/types/customers';
 
@@ -21,11 +22,17 @@ export function AdminProductWithVariants({
   product,
   onAddToCart
 }: AdminProductWithVariantsProps) {
+  const { source } = useDataSource();
   const [variants, setVariants] = useState<Variant[]>([]);
   const [loadingVariants, setLoadingVariants] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [showVariantModal, setShowVariantModal] = useState(false);
   const [initialSelectedVariantIds, setInitialSelectedVariantIds] = useState<string[]>([]);
+
+  // Convert price to cents - Firestore stores in whole units, CloudCart in cents
+  const priceCents = source === 'firestore'
+    ? (product.attributes.price ?? 0) * 100
+    : (product.attributes.price ?? 0);
 
   useEffect(() => {
     if (!expanded) return;
@@ -33,7 +40,7 @@ export function AdminProductWithVariants({
     const loadVariants = async () => {
       setLoadingVariants(true);
       try {
-        const vars = await getProductVariantsClient(product.id);
+        const vars = await getProductVariantsClient(product.id, source);
         setVariants(vars);
       } catch (error) {
         console.error('Error loading variants:', error);
@@ -44,7 +51,7 @@ export function AdminProductWithVariants({
     };
 
     loadVariants();
-  }, [expanded, product]);
+  }, [expanded, product, source]);
 
   // Open modal automatically when variants are loaded and product is expanded
   useEffect(() => {
@@ -102,7 +109,7 @@ export function AdminProductWithVariants({
           ) : (
             <VariantSelector
               variants={variants}
-              priceCents={product.attributes.price ?? null}
+              priceCents={priceCents}
               baseSku={product.attributes.sku ?? null}
               enablePivotToMulti
               onRequestMultiSelect={({ initialSelectedIds }) => {
@@ -135,7 +142,7 @@ export function AdminProductWithVariants({
           productName={product.attributes.name}
           imageUrl={product.attributes.image_url || null}
           baseSku={product.attributes.sku || null}
-          priceCents={product.attributes.price ?? null}
+          priceCents={priceCents}
           variants={variants}
           initialSelectedIds={initialSelectedVariantIds}
           onCancel={() => {

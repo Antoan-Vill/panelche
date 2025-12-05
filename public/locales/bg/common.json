@@ -27,6 +27,7 @@
   },
   "orders": {
     "title": "Поръчки",
+    "allOrders": "Всички поръчки",
     "create": "Създай поръчка",
     "list": "Списък с поръчки",
     "status": "Статус",
@@ -39,7 +40,24 @@
     "orderFailed": "Грешка при поръчката. Моля, опитайте отново.",
     "orderReceived": "Поръчката е получена",
     "orderSuccessMessage": "Вашата поръчка е направена успешно.",
-    "orderId": "Номер на поръчка"
+    "orderId": "Номер на поръчка",
+    "userId": "ID на потребител",
+    "source": "Източник",
+    "items": "Артикули",
+    "item": "артикул",
+    "itemsPlural": "артикула",
+    "noOrders": "Няма намерени поръчки.",
+    "editOrder": "Редактирай поръчка",
+    "addMoreItems": "Добави още артикули",
+    "confirmDelete": "Сигурни ли сте, че искате да изтриете тази поръчка?",
+    "saveChanges": "Запази промените",
+    "hideCloudCart": "Скрий CC поръчки",
+    "showCloudCart": "Покажи CC поръчки",
+    "hiddenCloudCart": "Скрити CC поръчки",
+    "syncing": "Синхронизиране...",
+    "syncCloudCart": "Синхронизирай CloudCart",
+    "externalId": "Външен ID",
+    "manual": "Ръчна"
   },
   "products": {
     "title": "Продукти",
@@ -48,7 +66,13 @@
     "stock": "Наличност",
     "category": "Категория",
     "variants": "Варианти",
-    "browseProducts": "Разгледайте продукти и добавете в количката, за да започнете."
+    "browseProducts": "Разгледайте продукти и добавете в количката, за да започнете.",
+    "searchProduct": "Търси продукт...",
+    "noProducts": "Няма намерени продукти",
+    "loadingVariants": "Зареждане на варианти...",
+    "priceNotAvailable": "Цената не е налична",
+    "retail": "На дребно",
+    "sku": "SKU"
   },
   "store": {
     "title": "Магазин",
@@ -58,6 +82,7 @@
     "cartEmpty": "Количката ви е празна.",
     "checkout": "Плащане",
     "addToCart": "Добави в количка",
+    "add": "Добави",
     "removeFromCart": "Премахни от количка",
     "continueShopping": "Продължи пазаруването",
     "proceedToCheckout": "Продължи към плащане"
@@ -81,15 +106,64 @@
     "login": "Вход",
     "logout": "Изход",
     "register": "Регистрация",
+    "signIn": "Вход",
+    "signUp": "Регистрация",
     "email": "Имейл",
     "password": "Парола",
     "signInRequired": "Трябва да сте влезли в системата.",
-    "provideNameEmail": "Моля, въведете име и имейл."
+    "provideNameEmail": "Моля, въведете име и имейл.",
+    "nameOptional": "Име (по избор)",
+    "pleaseWait": "Моля, изчакайте...",
+    "or": "Или",
+    "signInWithGoogle": "Влез с Google",
+    "alreadyHaveAccount": "Вече имате акаунт? Влезте",
+    "dontHaveAccount": "Нямате акаунт? Регистрирайте се",
+    "authFailed": "Неуспешна автентикация"
   },
   "admin": {
     "title": "Администрация",
     "catalog": "Каталог",
-    "customers": "Клиенти"
+    "customers": "Клиенти",
+    "panel": "Админ панел"
+  },
+  "catalog": {
+    "title": "Каталог",
+    "noCategorySelected": "Няма избрана категория",
+    "chooseCategoryPrompt": "Избери категория от страничната лента, за да видиш и управляваш продуктите й.",
+    "categoryNotFound": "Категорията не е намерена",
+    "categoryNotFoundDesc": "Избраната категория не може да бъде намерена. Моля, изберете друга категория.",
+    "noCategories": "Няма намерени категории",
+    "noProductsInCategory": "Няма намерени продукти в тази категория.",
+    "totalVisible": "общо / видими"
+  },
+  "sidebar": {
+    "expand": "Разгъни страничната лента",
+    "collapse": "Сгъни страничната лента"
+  },
+  "sync": {
+    "title": "Синхронизирай CloudCart поръчки",
+    "limit": "Брой поръчки (лимит)",
+    "maxPerRequest": "Макс. 100 на заявка.",
+    "statusFilter": "Филтър по статус (по избор)",
+    "allStatuses": "Всички статуси",
+    "fromDate": "От дата",
+    "toDate": "До дата",
+    "startSync": "Започни синхронизация"
+  },
+  "status": {
+    "new": "Нова",
+    "pending": "Изчакваща",
+    "processing": "Обработва се",
+    "fulfilled": "Изпълнена",
+    "completed": "Завършена",
+    "cancelled": "Отменена"
+  },
+  "pagination": {
+    "showing": "Показване",
+    "to": "до",
+    "of": "от",
+    "results": "резултата",
+    "catalogItems": "каталожни артикула"
   },
   "common": {
     "search": "Търсене",
@@ -102,10 +176,16 @@
     "confirm": "Потвърди",
     "yes": "Да",
     "no": "Не",
-    "optional": "по избор"
+    "optional": "по избор",
+    "saveChanges": "Запази промените",
+    "actions": "Действия"
   },
   "nav": {
     "backToDashboard": "Назад към таблото",
     "copyUserId": "Кликни за копиране на потребителски ID"
+  },
+  "settings": {
+    "title": "Настройки",
+    "dataSource": "Източник на данни"
   }
 }

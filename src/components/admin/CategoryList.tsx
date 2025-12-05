@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Category } from '@/lib/categories';
 import { Button } from '@/components/atoms/Button';
+import { useTranslation } from '@/lib/i18n';
 
 interface CategoryListProps {
   categories: Category[];
@@ -11,6 +12,7 @@ interface CategoryListProps {
 }
 
 export default function CategoryList({ categories, activeSlug }: CategoryListProps) {
+  const { t } = useTranslation();
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -26,9 +28,14 @@ export default function CategoryList({ categories, activeSlug }: CategoryListPro
     .map((category) => category.id)
   );
   // main categories: direct children of any root id
-  const _categories = categories.filter(
+  const hierarchicalCategories = categories.filter(
     (category) => category.attributes.parent_id !== null && rootIds.has(String(category.attributes.parent_id))
   );
+  
+  // If all categories are root-level (flat structure like Firestore), show them directly
+  const _categories = hierarchicalCategories.length > 0 
+    ? hierarchicalCategories 
+    : categories.filter((category) => category.attributes.parent_id === null);
 
 
   return (
@@ -38,15 +45,14 @@ export default function CategoryList({ categories, activeSlug }: CategoryListPro
       <div className="p-4 border-b border-border relative">
         
         <>
-          <h2 className="text-lg font-semibold text-foreground" title="Категории">{!collapsed ? ('Categories') : <span className="opacity-0">|</span>}</h2>
+          <h2 className="text-lg font-semibold text-foreground">{!collapsed ? t('dashboard.categories') : <span className="opacity-0">|</span>}</h2>
         </>
         
         <div className="absolute top-2 right-2">
           <Button
             variant="ghost"
             size="icon"
-            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            title={collapsed ? 'Разгъни' : 'Сгъни'}
+            aria-label={collapsed ? t('sidebar.expand') : t('sidebar.collapse')}
             onClick={() => setCollapsed((v) => !v)}
           >
             <span className="text-lg">{collapsed ? '›' : '‹'}</span>
@@ -58,7 +64,7 @@ export default function CategoryList({ categories, activeSlug }: CategoryListPro
           <div className="p-2">
             {categories.length === 0 ? (
               <div className="text-sm text-muted-foreground text-center py-4">
-                <span title="Няма намерени категории">No categories found</span>
+                <span>{t('catalog.noCategories')}</span>
               </div>
             ) : (
               <div className="space-y-1">

@@ -1,9 +1,9 @@
 import useSWR from 'swr';
 import type { Category } from '@/lib/types/categories';
 
-export function useCategories() {
+export function useCategories(source: 'cloudcart' | 'firestore' = 'cloudcart') {
   const { data, error, isLoading, mutate } = useSWR<Category[]>(
-    '/api/categories',
+    `/api/categories?source=${source}`,
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: true,

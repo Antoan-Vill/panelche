@@ -19,6 +19,7 @@ type UseProductVariantsOptions = {
   initialDelayMs?: number;
   backoffFactor?: number;
   maxDelayMs?: number;
+  source?: 'cloudcart' | 'firestore';
 };
 
 export function useProductVariants(
@@ -32,6 +33,7 @@ export function useProductVariants(
     initialDelayMs = 800,
     backoffFactor = 1.7,
     maxDelayMs = 5000,
+    source = 'cloudcart',
   } = opts;
 
   const [data, setData] = useState<Variant[] | undefined>(undefined);
@@ -56,7 +58,7 @@ export function useProductVariants(
     setIsLoading(true);
     setError(null);
     setErrorDetails(null);
-    fetch(`/api/catalog/${productId}/variants`, { cache: 'no-store', signal: controller.signal })
+    fetch(`/api/catalog/${productId}/variants?source=${source}`, { cache: 'no-store', signal: controller.signal })
       .then(async (res) => {
         const json = await res.json().catch(() => ({}));
         if (!res.ok) {
@@ -89,7 +91,7 @@ export function useProductVariants(
     return () => {
       controller.abort();
     };
-  }, [productId, nonce]);
+  }, [productId, nonce, source]);
 
   useEffect(() => {
     if (!autoRetry || !productId) return;

@@ -7,6 +7,7 @@ import { Heading } from '@/components/atoms/Heading';
 import { Button } from '@/components/atoms/Button';
 import { useAuth } from '@/lib/firebase/auth-context';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { DataSourceSelector } from '@/components/DataSourceSelector';
 import { useTranslation } from '@/lib/i18n';
 
 interface DashboardHeaderProps {
@@ -61,7 +62,7 @@ export function DashboardHeader({
   };
 
   return (
-    <header className="bg-card bg-gray-50 -shadow-sm border-b border-border">
+    <header className="bg-card border-b border-border">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center">
           {/* back */}
@@ -203,10 +204,14 @@ export function DashboardHeader({
                           {t('actions.settings')}
                         </p>
                       </div>
-                      <div className="px-4 pb-3">
+                      <div className="px-4 pb-3 space-y-3">
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-foreground">{t('language')}</span>
                           <LanguageSwitcher className="ml-2" />
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-foreground">{t('settings.dataSource')}</span>
+                          <DataSourceSelector className="ml-2" />
                         </div>
                       </div>
                     </div>

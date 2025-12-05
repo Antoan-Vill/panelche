@@ -5,6 +5,7 @@ import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { badRequest, notFound, serverError, ok } from '@/lib/http/response';
 import { cloudCartProducts } from '@/lib/services/cloudcart';
+import { firestoreProducts } from '@/lib/services/firestore';
 import type { ApiRouteResponse } from '@/lib/types/api';
 import type { ProductsResponse } from '@/lib/types/products';
 
@@ -16,6 +17,7 @@ export async function GET(
     const { slug } = await params;
     const { searchParams } = request.nextUrl;
     const pageParam = searchParams.get('page') || '1';
+    const source = searchParams.get('source') || 'cloudcart';
 
     const ParamsSchema = z.object({ 
       slug: z.string().min(1), 
@@ -28,8 +30,11 @@ export async function GET(
 
     const page = parseInt(pageParam, 10);
 
+    // Select products service based on source
+    const productsService = source === 'firestore' ? firestoreProducts : cloudCartProducts;
+
     // Fetch products by category slug using service layer
-    const productsResponse = await cloudCartProducts.getByCategory(slug, page);
+    const productsResponse = await productsService.getByCategory(slug, page);
 
     return ok(productsResponse);
   } catch (error) {

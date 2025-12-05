@@ -15,10 +15,10 @@ export default function CartButton({ onClick }: CartButtonProps) {
   return (
     <button
       onClick={onClick}
-      className="relative inline-flex items-center px-3 py-2 rounded bg-gray-900 text-white hover:bg-gray-800"
+      className="relative inline-flex items-center px-3 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90"
     >
       <span className="mr-2">{t('store.cart')}</span>
-      <span className="inline-flex items-center justify-center text-xs font-semibold w-5 h-5 rounded-full bg-white text-gray-900">
+      <span className="inline-flex items-center justify-center text-xs font-semibold w-5 h-5 rounded-full bg-primary-foreground text-primary">
         {count}
       </span>
     </button>

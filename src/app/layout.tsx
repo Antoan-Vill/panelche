@@ -9,6 +9,7 @@ import { AuthProvider } from "@/lib/firebase/auth-context";
 import { SwrProvider } from "@/lib/swr/provider";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { LoadingProvider } from "@/lib/contexts/loading-context";
+import { DataSourceProvider } from "@/lib/contexts/data-source-context";
 import { I18nProvider } from "@/lib/i18n";
 
 const geistSans = Geist({
@@ -39,11 +40,13 @@ export default function RootLayout({
         <ErrorBoundary>
           <I18nProvider>
             <LoadingProvider>
-              <AuthProvider>
-                <SwrProvider>
-                  {children}
-                </SwrProvider>
-              </AuthProvider>
+              <DataSourceProvider>
+                <AuthProvider>
+                  <SwrProvider>
+                    {children}
+                  </SwrProvider>
+                </AuthProvider>
+              </DataSourceProvider>
             </LoadingProvider>
           </I18nProvider>
         </ErrorBoundary>

@@ -16,7 +16,7 @@ export function LanguageSwitcher({
   if (!isReady) {
     return (
       <div className={`language-switcher ${className}`}>
-        <span className="text-gray-400">...</span>
+        <span className="text-muted-foreground">...</span>
       </div>
     );
   }
@@ -31,7 +31,7 @@ export function LanguageSwitcher({
         <select
           value={locale}
           onChange={(e) => handleChange(e.target.value as Locale)}
-          className="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+          className="px-3 py-2 bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary cursor-pointer"
           aria-label="Select language"
         >
           {i18nConfig.locales.map((loc) => (
@@ -52,9 +52,9 @@ export function LanguageSwitcher({
           onClick={() => handleChange(loc)}
           className={`
             px-3 py-1.5 text-sm font-medium rounded-md transition-colors
-            ${locale === loc 
-              ? 'bg-blue-600 text-white' 
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            ${locale === loc
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-muted text-muted-foreground hover:bg-muted/80'
             }
           `}
           aria-pressed={locale === loc}

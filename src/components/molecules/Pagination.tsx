@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { useTranslation } from '@/lib/i18n';
 
 interface PaginationProps {
   currentPage: number;
@@ -17,6 +20,8 @@ export function Pagination({
   itemsPerPage,
   baseUrl
 }: PaginationProps) {
+  const { t } = useTranslation();
+  
   if (totalPages <= 1) return null;
 
   const getPageUrl = (page: number) => {
@@ -78,7 +83,7 @@ export function Pagination({
             href={getPageUrl(currentPage - 1)}
             className="relative inline-flex items-center px-4 py-2 border border-border text-sm font-medium rounded-md text-muted-foreground bg-card hover:bg-muted"
           >
-            <span title="Предишна">Previous</span>
+            <span>{t('common.previous')}</span>
           </Link>
         )}
         {currentPage < totalPages && (
@@ -86,7 +91,7 @@ export function Pagination({
             href={getPageUrl(currentPage + 1)}
             className="ml-3 relative inline-flex items-center px-4 py-2 border border-border text-sm font-medium rounded-md text-muted-foreground bg-card hover:bg-muted"
           >
-            <span title="Следваща">Next</span>
+            <span>{t('common.next')}</span>
           </Link>
         )}
       </div>
@@ -94,9 +99,9 @@ export function Pagination({
       <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
         <div>
           <p className="text-sm text-muted-foreground">
-            <span title="Показване">Showing</span> <span className="font-medium">{startItem}</span> <span title="до">to</span>{' '}
-            <span className="font-medium">{endItem}</span> <span title="от">of</span>{' '}
-            <span className="font-medium">{totalItems}</span> <span title="каталог артикули">catalog items</span>
+            {t('pagination.showing')} <span className="font-medium">{startItem}</span> {t('pagination.to')}{' '}
+            <span className="font-medium">{endItem}</span> {t('pagination.of')}{' '}
+            <span className="font-medium">{totalItems}</span> {t('pagination.catalogItems')}
           </p>
         </div>
 
@@ -108,14 +113,14 @@ export function Pagination({
                 href={getPageUrl(currentPage - 1)}
                 className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-border bg-card text-sm font-medium text-muted-foreground hover:bg-muted"
               >
-                <span className="sr-only" title="Предишна">Previous</span>
+                <span className="sr-only">{t('common.previous')}</span>
                 <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
               </Link>
             ) : (
               <span className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-border bg-muted text-sm font-medium text-muted-foreground cursor-not-allowed">
-                <span className="sr-only" title="Предишна">Previous</span>
+                <span className="sr-only">{t('common.previous')}</span>
                 <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
@@ -160,14 +165,14 @@ export function Pagination({
                 href={getPageUrl(currentPage + 1)}
                 className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-border bg-card text-sm font-medium text-muted-foreground hover:bg-muted"
               >
-                <span className="sr-only" title="Следваща">Next</span>
+                <span className="sr-only">{t('common.next')}</span>
                 <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                 </svg>
               </Link>
             ) : (
               <span className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-border bg-muted text-sm font-medium text-muted-foreground cursor-not-allowed">
-                <span className="sr-only" title="Следваща">Next</span>
+                <span className="sr-only">{t('common.next')}</span>
                 <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                 </svg>

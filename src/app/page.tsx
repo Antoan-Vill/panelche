@@ -5,10 +5,12 @@ import { StatsSection, CategoriesSection, ActionsPanel, ActivityFeed } from '@/c
 import { useCategories, useDashboardStats } from '@/hooks';
 import AuthGate from '@/components/AuthGate';
 import { useTranslation } from '@/lib/i18n';
+import { useDataSource } from '@/lib/contexts/data-source-context';
 
 export default function Dashboard() {
   const { t } = useTranslation();
-  const { data: categories, isLoading: categoriesLoading, error: categoriesError } = useCategories();
+  const { source } = useDataSource();
+  const { data: categories, isLoading: categoriesLoading, error: categoriesError } = useCategories(source);
   const { stats, isLoading: statsLoading, error: statsError } = useDashboardStats();
 
   const actions = [

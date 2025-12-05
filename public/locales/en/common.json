@@ -27,6 +27,7 @@
   },
   "orders": {
     "title": "Orders",
+    "allOrders": "All Orders",
     "create": "Create Order",
     "list": "Orders List",
     "status": "Status",
@@ -39,7 +40,24 @@
     "orderFailed": "Failed to place order. Please try again.",
     "orderReceived": "Order received",
     "orderSuccessMessage": "Your order has been placed successfully.",
-    "orderId": "Order ID"
+    "orderId": "Order ID",
+    "userId": "User ID",
+    "source": "Source",
+    "items": "Items",
+    "item": "item",
+    "itemsPlural": "items",
+    "noOrders": "No orders found.",
+    "editOrder": "Edit Order",
+    "addMoreItems": "Add More Items",
+    "confirmDelete": "Are you sure you want to delete this order?",
+    "saveChanges": "Save changes",
+    "hideCloudCart": "Hide CC Orders",
+    "showCloudCart": "Show CC Orders",
+    "hiddenCloudCart": "Hidden CC Orders",
+    "syncing": "Syncing...",
+    "syncCloudCart": "Sync CloudCart",
+    "externalId": "External ID",
+    "manual": "Manual"
   },
   "products": {
     "title": "Products",
@@ -48,7 +66,13 @@
     "stock": "Stock",
     "category": "Category",
     "variants": "Variants",
-    "browseProducts": "Browse products and add them to your cart to get started."
+    "browseProducts": "Browse products and add them to your cart to get started.",
+    "searchProduct": "Search for product...",
+    "noProducts": "No products found",
+    "loadingVariants": "Loading variants...",
+    "priceNotAvailable": "Price not available",
+    "retail": "Retail",
+    "sku": "SKU"
   },
   "store": {
     "title": "Store",
@@ -58,6 +82,7 @@
     "cartEmpty": "Your cart is empty.",
     "checkout": "Checkout",
     "addToCart": "Add to Cart",
+    "add": "Add",
     "removeFromCart": "Remove from Cart",
     "continueShopping": "Continue Shopping",
     "proceedToCheckout": "Proceed to Checkout"
@@ -81,15 +106,64 @@
     "login": "Login",
     "logout": "Logout",
     "register": "Register",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
     "email": "Email",
     "password": "Password",
     "signInRequired": "You must be signed in.",
-    "provideNameEmail": "Please provide your name and email."
+    "provideNameEmail": "Please provide your name and email.",
+    "nameOptional": "Name (optional)",
+    "pleaseWait": "Please wait...",
+    "or": "Or",
+    "signInWithGoogle": "Sign in with Google",
+    "alreadyHaveAccount": "Already have an account? Sign in",
+    "dontHaveAccount": "Don't have an account? Sign up",
+    "authFailed": "Authentication failed"
   },
   "admin": {
     "title": "Admin",
     "catalog": "Catalog",
-    "customers": "Customers"
+    "customers": "Customers",
+    "panel": "Admin Panel"
+  },
+  "catalog": {
+    "title": "Catalog",
+    "noCategorySelected": "No category selected",
+    "chooseCategoryPrompt": "Choose a category from the sidebar to view and manage its products.",
+    "categoryNotFound": "Category not found",
+    "categoryNotFoundDesc": "The selected category could not be found. Please select a different category.",
+    "noCategories": "No categories found",
+    "noProductsInCategory": "No products found in this category.",
+    "totalVisible": "total / visible"
+  },
+  "sidebar": {
+    "expand": "Expand sidebar",
+    "collapse": "Collapse sidebar"
+  },
+  "sync": {
+    "title": "Sync CloudCart Orders",
+    "limit": "Number of Orders (Limit)",
+    "maxPerRequest": "Max 100 per sync request.",
+    "statusFilter": "Status Filter (Optional)",
+    "allStatuses": "All Statuses",
+    "fromDate": "From Date",
+    "toDate": "To Date",
+    "startSync": "Start Sync"
+  },
+  "status": {
+    "new": "New",
+    "pending": "Pending",
+    "processing": "Processing",
+    "fulfilled": "Fulfilled",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
+  "pagination": {
+    "showing": "Showing",
+    "to": "to",
+    "of": "of",
+    "results": "results",
+    "catalogItems": "catalog items"
   },
   "common": {
     "search": "Search",
@@ -102,10 +176,16 @@
     "confirm": "Confirm",
     "yes": "Yes",
     "no": "No",
-    "optional": "optional"
+    "optional": "optional",
+    "saveChanges": "Save changes",
+    "actions": "Actions"
   },
   "nav": {
     "backToDashboard": "Back to Dashboard",
     "copyUserId": "Click to copy user ID"
+  },
+  "settings": {
+    "title": "Settings",
+    "dataSource": "Data Source"
   }
 }

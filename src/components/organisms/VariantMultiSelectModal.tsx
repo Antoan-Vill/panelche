@@ -5,6 +5,8 @@ import type { MouseEvent } from 'react';
 import type { Product, Variant } from '@/lib/types/products';
 import { variantLabel } from '@/lib/variants';
 import { priceIndex, lookupSku } from '@/lib/sku-index';
+import { PriceList } from '@/components/molecules/PriceList';
+import { useDataSource } from '@/lib/contexts/data-source-context';
 import { faExternalLink, faExternalLinkAlt, faFontAwesome, faMinus, faNoteSticky, faPencil, faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -49,6 +51,7 @@ export function VariantMultiSelectModal({
   onCancel,
   onConfirm,
 }: VariantMultiSelectModalProps) {
+  const { source } = useDataSource();
   const containerRef = useRef<HTMLDivElement>(null);
   const noteModalRef = useRef<HTMLDivElement>(null);
   const clickTimersRef = useRef<Record<string, number[]>>({});
@@ -302,6 +305,16 @@ export function VariantMultiSelectModal({
                 </a>
               </span>
             </h2>
+            {/* Display all prices for reference */}
+            {product.attributes.prices && product.attributes.prices.length > 0 && (
+              <div className="mt-2">
+                <PriceList 
+                  prices={product.attributes.prices} 
+                  inCents={source !== 'firestore'}
+                  compact 
+                />
+              </div>
+            )}
           </div>
           <button
             type="button"

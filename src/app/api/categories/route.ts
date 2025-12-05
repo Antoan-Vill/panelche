@@ -3,12 +3,16 @@ export const dynamic = 'force-dynamic';
 import { badRequest, serverError, ok } from '@/lib/http/response';
 import { CategoriesQuerySchema } from '@/lib/validators/query-params';
 import { cloudCartCategories } from '@/lib/services/cloudcart';
+import { firestoreCategories } from '@/lib/services/firestore';
 import type { ApiRouteResponse } from '@/lib/types/api';
 import type { Category } from '@/lib/types/categories';
 
 export async function GET(request: Request): ApiRouteResponse<Category[]> {
   try {
     const { searchParams } = new URL(request.url);
+
+    // Get data source preference
+    const source = searchParams.get('source') || 'cloudcart';
 
     // Parse query parameters with proper defaults
     const limitParam = searchParams.get('limit');
@@ -28,8 +32,11 @@ export async function GET(request: Request): ApiRouteResponse<Category[]> {
 
     const { limit = 50, offset = 0, include } = queryValidation.data;
 
-    // Fetch categories from CloudCart using service layer
-    const categories = await cloudCartCategories.getAll({
+    // Select service based on data source
+    const categoriesService = source === 'firestore' ? firestoreCategories : cloudCartCategories;
+
+    // Fetch categories using the selected service
+    const categories = await categoriesService.getAll({
       limit,
       offset,
       include: include ?? undefined,

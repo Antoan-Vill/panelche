@@ -9,6 +9,7 @@ import { VariantMultiSelectModal, type VariantMultiSelectModalItem } from '@/com
 import { variantLabel } from '@/lib/variants';
 import { useProductSearch } from '@/hooks';
 import { useCart } from '@/lib/cart/cart-context';
+import { useDataSource } from '@/lib/contexts/data-source-context';
 import type { Category } from '@/lib/categories';
 import type { Product, Variant, ProductsResponse } from '@/lib/types/products';
 
@@ -195,6 +196,7 @@ function ProductWithVariants({
 }
 
 export function StoreProductPicker() {
+  const { source } = useDataSource();
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
@@ -202,11 +204,11 @@ export function StoreProductPicker() {
   const [otherCategoriesProducts, setOtherCategoriesProducts] = useState<Product[]>([]);
   const [searchingOtherCategories, setSearchingOtherCategories] = useState(false);
 
-  // Load categories on mount
+  // Load categories on mount or when source changes
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const cats = await getCategories();
+        const cats = await getCategories(source);
         setCategories(cats);
         if (cats.length) {
           // select the first category to trigger product load
@@ -217,7 +219,7 @@ export function StoreProductPicker() {
       }
     };
     loadCategories();
-  }, []);
+  }, [source]);
 
   // Load products when category changes
   useEffect(() => {
@@ -242,11 +244,11 @@ export function StoreProductPicker() {
     (async () => {
       setLoading(true);
       try {
-        const first: ProductsResponse = await getProductsByCategory(slug, 1);
+        const first: ProductsResponse = await getProductsByCategory(slug, 1, source);
         const lastPage = first?.meta?.page?.['last-page'] ?? 1;
         let all = [...(first?.data ?? [])];
         for (let page = 2; page <= lastPage; page++) {
-          const resp = await getProductsByCategory(slug, page);
+          const resp = await getProductsByCategory(slug, page, source);
           all = all.concat(resp?.data ?? []);
         }
         if (!ignore) {
@@ -264,7 +266,7 @@ export function StoreProductPicker() {
     })();
 
     return () => { ignore = true; };
-  }, [selectedCategory]);
+  }, [selectedCategory, source]);
 
   useEffect(() => {
     if (selectedCategory) return;
@@ -282,7 +284,7 @@ export function StoreProductPicker() {
       setLoading(true);
       try {
         // Use relative URL instead of constructing absolute URL
-        const res = await fetch('/api/products?page=1&per_page=100', {
+        const res = await fetch(`/api/catalog?page=1&per_page=100&source=${source}`, {
           cache: 'no-store',
           signal: controller.signal,
         });
@@ -296,7 +298,7 @@ export function StoreProductPicker() {
     })();
 
     return () => { ignore = true; controller.abort(); };
-  }, [selectedCategory]);
+  }, [selectedCategory, source]);
 
   useEffect(() => {
     if (!categories.length) return;
@@ -308,11 +310,11 @@ export function StoreProductPicker() {
         if (getCachedCategoryProducts(slug)) continue; // fresh
 
         try {
-          const first: ProductsResponse = await getProductsByCategory(slug, 1);
+          const first: ProductsResponse = await getProductsByCategory(slug, 1, source);
           const lastPage = first?.meta?.page?.['last-page'] ?? 1;
           let all = [...(first?.data ?? [])];
           for (let page = 2; page <= lastPage; page++) {
-            const resp = await getProductsByCategory(slug, page);
+            const resp = await getProductsByCategory(slug, page, source);
             all = all.concat(resp?.data ?? []);
             await sleep(50); // be polite
           }
@@ -328,7 +330,7 @@ export function StoreProductPicker() {
     } else {
       setTimeout(run, 0);
     }
-  }, [categories]);
+  }, [categories, source]);
 
   const handleCategorySelect = (category: Category) => {
     setSelectedCategory(category);

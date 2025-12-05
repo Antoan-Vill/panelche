@@ -2,12 +2,15 @@ import type { Variant } from '@/lib/types/products';
 
 // Only export client-safe functions here
 // Server-only functions should be imported directly in server components
-export async function getProductVariantsClient(productId: string): Promise<Variant[]> {
+export async function getProductVariantsClient(
+  productId: string,
+  source: 'cloudcart' | 'firestore' = 'cloudcart'
+): Promise<Variant[]> {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || '';
     const url = baseUrl
-      ? `${baseUrl}/api/catalog/${productId}/variants`
-      : `/api/catalog/${productId}/variants`;
+      ? `${baseUrl}/api/catalog/${productId}/variants?source=${source}`
+      : `/api/catalog/${productId}/variants?source=${source}`;
     const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) {
       return [];

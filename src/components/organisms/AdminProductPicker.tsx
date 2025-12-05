@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { getCategories } from '@/lib/categories';
 import { getProductsByCategory } from '@/lib/services/cloudcart';
 import { useProductSearch } from '@/hooks';
+import { useDataSource } from '@/lib/contexts/data-source-context';
 import { AdminProductWithVariants } from '@/components/organisms/AdminProductWithVariants';
 import type { Category } from '@/lib/categories';
 import type { Product, ProductsResponse } from '@/lib/types/products';
@@ -60,6 +61,7 @@ interface AdminProductPickerProps {
 }
 
 export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
+  const { source } = useDataSource();
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
@@ -67,11 +69,11 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
   const [otherCategoriesProducts, setOtherCategoriesProducts] = useState<Product[]>([]);
   const [searchingOtherCategories, setSearchingOtherCategories] = useState(false);
 
-  // Load categories on mount
+  // Load categories on mount or when source changes
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const cats = await getCategories();
+        const cats = await getCategories(source);
         setCategories(cats);
         if (cats.length) {
           // select the first category to trigger product load
@@ -82,7 +84,7 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
       }
     };
     loadCategories();
-  }, []);
+  }, [source]);
 
   // Load products when category changes
   useEffect(() => {
@@ -107,11 +109,11 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
     (async () => {
       setLoading(true);
       try {
-        const first: ProductsResponse = await getProductsByCategory(slug, 1);
+        const first: ProductsResponse = await getProductsByCategory(slug, 1, source);
         const lastPage = first?.meta?.page?.['last-page'] ?? 1;
         let all = [...(first?.data ?? [])];
         for (let page = 2; page <= lastPage; page++) {
-          const resp = await getProductsByCategory(slug, page);
+          const resp = await getProductsByCategory(slug, page, source);
           all = all.concat(resp?.data ?? []);
         }
         if (!ignore) {
@@ -129,7 +131,7 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
     })();
   
     return () => { ignore = true; };
-  }, [selectedCategory]);
+  }, [selectedCategory, source]);
 
   useEffect(() => {
     if (selectedCategory) return;
@@ -147,7 +149,7 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
       setLoading(true);
       try {
         // Use relative URL instead of constructing absolute URL
-        const res = await fetch('/api/products?page=1&per_page=100', {
+        const res = await fetch(`/api/catalog?page=1&per_page=100&source=${source}`, {
           cache: 'no-store',
           signal: controller.signal,
         });
@@ -161,7 +163,7 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
     })();
   
     return () => { ignore = true; controller.abort(); };
-  }, [selectedCategory]);
+  }, [selectedCategory, source]);
 
   useEffect(() => {
     if (!categories.length) return;
@@ -173,11 +175,11 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
         if (getCachedCategoryProducts(slug)) continue; // fresh
   
         try {
-          const first: ProductsResponse = await getProductsByCategory(slug, 1);
+          const first: ProductsResponse = await getProductsByCategory(slug, 1, source);
           const lastPage = first?.meta?.page?.['last-page'] ?? 1;
           let all = [...(first?.data ?? [])];
           for (let page = 2; page <= lastPage; page++) {
-            const resp = await getProductsByCategory(slug, page);
+            const resp = await getProductsByCategory(slug, page, source);
             all = all.concat(resp?.data ?? []);
             await sleep(50); // be polite
           }
@@ -193,7 +195,7 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
     } else {
       setTimeout(run, 0);
     }
-  }, [categories]);
+  }, [categories, source]);
 
   const handleCategorySelect = (category: Category) => {
     setSelectedCategory(category);

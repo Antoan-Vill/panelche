@@ -16,9 +16,9 @@ type AsyncState<T> = {
 /**
  * SWR-based hook for categories (preferred for most use cases)
  */
-export function useCategoriesSWR() {
+export function useCategoriesSWR(source: 'cloudcart' | 'firestore' = 'cloudcart') {
   const { data, error, isLoading, mutate } = useSWR<CategoryType[]>(
-    '/api/categories',
+    `/api/categories?source=${source}`,
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: true,
@@ -40,7 +40,7 @@ export function useCategoriesSWR() {
 /**
  * Fetch-based hook for categories (for cases where SWR isn't suitable)
  */
-export function useCategories(): AsyncState<CategoryType[]> {
+export function useCategories(source: 'cloudcart' | 'firestore' = 'cloudcart'): AsyncState<CategoryType[]> {
   const [data, setData] = useState<CategoryType[] | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,7 +52,7 @@ export function useCategories(): AsyncState<CategoryType[]> {
     let cancelled = false;
     setIsLoading(true);
     setError(null);
-    fetch('/api/categories', { cache: 'no-store' })
+    fetch(`/api/categories?source=${source}`, { cache: 'no-store' })
       .then(async (res) => {
         if (!res.ok) throw new Error(`Failed to load categories (${res.status})`);
         const json = await res.json();
@@ -78,12 +78,12 @@ export function useCategories(): AsyncState<CategoryType[]> {
     return () => {
       cancelled = true;
     };
-  }, [nonce]);
+  }, [nonce, source]);
 
   return useMemo(() => ({ data, isLoading, error, reload }), [data, isLoading, error, reload]);
 }
 
-export function useCategoryProducts(slug: string | null | undefined, page: number = 1): AsyncState<ProductsResponse> {
+export function useCategoryProducts(slug: string | null | undefined, page: number = 1, source: 'cloudcart' | 'firestore' = 'cloudcart'): AsyncState<ProductsResponse> {
   const [data, setData] = useState<ProductsResponse | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -96,7 +96,7 @@ export function useCategoryProducts(slug: string | null | undefined, page: numbe
     let cancelled = false;
     setIsLoading(true);
     setError(null);
-    fetch(`/api/categories/${slug}/products?page=${page}`, { cache: 'no-store' })
+    fetch(`/api/categories/${slug}/products?page=${page}&source=${source}`, { cache: 'no-store' })
       .then(async (res) => {
         if (!res.ok) throw new Error(`Failed to load products (${res.status})`);
         const json = (await res.json()) as ProductsResponse;
@@ -112,7 +112,7 @@ export function useCategoryProducts(slug: string | null | undefined, page: numbe
     return () => {
       cancelled = true;
     };
-  }, [slug, page, nonce]);
+  }, [slug, page, source, nonce]);
 
   return useMemo(() => ({ data, isLoading, error, reload }), [data, isLoading, error, reload]);
 }

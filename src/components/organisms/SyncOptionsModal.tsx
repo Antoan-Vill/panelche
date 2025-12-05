@@ -1,6 +1,9 @@
+'use client';
+
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSync, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { useTranslation } from '@/lib/i18n';
 
 type SyncOptions = {
   limit: number;
@@ -17,6 +20,7 @@ type SyncOptionsModalProps = {
 };
 
 export function SyncOptionsModal({ isOpen, onClose, onSync, isSyncing }: SyncOptionsModalProps) {
+  const { t } = useTranslation();
   const [limit, setLimit] = useState<number>(50);
   const [status, setStatus] = useState<string>('');
   const [dateFrom, setDateFrom] = useState<string>('');
@@ -43,7 +47,7 @@ export function SyncOptionsModal({ isOpen, onClose, onSync, isSyncing }: SyncOpt
         <div className="p-4 border-b flex items-center justify-between bg-muted/30">
           <h3 className="text-lg font-semibold flex items-center gap-2">
             <FontAwesomeIcon icon={faSync} className="text-blue-500" />
-            Sync CloudCart Orders
+            {t('sync.title')}
           </h3>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground" disabled={isSyncing}>
             <FontAwesomeIcon icon={faTimes} />
@@ -52,7 +56,7 @@ export function SyncOptionsModal({ isOpen, onClose, onSync, isSyncing }: SyncOpt
         
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Number of Orders (Limit)</label>
+            <label className="text-sm font-medium">{t('sync.limit')}</label>
             <input
               type="number"
               min={1}
@@ -62,30 +66,30 @@ export function SyncOptionsModal({ isOpen, onClose, onSync, isSyncing }: SyncOpt
               className="w-full border rounded px-3 py-2 text-sm"
               disabled={isSyncing}
             />
-            <p className="text-xs text-muted-foreground">Max 100 per sync request.</p>
+            <p className="text-xs text-muted-foreground">{t('sync.maxPerRequest')}</p>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Status Filter (Optional)</label>
+            <label className="text-sm font-medium">{t('sync.statusFilter')}</label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
               className="w-full border rounded px-3 py-2 text-sm"
               disabled={isSyncing}
             >
-              <option value="">All Statuses</option>
-              <option value="new">New</option>
-              <option value="pending">Pending</option>
-              <option value="processing">Processing</option>
-              <option value="fulfilled">Fulfilled</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
+              <option value="">{t('sync.allStatuses')}</option>
+              <option value="new">{t('status.new')}</option>
+              <option value="pending">{t('status.pending')}</option>
+              <option value="processing">{t('status.processing')}</option>
+              <option value="fulfilled">{t('status.fulfilled')}</option>
+              <option value="completed">{t('status.completed')}</option>
+              <option value="cancelled">{t('status.cancelled')}</option>
             </select>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">From Date</label>
+              <label className="text-sm font-medium">{t('sync.fromDate')}</label>
               <input
                 type="date"
                 value={dateFrom}
@@ -95,7 +99,7 @@ export function SyncOptionsModal({ isOpen, onClose, onSync, isSyncing }: SyncOpt
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">To Date</label>
+              <label className="text-sm font-medium">{t('sync.toDate')}</label>
               <input
                 type="date"
                 value={dateTo}
@@ -113,7 +117,7 @@ export function SyncOptionsModal({ isOpen, onClose, onSync, isSyncing }: SyncOpt
               className="px-4 py-2 bg-muted text-foreground rounded text-sm hover:bg-muted/80"
               disabled={isSyncing}
             >
-              Cancel
+              {t('cancel')}
             </button>
             <button
               type="submit"
@@ -123,10 +127,10 @@ export function SyncOptionsModal({ isOpen, onClose, onSync, isSyncing }: SyncOpt
               {isSyncing ? (
                 <>
                   <FontAwesomeIcon icon={faSync} className="fa-spin" />
-                  Syncing...
+                  {t('orders.syncing')}
                 </>
               ) : (
-                'Start Sync'
+                t('sync.startSync')
               )}
             </button>
           </div>
@@ -135,4 +139,3 @@ export function SyncOptionsModal({ isOpen, onClose, onSync, isSyncing }: SyncOpt
     </div>
   );
 }
-

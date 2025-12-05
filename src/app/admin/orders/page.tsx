@@ -8,10 +8,13 @@ import { deleteOrderForUser } from '@/lib/firebase/repositories/orders';
 import { faPen, faPlus, faTrash, faSync, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getProductVariantsClient } from '@/lib/products';
+import { useDataSource } from '@/lib/contexts/data-source-context';
 import type { Product, Variant } from '@/lib/types/products';
 import { VariantSelector } from '@/components/molecules/VariantSelector';
+import { PriceList } from '@/components/molecules/PriceList';
 import { SyncOptionsModal } from '@/components/organisms/SyncOptionsModal';
 import { CloudCartOrderEditModal } from '@/components/organisms/CloudCartOrderEditModal';
+import { useTranslation } from '@/lib/i18n';
 
 type OrderListItem = {
   id: string;
@@ -47,6 +50,8 @@ function getAllCachedProducts(maxAgeMs = PRODUCTS_CACHE_TTL_MS): Product[] {
 }
 
 export default function AdminOrdersPage() {
+  const { t } = useTranslation();
+  const { source } = useDataSource();
   const [orders, setOrders] = useState<OrderListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -118,7 +123,7 @@ export default function AdminOrdersPage() {
   useEffect(() => {
     if (deletingId) {
       // confirm deletion
-      if (confirm('Are you sure you want to delete this order?')) {
+      if (confirm(t('orders.confirmDelete'))) {
         const targetOrder = orders.find(o => o.id === deletingId);
         if (!targetOrder) return;
         deleteOrderForUser(targetOrder.userId, deletingId);
@@ -155,7 +160,7 @@ export default function AdminOrdersPage() {
       // Load from API if cache is empty
       setLoadingProducts(true);
       try {
-        const res = await fetch('/api/catalog?page=1&per_page=100&q=', {
+        const res = await fetch(`/api/catalog?page=1&per_page=100&source=${source}`, {
           cache: 'no-store',
         });
         const json = await res.json();
@@ -170,7 +175,7 @@ export default function AdminOrdersPage() {
     };
 
     loadProducts();
-  }, [editingId]);
+  }, [editingId, source]);
 
   function startDelete(orderId: string) {
     setDeletingId(orderId);
@@ -443,53 +448,50 @@ export default function AdminOrdersPage() {
       {/* Heading */}
 
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold" title="Всички поръчки">All Orders</h2>
+        <h2 className="text-xl font-semibold">{t('orders.allOrders')}</h2>
         <div className="flex gap-2">
           <button
             onClick={() => setHideCloudCartOrders(!hideCloudCartOrders)}
             className={`px-4 py-2 rounded text-sm font-medium flex items-center gap-2 border ${
               hideCloudCartOrders 
-                ? 'bg-gray-100 text-gray-700 border-gray-200' 
-                : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
+                ? 'bg-muted text-muted-foreground border-border'
+                : 'bg-card text-foreground border-border hover:bg-muted/50'
             }`}
-            title={hideCloudCartOrders ? "Покажи CloudCart поръчки" : "Скрий CloudCart поръчки"}
           >
             <FontAwesomeIcon icon={hideCloudCartOrders ? faEyeSlash : faEye} />
-            {hideCloudCartOrders ? 'Hidden CC Orders' : 'Hide CC Orders'}
+            {hideCloudCartOrders ? t('orders.hiddenCloudCart') : t('orders.hideCloudCart')}
           </button>
           <button
             onClick={() => setShowSyncModal(true)}
             disabled={syncing || loading}
             className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-sm font-medium disabled:opacity-50 flex items-center gap-2"
-            title="Синхронизирай с CloudCart"
           >
             <FontAwesomeIcon icon={faSync} className={syncing ? 'fa-spin' : ''} />
-            {syncing ? 'Syncing...' : 'Sync CloudCart'}
+            {syncing ? t('orders.syncing') : t('orders.syncCloudCart')}
           </button>
           <a
             href="/admin/orders/create"
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium"
-            title="Създай поръчка"
           >
-            Create Order
+            {t('orders.create')}
           </a>
         </div>
       </div>
-      {loading && <div className="text-muted-foreground" title="Зареждане…">Loading…</div>}
+      {loading && <div className="text-muted-foreground">{t('loading')}</div>}
       {error && <div className="text-red-600 text-sm" title={error}>{error}</div>}
       {!loading && !error && (
         <div className="overflow-auto border border-border rounded">
           <table className="w-full text-sm">
             <thead className="bg-muted text-left">
               <tr>
-                <th className="px-3 py-2 border-b" title="ID на поръчката">Order ID</th>
-                <th className="px-3 py-2 border-b" title="ID на потребителя">User ID</th>
-                <th className="px-3 py-2 border-b" title="Статус">Status</th>
-                <th className="px-3 py-2 border-b" title="Източник">Source</th>
-                <th className="px-3 py-2 border-b" title="Артикули">Items</th>
-                <th className="px-3 py-2 border-b" title="Междинна сума">Subtotal</th>
-                <th className="px-3 py-2 border-b" title="Общо">Total</th>
-                <th className="px-3 py-2 border-b" title="Действия">Actions</th>
+                <th className="px-3 py-2 border-b">{t('orders.orderId')}</th>
+                <th className="px-3 py-2 border-b">{t('orders.userId')}</th>
+                <th className="px-3 py-2 border-b">{t('orders.status')}</th>
+                <th className="px-3 py-2 border-b">{t('orders.source')}</th>
+                <th className="px-3 py-2 border-b">{t('orders.items')}</th>
+                <th className="px-3 py-2 border-b">{t('orders.subtotal')}</th>
+                <th className="px-3 py-2 border-b">{t('orders.total')}</th>
+                <th className="px-3 py-2 border-b">{t('common.actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -506,8 +508,8 @@ export default function AdminOrdersPage() {
                       <FontAwesomeIcon icon={faPen} className="me-2" /> 
                       {o.id}
                       {o.externalOrderId && (
-                        <div className="text-xs text-muted-foreground mt-1" title="External ID">
-                          Ext: {o.externalOrderId}
+                        <div className="text-xs text-muted-foreground mt-1">
+                          {t('orders.externalId')}: {o.externalOrderId}
                         </div>
                       )}
                     </td>
@@ -521,11 +523,11 @@ export default function AdminOrdersPage() {
                           ? 'bg-blue-100 text-blue-800' 
                           : 'bg-gray-100 text-gray-800'
                       }`}>
-                        {o.source === 'cloudcart' ? 'CloudCart' : 'Manual'}
+                        {o.source === 'cloudcart' ? 'CloudCart' : t('orders.manual')}
                       </span>
                     </td>
-                    <td className="px-3 py-2 border-b" title={o.items.length === 1 ? '1 артикул' : `${o.items.length} артикула`}>
-                      {`${o.items.length} item${o.items.length !== 1 ? 's' : ''}`}
+                    <td className="px-3 py-2 border-b">
+                      {`${o.items.length} ${o.items.length !== 1 ? t('orders.itemsPlural') : t('orders.item')}`}
                     </td>
                     <td className="px-3 py-2 border-b">{subtotal.toFixed(2)} лв</td>
                     <td className="px-3 py-2 border-b font-semibold">{total.toFixed(2)} лв</td>
@@ -538,7 +540,7 @@ export default function AdminOrdersPage() {
             </tbody>
           </table>
           {orders.length === 0 && (
-            <div className="p-4 text-muted-foreground" title="Няма намерени поръчки.">No orders found.</div>
+            <div className="p-4 text-muted-foreground">{t('orders.noOrders')}</div>
           )}
         </div>
       )}
@@ -562,14 +564,14 @@ export default function AdminOrdersPage() {
       {/* Edit Modal (Manual Orders) */}
       {editingId && editForm && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center" onClick={cancelEdit}>
-          <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-xl w-full max-w-2xl mx-4" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-card rounded-lg shadow-xl w-full max-w-2xl mx-4 border border-border" onClick={(e) => e.stopPropagation()}>
             <div className="p-4 border-b flex items-center justify-between">
-              <h3 className="text-lg font-semibold" title="Редактирай поръчка">Edit Order <span className="font-mono">{editingId}</span></h3>
-              <button onClick={cancelEdit} className="px-2 py-1 text-sm rounded hover:bg-muted" title="Затвори">✕</button>
+              <h3 className="text-lg font-semibold">{t('orders.editOrder')} <span className="font-mono">{editingId}</span></h3>
+              <button onClick={cancelEdit} className="px-2 py-1 text-sm rounded hover:bg-muted">✕</button>
             </div>
             <div className="p-4 space-y-4">
               <div className="flex items-center gap-3">
-                <label className="text-sm w-24" title="Статус">Status</label>
+                <label className="text-sm w-24">{t('orders.status')}</label>
                 <select
                   value={editForm.status}
                   onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
@@ -582,8 +584,8 @@ export default function AdminOrdersPage() {
                 </select>
               </div>
 
-              <div className="space-y-2 bg-gray-50 p-4 border border-border rounded">
-                <div className="text-sm font-medium" title="Артикули">Items</div>
+              <div className="space-y-2 bg-muted p-4 border border-border rounded">
+                <div className="text-sm font-medium">{t('orders.items')}</div>
                 <div className="divide-y">
                   {editForm.items.map((item, index) => {
                     const isEmpty = !item.productName || item.productName.trim() === '';
@@ -599,8 +601,7 @@ export default function AdminOrdersPage() {
                           <div className="relative">
                             <input
                               type="text"
-                              placeholder="Search for product..."
-                              title="Търси продукт..."
+                              placeholder={t('products.searchProduct')}
                               value={searchQuery}
                               onChange={(e) => handleItemSearchChange(index, e.target.value)}
                               onBlur={() => {
@@ -613,7 +614,7 @@ export default function AdminOrdersPage() {
                               autoFocus
                             />
                             {searchQuery && filteredProductsForItem.length > 0 && (
-                              <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-y-auto">
+                              <div className="absolute z-50 w-full mt-1 bg-card border border-border rounded shadow-lg max-h-60 overflow-y-auto">
                                 {filteredProductsForItem.map((product) => (
                                   <button
                                     key={product.id}
@@ -623,7 +624,7 @@ export default function AdminOrdersPage() {
                                       e.stopPropagation();
                                       handleProductSelect(index, product, e);
                                     }}
-                                    className="w-full text-left px-3 py-2 hover:bg-gray-100 text-sm cursor-pointer"
+                                    className="w-full text-left px-3 py-2 hover:bg-muted text-sm cursor-pointer"
                                   >
                                     {product.attributes.name}
                                   </button>
@@ -631,15 +632,25 @@ export default function AdminOrdersPage() {
                               </div>
                             )}
                             {searchQuery && filteredProductsForItem.length === 0 && searchQuery.trim().length > 2 && (
-                              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded shadow-lg px-3 py-2 text-sm text-muted-foreground">
-                                <span title="Няма намерени продукти">No products found</span>
+                              <div className="absolute z-10 w-full mt-1 bg-card border border-border rounded shadow-lg px-3 py-2 text-sm text-muted-foreground">
+                                <span>{t('products.noProducts')}</span>
                               </div>
                             )}
                           </div>
                           {isSelectingProduct && (
                             <div className="pl-2 border-l-2 border-blue-500">
+                              {/* Show all prices for reference */}
+                              {selectedProducts[index]?.attributes.prices && selectedProducts[index].attributes.prices.length > 0 && (
+                                <div className="mb-2">
+                                  <PriceList 
+                                    prices={selectedProducts[index].attributes.prices} 
+                                    inCents={source !== 'firestore'}
+                                    compact 
+                                  />
+                                </div>
+                              )}
                               {isLoadingVariants ? (
-                                <div className="text-sm text-muted-foreground py-2" title="Зареждане на варианти...">Loading variants...</div>
+                                <div className="text-sm text-muted-foreground py-2">{t('products.loadingVariants')}</div>
                               ) : selectedProducts[index] ? (
                                 <VariantSelector
                                   variants={variants}
@@ -684,7 +695,7 @@ export default function AdminOrdersPage() {
                         {isSelectingProduct && (!item.quantity || !item.unitPrice) && (
                           <div className="pl-4 border-l-2 border-blue-500">
                             {isLoadingVariants ? (
-                              <div className="text-sm text-muted-foreground py-2">Loading variants...</div>
+                              <div className="text-sm text-muted-foreground py-2">{t('products.loadingVariants')}</div>
                             ) : selectedProducts[index] ? (
                               <VariantSelector
                                 variants={variants}
@@ -707,11 +718,11 @@ export default function AdminOrdersPage() {
                   return (
                     <>
                       <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground" title="Междинна сума">Subtotal</span>
+                        <span className="text-muted-foreground">{t('orders.subtotal')}</span>
                         <span className="font-medium tabular-nums">{totals.subtotal.toFixed(2)} лв</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground" title="Общо">Total</span>
+                        <span className="text-muted-foreground">{t('orders.total')}</span>
                         <span className="font-semibold tabular-nums">{totals.total.toFixed(2)} лв</span>
                       </div>
                     </>
@@ -723,17 +734,17 @@ export default function AdminOrdersPage() {
             <div className="p-4 flex justify-end">
               <button onClick={() => setEditForm({ ...editForm, items: [...editForm.items, { productId: '', productName: '', sku: '', variantId: '', quantity: 1, unitPrice: 0, totalPrice: 0, imageUrl: '', angroPrice: 0, note: '' }] })} className="px-3 py-2 bg-blue-600 text-white text-sm rounded">
                 <FontAwesomeIcon icon={faPlus} className="me-1" />
-                <span title="Добави още артикули">Add More Items</span>
+                <span>{t('orders.addMoreItems')}</span>
               </button>  
             </div>
             <div className="p-4 border-t flex items-center justify-between">
-              <button onClick={() => editingId && startDelete(editingId)} className="px-3 py-2 bg-red-600 text-white text-sm rounded" title="Изтрий">
+              <button onClick={() => editingId && startDelete(editingId)} className="px-3 py-2 bg-red-600 text-white text-sm rounded">
                 <FontAwesomeIcon icon={faTrash} className="me-1" />
-                Delete
+                {t('delete')}
               </button>
               <div className="flex gap-2">
-                <button onClick={cancelEdit} className="px-3 py-2 bg-muted text-foreground text-sm rounded" title="Отказ">Cancel</button>
-                <button onClick={() => saveEdit(editingId)} className="px-3 py-2 bg-green-600 text-white text-sm rounded" title="Запази промените">Save changes</button>
+                <button onClick={cancelEdit} className="px-3 py-2 bg-muted text-foreground text-sm rounded">{t('cancel')}</button>
+                <button onClick={() => saveEdit(editingId)} className="px-3 py-2 bg-green-600 text-white text-sm rounded">{t('orders.saveChanges')}</button>
               </div>
             </div>
           </div>

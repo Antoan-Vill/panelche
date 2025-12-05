@@ -6,6 +6,7 @@ import VariantItem from '@/components/molecules/VariantItem';
 import { useVariantVisibility } from '@/lib/variant-visibility';
 import { useProductVariants } from '@/hooks';
 import { useVariantsPreload } from '@/lib/variants-preload';
+import { useDataSource } from '@/lib/contexts/data-source-context';
 
 interface ProductVariantsProps {
   productId: string;
@@ -13,6 +14,7 @@ interface ProductVariantsProps {
 
 
 export default function ProductVariants({ productId }: ProductVariantsProps) {
+  const { source } = useDataSource();
   const { showVariants: globalShowVariants, registerVariantVisibility, forceCloseAll } = useVariantVisibility();
   const [isOpen, setIsOpen] = useState(false);
   const [isIndividuallyHidden, setIsIndividuallyHidden] = useState(false);
@@ -30,6 +32,7 @@ export default function ProductVariants({ productId }: ProductVariantsProps) {
     backoffFactor: 1.8,
     maxDelayMs: 5000,
     maxAttempts: 10,
+    source,
   });
   // Prefer freshly fetched data over cached entries (cached [] could mask real data)
   const variants = (variantsData ?? cached ?? null) as Variant[] | null;

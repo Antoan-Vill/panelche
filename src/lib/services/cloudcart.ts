@@ -20,18 +20,11 @@ import type { ProductsResponse, Variant, ImageData, Product } from '@/lib/types/
 import type { Category } from '@/lib/types/categories';
 import type { VariantStockUpdateResponse } from '@/lib/types/api';
 
-export async function getProductsByCategory(categorySlug: string, page: number = 1) {
-  const isServer = typeof window === 'undefined';
-  
-  if (isServer) {
-    // Server-side: use the service layer directly
-    const { cloudCartProducts } = await import('@/lib/services/cloudcart/index');
-    return cloudCartProducts.getByCategory(categorySlug, page);
-  } else {
-    // Client-side: make HTTP request using relative URL
-    const url = `/api/categories/${categorySlug}/products?page=${page}`;
-    return fetchJson<ProductsResponse>(url, { next: { revalidate: REVALIDATE.products } });
-  }
+export async function getProductsByCategory(categorySlug: string, page: number = 1, source: 'cloudcart' | 'firestore' = 'cloudcart') {
+  // Always use HTTP API to let the server-side API route handle source switching
+  // This avoids bundling server-only Firestore code into client components
+  const url = `/api/categories/${categorySlug}/products?page=${page}&source=${source}`;
+  return fetchJson<ProductsResponse>(url, { next: { revalidate: REVALIDATE.products } });
 }
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {

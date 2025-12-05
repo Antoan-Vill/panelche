@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import type { Variant } from '@/lib/types/products';
 import { variantLabel } from '@/lib/variants';
 import { priceIndex, lookupSku } from '@/lib/sku-index';
+import { useTranslation } from '@/lib/i18n';
 
 type VariantSelectorProps = {
   variants?: Variant[];
@@ -27,6 +28,7 @@ export function VariantSelector({
   onRequestMultiSelect,
   onAdd,
 }: VariantSelectorProps) {
+  const { t } = useTranslation();
   const [quantity, setQuantity] = useState<number>(1);
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null); // variants?.[0]?.id ?? null
 
@@ -86,7 +88,7 @@ export function VariantSelector({
         </div>
         {unitPrice !== retailPrice && (
           <div className="text-xs text-muted-foreground">
-            Retail: {retailPrice.toFixed(2)} лв
+            {t('products.retail')}: {retailPrice.toFixed(2)} лв
           </div>
         )}
       </div>

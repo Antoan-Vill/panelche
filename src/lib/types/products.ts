@@ -82,6 +82,11 @@ export interface ProductRelationships {
   };
 }
 
+export interface ProductPrice {
+  type: string;
+  value: number;
+}
+
 export interface Product {
   id: string;
   type: string;
@@ -91,6 +96,7 @@ export interface Product {
     price: number;
     price_from?: number;
     price_to?: number;
+    prices?: ProductPrice[];
     image_url?: string;
     thumbnail_url?: string;
     url_handle?: string;

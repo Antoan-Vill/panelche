@@ -201,14 +201,14 @@ export function AdminOrderCreate({ ownerSelection }: AdminOrderCreateProps) {
                     onClick={() => {
                       document.getElementById('order-cart-section')?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="text-sm text-blue-600 hover:text-blue-800 hover:underline bg-white/80 backdrop-blur-sm px-2 py-1 rounded"
+                    className="text-sm text-primary hover:text-primary/80 hover:underline bg-card/80 backdrop-blur-sm px-2 py-1 rounded"
                   >
                     Go to Cart ({cartItems.length})
                   </button>
                 )}
                 <button
                   onClick={() => setExpandedSection(expandedSection === 'products' ? null : 'products')}
-                  className="p-2 hover:bg-slate-100 rounded-full text-muted-foreground bg-white/80 backdrop-blur-sm shadow-sm border border-transparent hover:border-border transition-all"
+                  className="p-2 hover:bg-muted rounded-full text-muted-foreground bg-card/80 backdrop-blur-sm shadow-sm border border-transparent hover:border-border transition-all"
                   title={expandedSection === 'products' ? "Exit Fullscreen (Esc)" : "Fullscreen Mode"}
                 >
                   {expandedSection === 'products' ? <Minimize2 size={20} /> : <Maximize2 size={16} />}
@@ -233,7 +233,7 @@ export function AdminOrderCreate({ ownerSelection }: AdminOrderCreateProps) {
             <div className={cn("flex justify-end mb-2", expandedSection === 'cart' ? "sticky top-0 z-10" : "absolute top-4 right-4 z-10")}>
                <button
                   onClick={() => setExpandedSection(expandedSection === 'cart' ? null : 'cart')}
-                  className="p-2 hover:bg-slate-100 rounded-full text-muted-foreground bg-white/80 backdrop-blur-sm shadow-sm border border-transparent hover:border-border transition-all"
+                  className="p-2 hover:bg-muted rounded-full text-muted-foreground bg-card/80 backdrop-blur-sm shadow-sm border border-transparent hover:border-border transition-all"
                   title={expandedSection === 'cart' ? "Exit Fullscreen (Esc)" : "Fullscreen Cart"}
                 >
                   {expandedSection === 'cart' ? <Minimize2 size={20} /> : <Maximize2 size={16} />}
@@ -258,7 +258,7 @@ export function AdminOrderCreate({ ownerSelection }: AdminOrderCreateProps) {
                   document.getElementById('add-products-section')?.scrollIntoView({ behavior: 'smooth' });
                 }, 100);
               }}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"
+              className="px-6 py-3 border border-border text-foreground rounded-lg hover:bg-muted font-medium"
             >
               Add More Products
             </button>
