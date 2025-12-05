@@ -78,9 +78,6 @@ export function DashboardHeader({
             </div>
           </div>
           <div className="flex items-center space-x-4 relative">
-            {/* Language Switcher */}
-            <LanguageSwitcher />
-            
             {/* Optional external actions if provided (no default New Item) */}
             {actions?.length ? (
               actions.map((action, index) => {
@@ -197,6 +194,21 @@ export function DashboardHeader({
                       >
                         {t('auth.logout')}
                       </Button>
+                    </div>
+                    
+                    {/* Settings Section */}
+                    <div className="border-t border-border">
+                      <div className="px-4 py-2">
+                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                          {t('actions.settings')}
+                        </p>
+                      </div>
+                      <div className="px-4 pb-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-foreground">{t('language')}</span>
+                          <LanguageSwitcher className="ml-2" />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
