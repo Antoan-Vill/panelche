@@ -1,0 +1,72 @@
+{
+  "welcome": "Welcome",
+  "home": "Home",
+  "about": "About",
+  "contact": "Contact",
+  "language": "Language",
+  "submit": "Submit",
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit",
+  "loading": "Loading...",
+  "error": "Error",
+  "success": "Success",
+  "dashboard": {
+    "title": "Dashboard",
+    "stats": "Statistics",
+    "categories": "Categories",
+    "actions": "Actions",
+    "activity": "Activity"
+  },
+  "actions": {
+    "addUser": "Add User",
+    "viewSales": "View Sales",
+    "manageCatalog": "Manage Catalog",
+    "settings": "Settings"
+  },
+  "orders": {
+    "title": "Orders",
+    "create": "Create Order",
+    "list": "Orders List",
+    "status": "Status",
+    "total": "Total",
+    "date": "Date"
+  },
+  "products": {
+    "title": "Products",
+    "name": "Name",
+    "price": "Price",
+    "stock": "Stock",
+    "category": "Category",
+    "variants": "Variants"
+  },
+  "store": {
+    "title": "Store",
+    "cart": "Cart",
+    "checkout": "Checkout",
+    "addToCart": "Add to Cart",
+    "removeFromCart": "Remove from Cart",
+    "continueShopping": "Continue Shopping",
+    "proceedToCheckout": "Proceed to Checkout"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password"
+  },
+  "common": {
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  }
+}

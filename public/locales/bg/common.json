@@ -1,0 +1,72 @@
+{
+  "welcome": "Добре дошли",
+  "home": "Начало",
+  "about": "За нас",
+  "contact": "Контакти",
+  "language": "Език",
+  "submit": "Изпрати",
+  "cancel": "Отказ",
+  "save": "Запази",
+  "delete": "Изтрий",
+  "edit": "Редактирай",
+  "loading": "Зареждане...",
+  "error": "Грешка",
+  "success": "Успех",
+  "dashboard": {
+    "title": "Табло",
+    "stats": "Статистики",
+    "categories": "Категории",
+    "actions": "Действия",
+    "activity": "Активност"
+  },
+  "actions": {
+    "addUser": "Добави потребител",
+    "viewSales": "Виж продажби",
+    "manageCatalog": "Управление на каталог",
+    "settings": "Настройки"
+  },
+  "orders": {
+    "title": "Поръчки",
+    "create": "Създай поръчка",
+    "list": "Списък с поръчки",
+    "status": "Статус",
+    "total": "Общо",
+    "date": "Дата"
+  },
+  "products": {
+    "title": "Продукти",
+    "name": "Име",
+    "price": "Цена",
+    "stock": "Наличност",
+    "category": "Категория",
+    "variants": "Варианти"
+  },
+  "store": {
+    "title": "Магазин",
+    "cart": "Количка",
+    "checkout": "Плащане",
+    "addToCart": "Добави в количка",
+    "removeFromCart": "Премахни от количка",
+    "continueShopping": "Продължи пазаруването",
+    "proceedToCheckout": "Продължи към плащане"
+  },
+  "auth": {
+    "login": "Вход",
+    "logout": "Изход",
+    "register": "Регистрация",
+    "email": "Имейл",
+    "password": "Парола"
+  },
+  "common": {
+    "search": "Търсене",
+    "filter": "Филтър",
+    "sort": "Сортиране",
+    "back": "Назад",
+    "next": "Напред",
+    "previous": "Предишен",
+    "close": "Затвори",
+    "confirm": "Потвърди",
+    "yes": "Да",
+    "no": "Не"
+  }
+}
