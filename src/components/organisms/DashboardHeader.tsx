@@ -6,6 +6,8 @@ import { usePathname } from 'next/navigation';
 import { Heading } from '@/components/atoms/Heading';
 import { Button } from '@/components/atoms/Button';
 import { useAuth } from '@/lib/firebase/auth-context';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { useTranslation } from '@/lib/i18n';
 
 interface DashboardHeaderProps {
   title?: string;
@@ -17,14 +19,17 @@ interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({
-  title = 'Dashboard',
+  title,
   actions = []
 }: DashboardHeaderProps) {
+  const { t } = useTranslation();
   const { user, loading, signInWithGoogle, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const pathname = usePathname();
+  
+  const displayTitle = title || t('dashboard.title');
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
@@ -63,11 +68,11 @@ export function DashboardHeader({
           <div className="flex items-center justify-between w-full me-4 py-2 pe-4 border-border border-r ">
             <div className="flex flex-col space-x-2">
               {/* <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">&#60;&#60; Back to Dashboard</Link> */}
-              <Heading level={1}>{title}</Heading>
+              <Heading level={1}>{displayTitle}</Heading>
             </div>
             <div>
-              <Link href="/admin/catalog" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors" title="Каталог">Catalog</Link>
-              <Link href="/admin/orders" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors" title="Поръчки">Orders</Link>
+              <Link href="/admin/catalog" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors" title={t('actions.manageCatalog')}>{t('actions.manageCatalog')}</Link>
+              <Link href="/admin/orders" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors" title={t('orders.title')}>{t('orders.title')}</Link>
               {/* <Link href="/admin/customers" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Customers</Link> */}
               {/* <Link href="/admin/settings" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors">Settings</Link> */}
             </div>
@@ -111,7 +116,7 @@ export function DashboardHeader({
                         e.stopPropagation();
                         handleCopyUserId();
                       }}
-                      title="Кликни за копиране на потребителски ID"
+                      title={t('nav.copyUserId')}
                     >
                       {user.displayName || user.email}
                     </div>
@@ -119,8 +124,8 @@ export function DashboardHeader({
                       {user.email}
                     </div>
                     {copied && (
-                      <div className="text-xs text-green-600 font-medium mt-1" title="Потребителски ID копиран!">
-                        User ID copied!
+                      <div className="text-xs text-green-600 font-medium mt-1">
+                        {t('success')}
                       </div>
                     )}
                   </div>
@@ -141,8 +146,8 @@ export function DashboardHeader({
                 {menuOpen && (
                   <div className="absolute right-0 mt-2 w-56 bg-card border border-border rounded-md shadow-lg z-10">
                     <div className="px-4 py-3 border-b">
-                      <p className="text-sm font-medium text-foreground truncate" title={user.displayName ? user.displayName : 'Влязъл'}>
-                        {user.displayName || 'Signed in'}
+                      <p className="text-sm font-medium text-foreground truncate">
+                        {user.displayName || t('auth.login')}
                       </p>
                       <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                     </div>
@@ -154,9 +159,8 @@ export function DashboardHeader({
                               <Button
                                 variant="ghost"
                                 className="w-full justify-start"
-                                title="Табло"
                               >
-                                Dashboard
+                                {t('dashboard.title')}
                               </Button>
                             </Link>
                           )}
@@ -165,9 +169,8 @@ export function DashboardHeader({
                               <Button
                                 variant="ghost"
                                 className="w-full justify-start"
-                                title="Админ панел"
                               >
-                                Admin Panel
+                                {t('dashboard.title')}
                               </Button>
                             </Link>
                           )}
@@ -175,9 +178,8 @@ export function DashboardHeader({
                             <Button
                               variant="ghost"
                               className="w-full justify-start"
-                              title="Магазин"
                             >
-                              Store
+                              {t('store.title')}
                             </Button>
                           </Link>
                         </>
@@ -189,16 +191,30 @@ export function DashboardHeader({
                           setMenuOpen(false);
                           logout();
                         }}
-                        title="Излез"
                       >
-                        Sign out
+                        {t('auth.logout')}
                       </Button>
+                    </div>
+                    
+                    {/* Settings Section */}
+                    <div className="border-t border-border">
+                      <div className="px-4 py-2">
+                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                          {t('actions.settings')}
+                        </p>
+                      </div>
+                      <div className="px-4 pb-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-foreground">{t('language')}</span>
+                          <LanguageSwitcher className="ml-2" />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
               </div>
             ) : (
-              <Button onClick={() => signInWithGoogle()} title="Влез">Sign in</Button>
+              <Button onClick={() => signInWithGoogle()}>{t('auth.login')}</Button>
             )}
           </div>
         </div>
