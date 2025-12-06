@@ -11,6 +11,7 @@ import { VariantVisibilityProvider } from '@/lib/variant-visibility';
 import { VariantsPreloadProvider } from '@/lib/variants-preload';
 import VariantsBatchPreloader from '@/components/VariantsBatchPreloader';
 import CopyEditUrlButton from '@/components/admin/CopyEditUrlButton';
+import ProductImageDropZone from '@/components/admin/ProductImageDropZone';
 import { CatalogEmptyState } from '@/components/admin/CatalogEmptyState';
 import { PriceNotAvailable, StockLabel } from '@/components/admin/ProductCardLabels';
 
@@ -169,20 +170,22 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0">
                     {products.map((product, index) => (
                       <div key={product.id} className="relative border border-border border-l-0 border-t-0 overflow-hidden">
-                        <div className="relative">
-                          <HoverImage
-                            product={product}
-                            className=""
-                            imgClassName="w-full h-48 object-cover"
-                          />
-                          <Link href={`https://ellenmore.com/product/${product.attributes.url_handle}`} className="absolute bottom-0 right-0 w-24 h-20 bg-white/10 hover:bg-white/70 transition-all duration-300" target="_blank">
-                            <span className="text-white text-sm">
-                              
-                            </span>
-                          </Link>
-                          <CopyEditUrlButton productId={Number(product.id)} />
-                        </div>
-                        <div className="p-4">
+                        <ProductImageDropZone product={product}>
+                          <div className="relative">
+                            <HoverImage
+                              product={product}
+                              className=""
+                              imgClassName="w-full h-48 object-cover"
+                            />
+                            <Link href={`https://ellenmore.com/product/${product.attributes.url_handle}`} className="absolute bottom-0 right-0 w-24 h-20 bg-white/10 hover:bg-white/70 transition-all duration-300" target="_blank">
+                              <span className="text-white text-sm">
+                                
+                              </span>
+                            </Link>
+                            <CopyEditUrlButton productId={Number(product.id)} />
+                          </div>
+                        </ProductImageDropZone>
+                        <div className="p-4" title={product.id.toString()}>
                           <h3 className="font-medium text-foreground mb-2">{product.attributes.name}{product.attributes?.color ? ` - ${product.attributes?.color}` : ''}</h3>
                           {/* Show all prices if available */}
                           {product.attributes.prices && product.attributes.prices.length > 0 ? (

@@ -110,6 +110,9 @@ export interface Product {
     }>;
     tags?: string[];
     color?: string;
+    // Base64 image storage (temporary solution)
+    image_base64?: string;
+    image_base64_updated_at?: string;
   };
   relationships?: ProductRelationships;
   variants?: Variant[];
