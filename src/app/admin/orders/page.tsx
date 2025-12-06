@@ -57,7 +57,7 @@ export default function AdminOrdersPage() {
   const [error, setError] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [showSyncModal, setShowSyncModal] = useState(false);
-  const [hideCloudCartOrders, setHideCloudCartOrders] = useState(false);
+  const [hideCloudCartOrders, setHideCloudCartOrders] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<{ status: string; items: OrderItem[] } | null>(null);
@@ -450,7 +450,7 @@ export default function AdminOrdersPage() {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">{t('orders.allOrders')}</h2>
         <div className="flex gap-2">
-          <button
+          {/* <button
             onClick={() => setHideCloudCartOrders(!hideCloudCartOrders)}
             className={`px-4 py-2 rounded text-sm font-medium flex items-center gap-2 border ${
               hideCloudCartOrders 
@@ -468,7 +468,7 @@ export default function AdminOrdersPage() {
           >
             <FontAwesomeIcon icon={faSync} className={syncing ? 'fa-spin' : ''} />
             {syncing ? t('orders.syncing') : t('orders.syncCloudCart')}
-          </button>
+          </button> */}
           <a
             href="/admin/orders/create"
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium"
