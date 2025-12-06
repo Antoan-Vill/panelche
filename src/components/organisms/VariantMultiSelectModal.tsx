@@ -9,6 +9,7 @@ import { PriceList } from '@/components/molecules/PriceList';
 import { useDataSource } from '@/lib/contexts/data-source-context';
 import { faExternalLink, faExternalLinkAlt, faFontAwesome, faMinus, faNoteSticky, faPencil, faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useTranslation } from '@/lib/i18n';
 
 type VariantSelection = Record<string, number>;
 
@@ -51,6 +52,7 @@ export function VariantMultiSelectModal({
   onCancel,
   onConfirm,
 }: VariantMultiSelectModalProps) {
+  const { t } = useTranslation();
   const { source } = useDataSource();
   const containerRef = useRef<HTMLDivElement>(null);
   const noteModalRef = useRef<HTMLDivElement>(null);
@@ -293,10 +295,10 @@ export function VariantMultiSelectModal({
             />
           ) : null}
           <div className="flex-1">
-            <h2 id="variant-multi-select-heading" className="text-lg font-semibold text-foreground" title="Избери варианти">
+            <h2 id="variant-multi-select-heading" className="text-lg font-semibold text-foreground">
               <span className="flex items-center gap-2">
                 <a href={`${process.env.NEXT_PUBLIC_SITE_URL}/product/${product.attributes.url_handle}`} target="_blank" rel="noopener noreferrer">
-                  {productName}
+                  {productName}{product.attributes?.color ? ` - ${product.attributes.color}` : ''}
                 </a>
                 <a href={`${process.env.NEXT_PUBLIC_SITE_URL}/admin/products/edit/${product.id}`} target="_blank" rel="noopener noreferrer">
                   <sup>
@@ -328,7 +330,7 @@ export function VariantMultiSelectModal({
         <div className="max-h-[26rem] overflow-y-auto">
           {variants.length === 0 ? (
             <div className="py-10 text-center text-sm text-muted-foreground">
-              No variants available for this product.
+              {t('variantModal.noVariants')}
             </div>
           ) : (
             <ul className="space-y-0">
@@ -349,7 +351,7 @@ export function VariantMultiSelectModal({
                   const priceSource = rawPrice || fallbackPrice;
                   price = Number((priceSource / 100).toFixed(2));
                 }
-                const label = variantLabel(variant) || variant.attributes.v1 || 'Variant';
+                const label = variantLabel(variant) || variant.attributes.v1 || t('variantModal.variant');
                 const stockCount = typeof variant.attributes.quantity === 'number'
                   ? variant.attributes.quantity
                   : null;
@@ -389,7 +391,7 @@ export function VariantMultiSelectModal({
                           <div className={`flex items-center rounded p-1 ${variant.attributes.quantity && !isChecked ? 'bg-muted' : ''}`}>
                             <div className="text-sm">
                               {sku ? <span className="mr-3 whitespace-nowrap text-muted-foreground">{sku}</span> : null}
-                              {stockCount !== null ? <span className="text-xs whitespace-nowrap" title="Наличност">Stock: {stockCount}</span> : null}
+                              {stockCount !== null ? <span className="text-xs whitespace-nowrap">{t('products.stock')}: {stockCount}</span> : null}
                             </div>
                           </div>
                           <div className='flex items-center'>
@@ -402,7 +404,7 @@ export function VariantMultiSelectModal({
                                       onClick={() => decreaseQuantity(id)}
                                       disabled={qty <= 1}
                                       className="flex h-full w-7 items-center justify-center px-5 text-sm hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
-                                      aria-label="Decrease quantity"
+                                      aria-label={t('variantModal.decreaseQuantity')}
                                     >
                                       <FontAwesomeIcon icon={faMinus} className="h-3 w-3" />
                                     </button>
@@ -423,7 +425,7 @@ export function VariantMultiSelectModal({
                                       type="button"
                                       onClick={() => increaseQuantity(id)}
                                       className="flex h-full w-7 items-center justify-center px-5 text-sm hover:bg-muted"
-                                      aria-label="Increase quantity"
+                                      aria-label={t('variantModal.increaseQuantity')}
                                     >
                                       <FontAwesomeIcon icon={faPlus} className="h-3 w-3" />
                                     </button>
@@ -436,7 +438,7 @@ export function VariantMultiSelectModal({
                                         handleNoteModalOpen(id);
                                       }}
                                       className="flex-1 cursor-pointer"
-                                      title={notes[id] ? notes[id] : "Click to add note..."}
+                                      title={notes[id] ? notes[id] : t('variantModal.clickToAddNote')}
                                     >
                                       {notes[id] ? <FontAwesomeIcon icon={faPencil} className="h-3 w-3" /> : <FontAwesomeIcon icon={faNoteSticky} className="h-3 w-3" />}
                                     </span>
@@ -458,7 +460,7 @@ export function VariantMultiSelectModal({
 
         <div className="flex items-center justify-between border-t border-border px-6 py-4">
           <div className="text-sm text-muted-foreground">
-            <span title={selectedCount === 1 ? '1 избран вариант' : `${selectedCount} избрани варианта`}>{selectedCount} variant{selectedCount === 1 ? '' : 's'} selected</span>
+            {selectedCount} {t('variantModal.variantsSelected')}
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -466,7 +468,7 @@ export function VariantMultiSelectModal({
               onClick={onCancel}
               className="rounded border border-border px-4 py-1.5 text-sm hover:bg-muted"
             >
-              <span title="Отказ">Cancel</span>
+              {t('cancel')}
             </button>
             <button
               type="button"
@@ -476,9 +478,8 @@ export function VariantMultiSelectModal({
                   ? 'cursor-not-allowed bg-black/25'
                   : 'bg-green-600 hover:bg-green-700'
                 }`}
-              title="Добави избрани"
             >
-              Add Selected
+              {t('variantModal.addSelected')}
             </button>
           </div>
         </div>
@@ -502,21 +503,20 @@ export function VariantMultiSelectModal({
           >
             <div className="flex items-start gap-3 border-b border-border px-6 py-4">
               <div className="flex-1">
-                <h2 id="note-edit-heading" className="text-lg font-semibold text-foreground" title="Редактирай бележка">
-                  Note for "{variantMap[noteModalOpenFor] ? variantLabel(variantMap[noteModalOpenFor]) || variantMap[noteModalOpenFor].attributes.v1 || 'Variant' : 'Variant'}"
+                <h2 id="note-edit-heading" className="text-lg font-semibold text-foreground">
+                  {t('variantModal.noteFor')} "{variantMap[noteModalOpenFor] ? variantLabel(variantMap[noteModalOpenFor]) || variantMap[noteModalOpenFor].attributes.v1 || t('variantModal.variant') : t('variantModal.variant')}"
                 </h2>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  write a note for this variant
+                  {t('variantModal.writeNoteDescription')}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={handleNoteModalClose}
                 className="rounded border border-transparent py-1 text-sm text-muted-foreground hover:bg-muted"
+                aria-label={t('common.close')}
               >
-                <span title="Отказ">
-                  <FontAwesomeIcon icon={faXmark} className="h-3 w-3" />
-                </span>
+                <FontAwesomeIcon icon={faXmark} className="h-3 w-3" />
               </button>
             </div>
 
@@ -525,8 +525,7 @@ export function VariantMultiSelectModal({
                 id="variant-note-textarea"
                 value={tempNote}
                 onChange={(event) => setTempNote(event.target.value)}
-                placeholder="Optional note..."
-                title="Опционална бележка..."
+                placeholder={t('variantModal.optionalNotePlaceholder')}
                 className="block w-full bg-black/5 rounded border border-border px-3 py-2 text-sm min-h-[100px] resize-y"
                 autoFocus
                 rows={10}
@@ -539,15 +538,14 @@ export function VariantMultiSelectModal({
                 onClick={handleNoteModalClose}
                 className="rounded border border-border px-4 py-1.5 text-sm hover:bg-muted"
               >
-                <span title="Отказ">Cancel</span>
+                {t('cancel')}
               </button>
               <button
                 type="button"
                 onClick={handleNoteModalSave}
                 className="rounded px-4 py-1.5 text-sm text-white bg-green-600 hover:bg-green-700"
-                title="Запази"
               >
-                Save
+                {t('save')}
               </button>
             </div>
           </div>

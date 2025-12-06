@@ -80,7 +80,7 @@ export function AdminProductWithVariants({
           <div className="flex items-center justify-between w-full font-medium text-sm truncate">
             <span>
               <a href={`${process.env.NEXT_PUBLIC_SITE_URL}/product/${product.attributes.url_handle}`} target="_blank" rel="noopener noreferrer">
-                {product.attributes.name}
+                {product.attributes.name}{product.attributes?.color ? ` - ${product.attributes.color}` : ''}
               </a>
               <a href={`${process.env.NEXT_PUBLIC_SITE_URL}/admin/products/edit/${product.id}`} target="_blank" rel="noopener noreferrer">
                 <sup>

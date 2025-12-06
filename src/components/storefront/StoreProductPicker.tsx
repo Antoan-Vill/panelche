@@ -111,7 +111,7 @@ function ProductWithVariants({
             />
           )} */}
           <div className="flex items-center justify-between w-full font-medium text-sm truncate">
-            {product.attributes.name}
+            {product.attributes.name}{product.attributes?.color ? ` - ${product.attributes.color}` : ''}
             <sup className="opacity-10 text-xs text-muted-foreground">{index + 1}.</sup>
           </div>
           {/* <div className="text-xs text-muted-foreground">${(product.attributes.price || 0).toFixed(2)}</div> */}

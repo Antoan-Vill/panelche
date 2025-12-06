@@ -239,5 +239,18 @@
   "settings": {
     "title": "Настройки",
     "dataSource": "Източник на данни"
+  },
+  "variantModal": {
+    "selectVariants": "Избери варианти",
+    "noVariants": "Няма налични варианти за този продукт.",
+    "variant": "Вариант",
+    "variantsSelected": "избран(и) вариант(а)",
+    "addSelected": "Добави избраните",
+    "noteFor": "Бележка за",
+    "writeNoteDescription": "Напиши бележка за този вариант",
+    "optionalNotePlaceholder": "Незадължителна бележка...",
+    "clickToAddNote": "Кликни за добавяне на бележка...",
+    "decreaseQuantity": "Намали количество",
+    "increaseQuantity": "Увеличи количество"
   }
 }

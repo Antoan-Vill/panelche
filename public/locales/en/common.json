@@ -239,5 +239,18 @@
   "settings": {
     "title": "Settings",
     "dataSource": "Data Source"
+  },
+  "variantModal": {
+    "selectVariants": "Select Variants",
+    "noVariants": "No variants available for this product.",
+    "variant": "Variant",
+    "variantsSelected": "variant(s) selected",
+    "addSelected": "Add Selected",
+    "noteFor": "Note for",
+    "writeNoteDescription": "Write a note for this variant",
+    "optionalNotePlaceholder": "Optional note...",
+    "clickToAddNote": "Click to add note...",
+    "decreaseQuantity": "Decrease quantity",
+    "increaseQuantity": "Increase quantity"
   }
 }
