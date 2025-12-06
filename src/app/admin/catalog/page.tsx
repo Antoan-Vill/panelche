@@ -183,7 +183,7 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                           <CopyEditUrlButton productId={Number(product.id)} />
                         </div>
                         <div className="p-4">
-                          <h3 className="font-medium text-foreground mb-2">{product.attributes.name}</h3>
+                          <h3 className="font-medium text-foreground mb-2">{product.attributes.name}{product.attributes?.color ? ` - ${product.attributes?.color}` : ''}</h3>
                           {/* Show all prices if available */}
                           {product.attributes.prices && product.attributes.prices.length > 0 ? (
                             <div className="mb-2">

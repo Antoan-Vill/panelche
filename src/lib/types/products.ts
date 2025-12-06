@@ -108,6 +108,8 @@ export interface Product {
       name: string;
       url_handle?: string;
     }>;
+    tags?: string[];
+    color?: string;
   };
   relationships?: ProductRelationships;
   variants?: Variant[];
