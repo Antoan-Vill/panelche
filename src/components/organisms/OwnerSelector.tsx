@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { getAuth } from 'firebase/auth';
 import { searchCustomersByEmailOrName } from '@/lib/firebase/repositories/customers';
 import type { Customer, OrderOwner } from '@/lib/types/customers';
+import { useTranslation } from '@/lib/i18n';
 
 interface OwnerSelectorProps {
   selectedOwner: OrderOwner | null;
@@ -11,6 +12,7 @@ interface OwnerSelectorProps {
 }
 
 export function OwnerSelector({ selectedOwner, onOwnerChange }: OwnerSelectorProps) {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<'guest' | 'customer'>('customer');
   const [guestName, setGuestName] = useState('');
   const [guestEmail, setGuestEmail] = useState('');
@@ -123,7 +125,7 @@ export function OwnerSelector({ selectedOwner, onOwnerChange }: OwnerSelectorPro
     try {
       const idToken = await getAuth().currentUser?.getIdToken();
       if (!idToken) {
-        throw new Error('You must be signed in.');
+        throw new Error(t('auth.signInRequired'));
       }
       const res = await fetch('/api/admin/customers', {
         method: 'POST',
@@ -135,7 +137,7 @@ export function OwnerSelector({ selectedOwner, onOwnerChange }: OwnerSelectorPro
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        throw new Error(data?.error || 'Failed to create customer');
+        throw new Error(data?.error || t('ownerSelector.failedToCreate'));
       }
 
       const customer: Customer = {
@@ -148,7 +150,7 @@ export function OwnerSelector({ selectedOwner, onOwnerChange }: OwnerSelectorPro
       setSearchResults([]);
       onOwnerChange({ kind: 'customer', customerId: customer.id, email: customer.email, name: customer.name || undefined });
     } catch (e: any) {
-      setCreateError(e?.message || 'Failed to create customer');
+      setCreateError(e?.message || t('ownerSelector.failedToCreate'));
     } finally {
       setCreating(false);
     }
@@ -156,7 +158,7 @@ export function OwnerSelector({ selectedOwner, onOwnerChange }: OwnerSelectorPro
 
   return (
     <div className="bg-card rounded-lg border border-border p-6">
-      <h3 className="uppercase text-xs opacity-50 mb-2 font-bold">Order Owner</h3>
+      <h3 className="uppercase text-xs opacity-50 mb-2 font-bold">{t('ownerSelector.orderOwner')}</h3>
 
       {/* Mode Selection */}
       <div className="flex gap-4 mb-6">
@@ -164,21 +166,21 @@ export function OwnerSelector({ selectedOwner, onOwnerChange }: OwnerSelectorPro
           onClick={() => handleModeChange('customer')}
           className={`px-4 py-2 rounded border ${
             mode === 'customer'
-              ? 'bg-blue-50 border-blue-300 text-blue-700'
+              ? 'bg-primary/10 border-primary/30 text-primary'
               : 'border-border text-muted-foreground hover:bg-muted'
           }`}
         >
-          Existing Customer
+          {t('ownerSelector.existingCustomer')}
         </button>
         <button
           onClick={() => handleModeChange('guest')}
           className={`px-4 py-2 rounded border ${
             mode === 'guest'
-              ? 'bg-blue-50 border-blue-300 text-blue-700'
+              ? 'bg-primary/10 border-primary/30 text-primary'
               : 'border-border text-muted-foreground hover:bg-muted'
           }`}
         >
-          Guest Customer
+          {t('ownerSelector.guestCustomer')}
         </button>
       </div>
 
@@ -186,31 +188,31 @@ export function OwnerSelector({ selectedOwner, onOwnerChange }: OwnerSelectorPro
       {mode === 'guest' && (
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Name (optional)</label>
+            <label className="block text-sm font-medium mb-1">{t('ownerSelector.nameOptional')}</label>
             <input
               type="text"
               value={guestName}
               onChange={(e) => setGuestName(e.target.value)}
-              className="w-full border rounded px-3 py-2"
-              placeholder="Enter customer name"
+              className="w-full border border-border rounded px-3 py-2 bg-background"
+              placeholder={t('ownerSelector.enterName')}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Email *</label>
+            <label className="block text-sm font-medium mb-1">{t('ownerSelector.emailRequired')}</label>
             <input
               type="email"
               value={guestEmail}
               onChange={(e) => setGuestEmail(e.target.value)}
-              className="w-full border rounded px-3 py-2"
-              placeholder="customer@example.com"
+              className="w-full border border-border rounded px-3 py-2 bg-background"
+              placeholder={t('ownerSelector.emailPlaceholder')}
             />
           </div>
           <button
             onClick={handleGuestSubmit}
             disabled={!guestEmail.trim()}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Set as Guest Customer
+            {t('ownerSelector.setAsGuest')}
           </button>
         </div>
       )}
@@ -219,18 +221,18 @@ export function OwnerSelector({ selectedOwner, onOwnerChange }: OwnerSelectorPro
       {mode === 'customer' && (
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Search by Email or Name</label>
+            <label className="block text-sm font-medium mb-1">{t('ownerSelector.searchByEmailOrName')}</label>
             <input
               type="text"
               value={customerSearch}
               onChange={(e) => setCustomerSearch(e.target.value)}
-              className="w-full border rounded px-3 py-2"
-              placeholder="Start typing email or name..."
+              className="w-full border border-border rounded px-3 py-2 bg-background"
+              placeholder={t('ownerSelector.startTyping')}
             />
           </div>
 
           {/* Search Results */}
-          {loading && <div className="text-sm text-muted-foreground">Searching...</div>}
+          {loading && <div className="text-sm text-muted-foreground">{t('ownerSelector.searching')}</div>}
 
           {!loading && searchResults.length > 0 && (
             <div className="border border-border rounded max-h-40 overflow-y-auto">
@@ -238,11 +240,11 @@ export function OwnerSelector({ selectedOwner, onOwnerChange }: OwnerSelectorPro
                 <button
                   key={customer.id}
                   onClick={() => handleCustomerSelect(customer)}
-                  className={`w-full text-left px-3 py-2 hover:bg-muted border-b last:border-b-0 ${
-                    selectedCustomer?.id === customer.id ? 'bg-blue-50' : ''
+                  className={`w-full text-left px-3 py-2 hover:bg-muted border-b border-border last:border-b-0 ${
+                    selectedCustomer?.id === customer.id ? 'bg-primary/10' : ''
                   }`}
                 >
-                  <div className="font-medium">{customer.name || 'No name'}</div>
+                  <div className="font-medium">{customer.name || t('ownerSelector.noName')}</div>
                   <div className="text-sm text-muted-foreground">{customer.email}</div>
                 </button>
               ))}
@@ -251,28 +253,28 @@ export function OwnerSelector({ selectedOwner, onOwnerChange }: OwnerSelectorPro
 
           {!loading && customerSearch.length >= 2 && (searchResults?.length ?? 0) === 0 && (
             <div className="space-y-3">
-              <div className="text-sm text-muted-foreground">No customers found</div>
+              <div className="text-sm text-muted-foreground">{t('ownerSelector.noCustomersFound')}</div>
               <div className="border border-border rounded p-3 space-y-3">
-                <div className="text-sm font-medium">Create new customer</div>
+                <div className="text-sm font-medium">{t('ownerSelector.createNewCustomer')}</div>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="sm:col-span-1">
-                    <label className="block text-xs font-medium mb-1">Email</label>
+                    <label className="block text-xs font-medium mb-1">{t('ownerSelector.email')}</label>
                     <input
                       type="email"
                       value={createEmail}
                       onChange={(e) => setCreateEmail(e.target.value.trim().toLowerCase())}
-                      className="w-full border rounded px-3 py-2"
-                      placeholder="customer@example.com"
+                      className="w-full border border-border rounded px-3 py-2 bg-background"
+                      placeholder={t('ownerSelector.emailPlaceholder')}
                     />
                   </div>
                   <div className="sm:col-span-1">
-                    <label className="block text-xs font-medium mb-1">Name (optional)</label>
+                    <label className="block text-xs font-medium mb-1">{t('ownerSelector.nameOptional')}</label>
                     <input
                       type="text"
                       value={createName}
                       onChange={(e) => setCreateName(e.target.value)}
-                      className="w-full border rounded px-3 py-2"
-                      placeholder="Enter customer name"
+                      className="w-full border border-border rounded px-3 py-2 bg-background"
+                      placeholder={t('ownerSelector.enterName')}
                     />
                   </div>
                 </div>
@@ -282,9 +284,9 @@ export function OwnerSelector({ selectedOwner, onOwnerChange }: OwnerSelectorPro
                 <button
                   onClick={handleCreateCustomer}
                   disabled={creating || !isValidEmail(createEmail)}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {creating ? 'Creating…' : 'Create customer'}
+                  {creating ? t('ownerSelector.creating') : t('ownerSelector.createCustomer')}
                 </button>
               </div>
             </div>
@@ -292,10 +294,10 @@ export function OwnerSelector({ selectedOwner, onOwnerChange }: OwnerSelectorPro
 
           {/* Selected Customer */}
           {selectedCustomer && (
-            <div className="bg-green-50 border border-green-200 rounded p-3">
-              <div className="text-sm font-medium text-green-800">Selected Customer:</div>
-              <div className="text-sm text-green-700">
-                {selectedCustomer.name || 'No name'} ({selectedCustomer.email})
+            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded p-3">
+              <div className="text-sm font-medium text-green-800 dark:text-green-300">{t('ownerSelector.selectedCustomer')}:</div>
+              <div className="text-sm text-green-700 dark:text-green-400">
+                {selectedCustomer.name || t('ownerSelector.noName')} ({selectedCustomer.email})
               </div>
             </div>
           )}

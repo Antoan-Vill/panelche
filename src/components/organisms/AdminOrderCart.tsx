@@ -4,6 +4,7 @@ import { lookupSku, priceIndex } from '@/lib/sku-index';
 import { AdminCartItem } from '@/lib/types/customers';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useTranslation } from '@/lib/i18n';
 
 interface AdminOrderCartProps {
   items: AdminCartItem[];
@@ -12,6 +13,7 @@ interface AdminOrderCartProps {
 }
 
 export function AdminOrderCart({ items, onUpdateQuantity, onRemoveItem }: AdminOrderCartProps) {
+  const { t } = useTranslation();
   const subtotal = items.reduce((sum, item) => sum + (item.lineTotal || 0), 0);
   const total = subtotal; // No taxes/shipping for now
 
@@ -26,11 +28,11 @@ export function AdminOrderCart({ items, onUpdateQuantity, onRemoveItem }: AdminO
 
   return (
     <div className="bg-card rounded-lg border border-border p-6">
-      <h3 className="uppercase text-xs opacity-50 mb-2 font-bold" title="Количка за поръчка">Order Cart</h3>
+      <h3 className="uppercase text-xs opacity-50 mb-2 font-bold">{t('orderCart.title')}</h3>
 
       {items.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
-          <span title="Няма артикули в количката. Добавете продукти, за да започнете.">No items in cart. Add products to get started.</span>
+          {t('orderCart.emptyCart')}
         </div>
       ) : (
         <div className="space-y-4">
@@ -54,7 +56,7 @@ export function AdminOrderCart({ items, onUpdateQuantity, onRemoveItem }: AdminO
                     <div className="text-xs text-muted-foreground">{item.variantLabel}</div>
                   )}
                   {item.note && (
-                    <div className="text-xs text-muted-foreground italic" title="Бележка">Note: {item.note}</div>
+                    <div className="text-xs text-muted-foreground italic">{t('orderCart.note')}: {item.note}</div>
                   )}
                   <div className="text-sm text-foreground">{(item.unitPrice || 0).toFixed(2)} лв</div>
                   {item.sku && <div className="text-sm text-foreground">{lookupSku(item.sku, priceIndex)?.['angro-inseason']} лв</div>}
@@ -73,7 +75,7 @@ export function AdminOrderCart({ items, onUpdateQuantity, onRemoveItem }: AdminO
                     min="1"
                     value={item.quantity}
                     onChange={(e) => handleQuantityChange(generateItemId(item), parseInt(e.target.value) || 1)}
-                    className="w-12 text-center border rounded px-1 py-1 text-sm"
+                    className="w-12 text-center border border-border rounded px-1 py-1 text-sm bg-background"
                   />
                   <button
                     onClick={() => handleQuantityChange(generateItemId(item), item.quantity + 1)}
@@ -91,30 +93,30 @@ export function AdminOrderCart({ items, onUpdateQuantity, onRemoveItem }: AdminO
                 {/* Remove Button */}
                 <button
                   onClick={() => onRemoveItem(generateItemId(item))}
-                  className="bg-red-100 rounded-md px-2 py-1 text-red-600 hover:text-red-800 text-sm"
+                  className="bg-red-100 dark:bg-red-900/20 rounded-md px-2 py-1 text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 text-sm"
                 >
                   <FontAwesomeIcon icon={faXmark}  />
-                  <span className="ml-2" title="Премахни">Remove</span>
+                  <span className="ml-2">{t('orderCart.remove')}</span>
                 </button>
               </div>
             ))}
           </div>
 
           {/* Order Summary */}
-          <div className="border-t pt-4">
+          <div className="border-t border-border pt-4">
             <div className="flex justify-between items-center text-sm">
-              <span title="Междинна сума">Subtotal:</span>
+              <span>{t('orders.subtotal')}:</span>
               <span>{subtotal.toFixed(2)} лв</span>
             </div>
             <div className="flex justify-between items-center font-medium text-lg mt-2">
-              <span title="Общо">Total:</span>
+              <span>{t('orders.total')}:</span>
               <span>{total.toFixed(2)} лв</span>
             </div>
           </div>
 
           {/* Cart Stats */}
           <div className="text-xs text-muted-foreground">
-            <span title={items.length === 1 ? '1 артикул' : `${items.length} артикула`}>{items.length} item{items.length !== 1 ? 's' : ''}</span> • <span title="общо количество">{items.reduce((sum, item) => sum + item.quantity, 0)} total quantity</span>
+            {items.length} {items.length === 1 ? t('orders.item') : t('orders.itemsPlural')} • {items.reduce((sum, item) => sum + item.quantity, 0)} {t('orderCart.totalQuantity')}
           </div>
         </div>
       )}

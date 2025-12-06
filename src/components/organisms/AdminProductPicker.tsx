@@ -9,6 +9,7 @@ import { AdminProductWithVariants } from '@/components/organisms/AdminProductWit
 import type { Category } from '@/lib/categories';
 import type { Product, ProductsResponse } from '@/lib/types/products';
 import type { AdminCartItem } from '@/lib/types/customers';
+import { useTranslation } from '@/lib/i18n';
 
 
 
@@ -61,6 +62,7 @@ interface AdminProductPickerProps {
 }
 
 export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
+  const { t } = useTranslation();
   const { source } = useDataSource();
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
@@ -312,7 +314,7 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
 
   return (
     <div className="bg-card rounded-lg border border-border p-6">
-      <h3 className="uppercase text-xs opacity-50 mb-2 font-bold" title="Добави продукти">Add Products</h3>
+      <h3 className="uppercase text-xs opacity-50 mb-2 font-bold">{t('productPicker.addProducts')}</h3>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Categories */}
@@ -330,8 +332,8 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
               <button
                 key={category.id}
                 onClick={() => handleCategorySelect(category)}
-                className={`w-full text-left px-3 py-2 hover:bg-muted border-b last:border-b-0 ${
-                  selectedCategory?.id === category.id ? 'bg-blue-50 text-blue-700' : ''
+                className={`w-full text-left px-3 py-2 hover:bg-muted border-b border-border last:border-b-0 ${
+                  selectedCategory?.id === category.id ? 'bg-primary/10 text-primary' : ''
                 }`}
               >
                 {category.attributes.name}
@@ -344,33 +346,33 @@ export function AdminProductPicker({ onAddToCart }: AdminProductPickerProps) {
         <div className="lg:col-span-8">
           <div className="">
             <div className="searchProducts w-full flex items-center mb-2">
-              <input type="text" placeholder="Search" className="w-full bg-black/5 border border-border rounded px-2 py-3 text-sm" onChange={(e: any) => handleSearch(e.target.value)} title="Търси" />
+              <input type="text" placeholder={t('productPicker.search')} className="w-full bg-black/5 border border-border rounded px-2 py-3 text-sm" onChange={(e: any) => handleSearch(e.target.value)} />
               {search && (
-                <button onClick={() => handleClearSearch()} className="text-sm text-muted-foreground hover:text-foreground transition-colors" title="Изчисти">Clear</button>
+                <button onClick={() => handleClearSearch()} className="text-sm text-muted-foreground hover:text-foreground transition-colors ml-2">{t('productPicker.clear')}</button>
               )}
             </div>
           </div>
           <div className="max-h-96 overflow-y-auto border border-border rounded">
-            {loading && <div className="p-4 text-center text-muted-foreground" title="Зареждане...">Loading...</div>}
+            {loading && <div className="p-4 text-center text-muted-foreground">{t('loading')}</div>}
             {!loading && searchingOtherCategories && (
               <div className="p-4 text-center text-muted-foreground">
                 <div className="flex items-center justify-center gap-2">
                   <div className="animate-spin rounded-full h-4 w-4 border-2 border-muted-foreground border-t-transparent"></div>
-                  <span title="Търсене в други категории...">Searching other categories...</span>
+                  <span>{t('productPicker.searchingOther')}</span>
                 </div>
               </div>
             )}
             {!loading && !searchingOtherCategories && showingOtherCategories && (
-              <div className="p-2 text-xs text-muted-foreground bg-yellow-50 border-b border-border text-center" title="Няма резултати в избраната категория. Показват се резултати от други категории.">
-                No results in selected category. Showing results from other categories.
+              <div className="p-2 text-xs text-muted-foreground bg-yellow-50 dark:bg-yellow-900/20 border-b border-border text-center">
+                {t('productPicker.noResultsShowingOther')}
               </div>
             )}
             {!loading && !searchingOtherCategories && filteredProducts.length === 0 && selectedCategory && !showingOtherCategories && (
-              <div className="p-4 text-center text-muted-foreground" title="Няма намерени продукти">No products found</div>
+              <div className="p-4 text-center text-muted-foreground">{t('products.noProducts')}</div>
             )}
             {!loading && !selectedCategory && filteredProducts.length === 0 && (
-              <div className="p-4 text-center text-muted-foreground" title="Разгледай всички продукти или избери категория">
-                Browse all products or pick a category
+              <div className="p-4 text-center text-muted-foreground">
+                {t('productPicker.browseOrPick')}
               </div>
             )}
             {filteredProducts.map((product: Product, index: number) => (

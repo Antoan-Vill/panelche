@@ -22,7 +22,7 @@
   "actions": {
     "addUser": "Добави потребител",
     "viewSales": "Виж продажби",
-    "manageCatalog": "Управление на каталог",
+    "manageCatalog": "Каталог",
     "settings": "Настройки"
   },
   "orders": {
@@ -58,6 +58,58 @@
     "syncCloudCart": "Синхронизирай CloudCart",
     "externalId": "Външен ID",
     "manual": "Ръчна"
+  },
+  "adminOrders": {
+    "createNewOrder": "Създай нова поръчка",
+    "createOrderDescription": "Избери собственик на поръчката и добави продукти, за да създадеш нова поръчка.",
+    "cancelChange": "Отказ от промяна",
+    "orderFor": "Поръчка за",
+    "guest": "Гост",
+    "change": "Промени",
+    "goToCart": "Към количката",
+    "exitFullscreen": "Изход от цял екран (Esc)",
+    "fullscreenMode": "Цял екран",
+    "fullscreenCart": "Количка на цял екран",
+    "addMoreProducts": "Добави още продукти",
+    "saving": "Запазване...",
+    "saveOrder": "Запази поръчка",
+    "failedToSave": "Грешка при запазване на поръчка"
+  },
+  "ownerSelector": {
+    "orderOwner": "Собственик на поръчка",
+    "existingCustomer": "Съществуващ клиент",
+    "guestCustomer": "Гост клиент",
+    "nameOptional": "Име (по избор)",
+    "enterName": "Въведете име на клиент",
+    "emailRequired": "Имейл *",
+    "emailPlaceholder": "client@example.com",
+    "setAsGuest": "Задай като гост клиент",
+    "searchByEmailOrName": "Търси по имейл или име",
+    "startTyping": "Започнете да пишете имейл или име...",
+    "searching": "Търсене...",
+    "noName": "Без име",
+    "noCustomersFound": "Няма намерени клиенти",
+    "createNewCustomer": "Създай нов клиент",
+    "email": "Имейл",
+    "creating": "Създаване...",
+    "createCustomer": "Създай клиент",
+    "selectedCustomer": "Избран клиент",
+    "failedToCreate": "Грешка при създаване на клиент"
+  },
+  "productPicker": {
+    "addProducts": "Добави продукти",
+    "search": "Търсене",
+    "clear": "Изчисти",
+    "searchingOther": "Търсене в други категории...",
+    "noResultsShowingOther": "Няма резултати в избраната категория. Показване на резултати от други категории.",
+    "browseOrPick": "Разгледай всички продукти или избери категория"
+  },
+  "orderCart": {
+    "title": "Количка за поръчка",
+    "emptyCart": "Няма артикули в количката. Добавете продукти, за да започнете.",
+    "note": "Бележка",
+    "remove": "Премахни",
+    "totalQuantity": "общо количество"
   },
   "products": {
     "title": "Продукти",

@@ -59,6 +59,58 @@
     "externalId": "External ID",
     "manual": "Manual"
   },
+  "adminOrders": {
+    "createNewOrder": "Create New Order",
+    "createOrderDescription": "Select an order owner and add products to create a new order.",
+    "cancelChange": "Cancel Change",
+    "orderFor": "Order For",
+    "guest": "Guest",
+    "change": "Change",
+    "goToCart": "Go to Cart",
+    "exitFullscreen": "Exit Fullscreen (Esc)",
+    "fullscreenMode": "Fullscreen Mode",
+    "fullscreenCart": "Fullscreen Cart",
+    "addMoreProducts": "Add More Products",
+    "saving": "Saving...",
+    "saveOrder": "Save Order",
+    "failedToSave": "Failed to save order"
+  },
+  "ownerSelector": {
+    "orderOwner": "Order Owner",
+    "existingCustomer": "Existing Customer",
+    "guestCustomer": "Guest Customer",
+    "nameOptional": "Name (optional)",
+    "enterName": "Enter customer name",
+    "emailRequired": "Email *",
+    "emailPlaceholder": "customer@example.com",
+    "setAsGuest": "Set as Guest Customer",
+    "searchByEmailOrName": "Search by Email or Name",
+    "startTyping": "Start typing email or name...",
+    "searching": "Searching...",
+    "noName": "No name",
+    "noCustomersFound": "No customers found",
+    "createNewCustomer": "Create new customer",
+    "email": "Email",
+    "creating": "Creating...",
+    "createCustomer": "Create customer",
+    "selectedCustomer": "Selected Customer",
+    "failedToCreate": "Failed to create customer"
+  },
+  "productPicker": {
+    "addProducts": "Add Products",
+    "search": "Search",
+    "clear": "Clear",
+    "searchingOther": "Searching other categories...",
+    "noResultsShowingOther": "No results in selected category. Showing results from other categories.",
+    "browseOrPick": "Browse all products or pick a category"
+  },
+  "orderCart": {
+    "title": "Order Cart",
+    "emptyCart": "No items in cart. Add products to get started.",
+    "note": "Note",
+    "remove": "Remove",
+    "totalQuantity": "total quantity"
+  },
   "products": {
     "title": "Products",
     "name": "Name",

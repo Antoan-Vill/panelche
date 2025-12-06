@@ -11,12 +11,14 @@ import type { OrderItem } from '@/lib/types/orders';
 import { getAuth } from 'firebase/auth';
 import { useCreateOrder, useOwnerSelection } from '@/hooks';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from '@/lib/i18n';
 
 interface AdminOrderCreateProps {
   ownerSelection: ReturnType<typeof useOwnerSelection>;
 }
 
 export function AdminOrderCreate({ ownerSelection }: AdminOrderCreateProps) {
+  const { t } = useTranslation();
   const { 
     owner, 
     isChangingOwner, 
@@ -127,7 +129,7 @@ export function AdminOrderCreate({ ownerSelection }: AdminOrderCreateProps) {
       const auth = getAuth();
       const idToken = await auth.currentUser?.getIdToken();
       if (!idToken) {
-        throw new Error('You must be signed in.');
+        throw new Error(t('auth.signInRequired'));
       }
 
       const idempotencyKey = (globalThis as any).crypto?.randomUUID?.() ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
@@ -139,7 +141,7 @@ export function AdminOrderCreate({ ownerSelection }: AdminOrderCreateProps) {
       setOwner(null);
       router.push('/admin/orders');
     } catch (e: any) {
-      setError(e?.message || 'Failed to save order');
+      setError(e?.message || t('adminOrders.failedToSave'));
     } finally {
       setSaving(false);
     }
@@ -158,7 +160,7 @@ export function AdminOrderCreate({ ownerSelection }: AdminOrderCreateProps) {
                 onClick={handleCancelChange}
                 className="text-sm text-muted-foreground hover:text-foreground hover:underline"
               >
-                Cancel Change
+                {t('adminOrders.cancelChange')}
               </button>
             </div>
           )}
@@ -167,15 +169,15 @@ export function AdminOrderCreate({ ownerSelection }: AdminOrderCreateProps) {
       ) : (
         <div className="bg-card rounded-lg border border-border p-4 flex items-center justify-between animate-in fade-in zoom-in-95 duration-200">
           <div>
-            <h3 className="uppercase text-xs opacity-50 font-bold mb-1">Order For</h3>
-            <div className="font-medium">{owner.name || 'Guest'}</div>
+            <h3 className="uppercase text-xs opacity-50 font-bold mb-1">{t('adminOrders.orderFor')}</h3>
+            <div className="font-medium">{owner.name || t('adminOrders.guest')}</div>
             <div className="text-sm text-muted-foreground">{owner.email}</div>
           </div>
           <button
             onClick={handleStartChange}
-            className="text-sm text-blue-600 hover:text-blue-800 hover:underline px-3 py-1"
+            className="text-sm text-primary hover:text-primary/80 hover:underline px-3 py-1"
           >
-            Change
+            {t('adminOrders.change')}
           </button>
         </div>
       )}
@@ -203,13 +205,13 @@ export function AdminOrderCreate({ ownerSelection }: AdminOrderCreateProps) {
                     }}
                     className="text-sm text-primary hover:text-primary/80 hover:underline bg-card/80 backdrop-blur-sm px-2 py-1 rounded"
                   >
-                    Go to Cart ({cartItems.length})
+                    {t('adminOrders.goToCart')} ({cartItems.length})
                   </button>
                 )}
                 <button
                   onClick={() => setExpandedSection(expandedSection === 'products' ? null : 'products')}
                   className="p-2 hover:bg-muted rounded-full text-muted-foreground bg-card/80 backdrop-blur-sm shadow-sm border border-transparent hover:border-border transition-all"
-                  title={expandedSection === 'products' ? "Exit Fullscreen (Esc)" : "Fullscreen Mode"}
+                  title={expandedSection === 'products' ? t('adminOrders.exitFullscreen') : t('adminOrders.fullscreenMode')}
                 >
                   {expandedSection === 'products' ? <Minimize2 size={20} /> : <Maximize2 size={16} />}
                 </button>
@@ -234,7 +236,7 @@ export function AdminOrderCreate({ ownerSelection }: AdminOrderCreateProps) {
                <button
                   onClick={() => setExpandedSection(expandedSection === 'cart' ? null : 'cart')}
                   className="p-2 hover:bg-muted rounded-full text-muted-foreground bg-card/80 backdrop-blur-sm shadow-sm border border-transparent hover:border-border transition-all"
-                  title={expandedSection === 'cart' ? "Exit Fullscreen (Esc)" : "Fullscreen Cart"}
+                  title={expandedSection === 'cart' ? t('adminOrders.exitFullscreen') : t('adminOrders.fullscreenCart')}
                 >
                   {expandedSection === 'cart' ? <Minimize2 size={20} /> : <Maximize2 size={16} />}
                </button>
@@ -260,19 +262,19 @@ export function AdminOrderCreate({ ownerSelection }: AdminOrderCreateProps) {
               }}
               className="px-6 py-3 border border-border text-foreground rounded-lg hover:bg-muted font-medium"
             >
-              Add More Products
+              {t('adminOrders.addMoreProducts')}
             </button>
             <button
               onClick={handleSave}
               disabled={!canProceed || saving}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+              className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
-              <span title={saving || creating ? 'Запазване…' : 'Запази поръчка'}>{saving || creating ? 'Saving…' : 'Save Order'}</span>
+              {saving || creating ? t('adminOrders.saving') : t('adminOrders.saveOrder')}
             </button>
           </div>
 
           {error && (
-            <div className="text-sm text-red-600" title={error}>{error}</div>
+            <div className="text-sm text-red-600">{error}</div>
           )}
 
           {/* Debug Info (temporary) */}

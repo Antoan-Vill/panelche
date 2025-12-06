@@ -2,8 +2,10 @@
 
 import { AdminOrderCreate } from '@/components/organisms/AdminOrderCreate';
 import { useOwnerSelection } from '@/hooks';
+import { useTranslation } from '@/lib/i18n';
 
 export default function AdminOrderCreatePage() {
+  const { t } = useTranslation();
   const ownerSelection = useOwnerSelection();
   const { owner } = ownerSelection;
 
@@ -11,9 +13,9 @@ export default function AdminOrderCreatePage() {
     <div className="max-w-7xl mx-auto">
       {!owner && (
         <div className="mb-6">
-          <h1 className="text-2xl font-semibold">Create New Order</h1>
+          <h1 className="text-2xl font-semibold">{t('adminOrders.createNewOrder')}</h1>
           <p className="text-muted-foreground mt-1">
-            Select an order owner and add products to create a new order.
+            {t('adminOrders.createOrderDescription')}
           </p>
         </div>
       )}
