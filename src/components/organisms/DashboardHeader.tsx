@@ -69,7 +69,7 @@ export function DashboardHeader({
           <div className="flex items-center justify-between w-full me-4 py-2 pe-4 border-border border-r ">
             <div className="flex flex-col space-x-2">
               {/* <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">&#60;&#60; Back to Dashboard</Link> */}
-              <Heading level={1}>{displayTitle}</Heading>
+              <Heading level={2}>{displayTitle}</Heading>
             </div>
             <div>
               <Link href="/admin/catalog" className="p-3 text-sm text-muted-foreground hover:text-foreground transition-colors" title={t('actions.manageCatalog')}>{t('actions.manageCatalog')}</Link>
